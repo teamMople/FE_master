@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const CreateChatRoom = () => {
   const [roomName, setRoomName] = useState(null);
-  const [memberCount, setMemberCount] = useState(2);
+  // const [memberCount, setMemberCount] = useState(2);
 
   const createRoom = () => {
     if (roomName === '') {

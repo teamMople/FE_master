@@ -1,8 +1,13 @@
-import { configureStore } from "@reduxjs/toolkit";
-import boardReducer from "./boards";
+import { configureStore } from '@reduxjs/toolkit';
+import { boardListSlice, detailSlice } from './boards';
+import { userSlice } from './users';
 
-export const store = configureStore({
-	reducer: {
-        boards: boardReducer,
-    },
+const store = configureStore({
+  reducer: {
+    boardReducer: boardListSlice.reducer,
+    detailReducer: detailSlice.reducer,
+    userReducer: userSlice.reducer,
+  },
 });
+
+export default store;

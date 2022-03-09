@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 import { Text } from '../elements';
 
@@ -26,6 +27,8 @@ function Input(props) {
     </>
   );
 }
+
+Input.
 
 Input.defaultProps = {
   width: '100%',

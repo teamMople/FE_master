@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 function Button(props) {
   const { _onClick, backgroundColor, color, width, height, children } = props;
@@ -17,6 +18,8 @@ function Button(props) {
     </B>
   );
 }
+
+Button.
 
 Button.defaultProps = {
   children: null,

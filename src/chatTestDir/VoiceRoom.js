@@ -2,10 +2,21 @@ import React, { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import styled from 'styled-components';
+import ChatRoom from './ChatRoom';
+import { useLocation, useParams } from 'react-router-dom';
 
-const Chat = () => {
+const VoiceRoom = () => {
   const [stream, setStream] = useState(null);
   const [microphone, setMicrophone] = useState(null);
+  const params = useParams();
+  const location = useLocation();
+
+  // 방 ID
+  const roomId = params.roomId;
+
+  // 방 제목
+  const roomName = location.state.roomName;
+
   useEffect(() => {
     // connect();
     connectAudio().then((r) => r);
@@ -17,7 +28,7 @@ const Chat = () => {
   const socket = new SockJS('http://localhost:8080/ws-stomp'); // 백앤드 엔드포인트 연결
   const stomp = Stomp.over(socket); // sprint boot가 stomp 프로토콜 방식이니 프론트에서도 stomp 프로토콜 위에 sockJS가 돌아가도록 인자로 넣어준다.
   stomp.connect({}, (frame) => {
-    console.log('CONNECTED FRAME =======> ', frame);
+    console.log('☠️ CONNECTED FRAME =======> ', frame);
     stomp.subscribe('/topic/greetings', (greetings) => {
       console.log(JSON.parse(greetings.body).content);
     });
@@ -60,9 +71,18 @@ const Chat = () => {
   //   // console.log(input);
   // };
 
+  const leaveRoom = () => {
+    stomp.disconnect();
+  };
   return (
     <>
+      {/* ---- 채팅방 ----*/}
       <div>실시간 채팅방</div>
+      <p>{roomName}</p>
+      <ChatRoom roomId={roomId} sockUrl="http://localhost:8080/ws-stomp" />
+      <hr />
+
+      <button onClick={leaveRoom}>방 나가기</button>
       <div>
         <form onSubmit={() => ''}>
           <input placeholder={'room name'} type="text" ref={inputRef} />
@@ -101,4 +121,4 @@ const UserImageWrapper = styled.div`
   }
 `;
 
-export default Chat;
+export default VoiceRoom;

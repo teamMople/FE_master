@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import BoardItem from '../../components/organisms/BoardItem';
+import Tile from '../../components/molecules/Tile';
 import { getBoardListAsync, selectBoardListState } from '../../modules/boards';
 
 function BoardList(props) {
@@ -11,13 +11,7 @@ function BoardList(props) {
     dispatch(getBoardListAsync());
   }, []);
 
-  return (
-    <>
-      {data.map((b, idx) => {
-        return <BoardItem item={b} key={idx} />;
-      })}
-    </>
-  );
+  return;
 }
 
 export default BoardList;

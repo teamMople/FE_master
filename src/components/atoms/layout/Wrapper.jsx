@@ -35,8 +35,8 @@ const WRAPPER = styled.div`
   width: 100vw;
   height: 100vh;
   min-width: 375px;
-
   box-sizing: border-box;
+
   float: ${(props) => props.float};
 
   overflow-x: hidden;
@@ -45,15 +45,6 @@ const WRAPPER = styled.div`
   ${(props) => (props.padding ? `padding: ${props.padding}` : '')}
   ${(props) =>
     props.background ? `background-color: ${props.background}` : ''}
-
-  ${(props) =>
-    props.isFlex
-      ? `display:flex; 
-				align-items: center; 
-				justify-content:space-between;
-				flex-wrap: wrap;
-			`
-      : ''}
 `;
 
 export default Wrapper;

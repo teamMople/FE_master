@@ -14,6 +14,8 @@ import Select from './inputs/Select';
 
 import Text from './text/Text';
 
+import ProgressStepper from '../molecules/ProgressStepper';
+
 export {
   Wrapper,
   Grid,
@@ -26,4 +28,5 @@ export {
   Input,
   Select,
   Text,
+  ProgressStepper,
 };

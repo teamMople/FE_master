@@ -49,7 +49,7 @@ InputText.propTypes = {
 
 InputText.defaultProps = {
   width: '100%',
-  height: 49,
+  height: 52,
   children: null,
   label: null,
   placeholder: null,

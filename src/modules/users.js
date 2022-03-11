@@ -17,7 +17,7 @@ const isRightEmailType = (email) => {
   return true;
 };
 
-export const login = createAsyncThunk(
+export const loginAsync = createAsyncThunk(
   'users/login',
   async ({ email, password }, thunkAPI) => {
     if (isRightEmailType === false) {
@@ -143,22 +143,24 @@ export const findMyPassword = createAsyncThunk(
 );
 
 export const userSlice = createSlice({
-  name: 'user',
-  loginUserInitialState,
+  name: 'users',
+  initialState: loginUserInitialState,
+  reducers: {},
   extraReducers: {
-    [login.fulfilled]: (state, action) => {
+    [loginAsync.pending]: (state, action) => {
+      state.isLogin = false;
+    },
+    [loginAsync.fulfilled]: (state, { payload }) => {
       state.isLogin = true;
-      state.loginUser = action.payload.loginUser;
+      return { ...state, payload };
     },
-    [login.rejected]: (state, action) => {
+    [loginAsync.rejected]: (state, action) => {
       state.isLogin = false;
-      state.loginUser = null;
     },
-    [login.fulfilled]: (state, action) => {
+    [signup.pending]: (state, action) => {
       state.isLogin = false;
-      state.loginUser = null;
     },
-    [signup.fulfiled]: (state, action) => {
+    [signup.fulfilled]: (state, action) => {
       state.isLogin = false;
     },
     [signup.rejected]: (state, action) => {
@@ -167,4 +169,5 @@ export const userSlice = createSlice({
   },
 });
 
+export const selectUserState = (state) => state.users;
 export default userSlice.reducer;

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getCookie } from '../shared/Cookie';
+import { getCookie } from '../shared/utils/Cookie';
 
 const api = axios.create({
   baseURL: 'http://localhost:3000',
@@ -9,11 +9,13 @@ const api = axios.create({
   },
 });
 
+/* eslint-disable no-param-reassign */
 api.interceptors.request.use(function (config) {
   const accessToken = getCookie('token');
   config.headers.common.Authorization = `Bearer ${accessToken}`;
   return config;
 });
+/* eslint-disable no-param-reassign */
 
 const apis = {
   signup: (email, name, nickname, password) => api.post('/api/signup'),

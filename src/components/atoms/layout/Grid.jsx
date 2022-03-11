@@ -34,7 +34,7 @@ Grid.propTypes = {
 Grid.defaltProps = {
   children: null,
   isFlex: false,
-  width: '10%',
+  width: '100%',
   padding: false,
   margin: false,
   background: null,

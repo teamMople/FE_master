@@ -3,7 +3,12 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ['prettier', 'react-app', 'plugin:react/recommended', 'plugin:prettier/recommended'],
+  extends: [
+    'prettier',
+    'react-app',
+    'plugin:react/recommended',
+    'plugin:prettier/recommended',
+  ],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -32,7 +37,7 @@ module.exports = {
       'error',
       {
         props: true,
-        ignorePropertyModificationsFor: ['state'],
+        ignorePropertyModificationsFor: ['state', 'track', 'config'],
       },
     ],
   },

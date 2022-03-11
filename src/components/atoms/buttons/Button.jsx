@@ -25,7 +25,7 @@ Button.propTypes = {
   _onClick: PropTypes.func,
   backgroundColor: PropTypes.string,
   color: PropTypes.string,
-  width: PropTypes.string || PropTypes.number,
+  width: PropTypes.any,
   height: PropTypes.number,
   margin: PropTypes.string,
   children: PropTypes.string,
@@ -41,7 +41,7 @@ Button.defaultProps = {
 };
 
 const B = styled.div`
-  width: ${(props) => props.width}px;
+  width: ${(props) => props.width};
   height: ${(props) => props.height}px;
   background-color: ${(props) => props.backgroundColor};
 

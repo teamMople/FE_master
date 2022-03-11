@@ -1,12 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { boardListSlice, detailSlice } from './boards';
-import { userSlice } from './users';
+import userReducer from './users';
 
 const store = configureStore({
   reducer: {
-    boardReducer: boardListSlice.reducer,
-    detailReducer: detailSlice.reducer,
-    userReducer: userSlice.reducer,
+<<<<<<< HEAD
+    users: userReducer,
+=======
+    // boardReducer: boardListSlice.reducer,
+    // detailReducer: detailSlice.reducer,
+    // userReducer: userSlice.reducer,
+>>>>>>> main
   },
 });
 

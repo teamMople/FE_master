@@ -30,7 +30,7 @@ Image.defaultProps = {
   _onClick: null,
   shape: 'retangle',
   size: 75,
-  src: null,
+  src: 'https://w.namu.la/s/6d37d2792f61b69511edc288e16598d0722ff0407af67089c0004ddeda7ad7b9bdc0b2e4880db9548efe21f2082a4c34545902a67aaa00eafce75c7f89fcdcb81cbca1649556026b3c72a3ee9382429b',
 };
 
 const AspectOuter = styled.div`
@@ -44,14 +44,6 @@ const AspectInner = styled.div`
   overflow: hidden;
   background-image: url('${(props) => props.src}');
   background-size: cover;
-  ${(props) =>
-    props.src
-      ? css`
-          background-color: '#fff';
-        `
-      : css`
-          background-color: '#A0AEC0';
-        `}
 `;
 
 const CircleImage = styled.div`
@@ -59,7 +51,7 @@ const CircleImage = styled.div`
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
-
+  background-color: #eee;
   background-image: url('${(props) => props.src}');
   background-size: cover;
 `;

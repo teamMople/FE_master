@@ -6,15 +6,16 @@ const CreateChatRoom = () => {
   // const [memberCount, setMemberCount] = useState(2);
 
   const createRoom = () => {
-    if (roomName === '') {
-      alert('방 제목을 입력하세요!');
-      return;
-    }
+    // if (roomName === '') {
+    //   alert('방 제목을 입력하세요!');
+    //   return;
+    // }
     const data = {
-      name: roomName,
+      moderator: 'TestUser',
+      roomName: roomName,
     };
     axios
-      .post('', data)
+      .post('http://localhost:8080/api/chat/room', data)
       .then((res) => {
         console.log(res);
       })

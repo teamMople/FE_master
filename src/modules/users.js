@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import apis from '../apis/apis';
-import { deleteCookie, setCookie } from '../shared/Cookie';
+import { deleteCookie, setCookie } from '../shared/utils/Cookie';
 
 const emailRegExp =
   /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;

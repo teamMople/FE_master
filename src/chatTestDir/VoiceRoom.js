@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import styled from 'styled-components';
-import ChatRoom from './ChatRoom';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import ChatRoom from './Chat/ChatRoom';
+import { Wrapper } from '../components/atoms';
 
 const VoiceRoom = () => {
   const [stream, setStream] = useState(null);
@@ -93,7 +94,7 @@ const VoiceRoom = () => {
   };
 
   return (
-    <>
+    <Wrapper padding={'16px'}>
       {/* ---- 채팅방 ----*/}
       <div>실시간 채팅방</div>
       <p>방제 : {roomName}</p>
@@ -125,7 +126,7 @@ const VoiceRoom = () => {
         </select>
         <div>username : </div>
       </div>
-    </>
+    </Wrapper>
   );
 };
 

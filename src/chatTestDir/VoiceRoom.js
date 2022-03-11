@@ -3,36 +3,32 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import styled from 'styled-components';
 import ChatRoom from './ChatRoom';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const VoiceRoom = () => {
   const [stream, setStream] = useState(null);
   const [microphone, setMicrophone] = useState(null);
+  const [disconnect, setDisconnect] = useState(false);
+  const [myPeerConnection, setMyPeerConnection] = useState(null);
   const params = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
 
   // 방 ID
   const roomId = params.roomId;
 
   // 방 제목
   const roomName = location.state.roomName;
+  const moderator = location.state.moderator;
 
   useEffect(() => {
     // connect();
     connectAudio().then((r) => r);
     getMicrophone().then((r) => r);
+    makeConnection().then((r) => r);
   }, []);
   const myVoice = useRef();
   const inputRef = useRef();
-
-  const socket = new SockJS('http://localhost:8080/ws-stomp'); // 백앤드 엔드포인트 연결
-  const stomp = Stomp.over(socket); // sprint boot가 stomp 프로토콜 방식이니 프론트에서도 stomp 프로토콜 위에 sockJS가 돌아가도록 인자로 넣어준다.
-  stomp.connect({}, (frame) => {
-    console.log('☠️ CONNECTED FRAME =======> ', frame);
-    stomp.subscribe('/topic/greetings', (greetings) => {
-      console.log(JSON.parse(greetings.body).content);
-    });
-  });
 
   const connectAudio = async () => {
     await navigator.mediaDevices
@@ -71,15 +67,38 @@ const VoiceRoom = () => {
   //   // console.log(input);
   // };
 
+  // const socket = new SockJS('http://localhost:8080/ws-stomp'); // 백앤드 엔드포인트 연결
+  // const stomp = Stomp.over(socket); // sprint boot가 stomp 프로토콜 방식이니 프론트에서도 stomp 프로토콜 위에 sockJS가 돌아가도록 인자로 넣어준다.
+  // stomp.connect({}, (frame) => {
+  //   console.log('☠️ CONNECTED FRAME =======> ', frame);
+  //   stomp.subscribe('/topic/greetings', (greetings) => {
+  //     console.log(JSON.parse(greetings.body).content);
+  //   });
+  // });
+
+  const sockUrl = 'http://localhost:8080/ws-stomp';
+
   const leaveRoom = () => {
-    stomp.disconnect();
+    setDisconnect(true);
   };
+
+  // RTC code
+  const makeConnection = async () => {
+    const peerConnection = new RTCPeerConnection();
+    await console.log(stream);
+    await console.log(peerConnection);
+    stream
+      .getTracks()
+      .forEach((track) => myPeerConnection.addTrack(track, stream));
+  };
+
   return (
     <>
       {/* ---- 채팅방 ----*/}
       <div>실시간 채팅방</div>
-      <p>{roomName}</p>
-      <ChatRoom roomId={roomId} sockUrl="http://localhost:8080/ws-stomp" />
+      <p>방제 : {roomName}</p>
+      <p>방장 : {moderator}</p>
+      <ChatRoom roomId={roomId} sockUrl={sockUrl} disconnect={disconnect} />
       <hr />
 
       <button onClick={leaveRoom}>방 나가기</button>

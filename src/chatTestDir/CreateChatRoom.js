@@ -11,7 +11,8 @@ const CreateChatRoom = () => {
     //   return;
     // }
     const data = {
-      name: roomName,
+      moderator: 'TestUser',
+      roomName: roomName,
     };
     axios
       .post('http://localhost:8080/api/chat/room', data)

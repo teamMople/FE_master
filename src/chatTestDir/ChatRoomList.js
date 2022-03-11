@@ -22,9 +22,11 @@ const ChatRoomList = () => {
   };
 
   // 방 입장
-  const handleEnterRoom = (roomId, roomName) => {
+  const handleEnterRoom = (roomId, roomName, moderator) => {
     // navigate(`/voice/${roomId}`, { state: {roomName: roomName, userId: userId }});
-    navigate(`/voice/${roomId}`, { state: { roomName: roomName } });
+    navigate(`/voice/${roomId}`, {
+      state: { roomName: roomName, moderator: moderator },
+    });
   };
 
   return (
@@ -32,14 +34,18 @@ const ChatRoomList = () => {
       <p>실시간 토론방 리스트</p>
       <div>
         {roomList &&
-          roomList.map((room, idx) => (
-            <div
-              key={idx}
-              onClick={() => handleEnterRoom(room.roomId, room.name)}
-            >
-              방제목 : {room.name}
-            </div>
-          ))}
+          roomList.map((room, idx) => {
+            return (
+              <div
+                key={idx}
+                onClick={() =>
+                  handleEnterRoom(room.roomId, room.roomName, room.moderator)
+                }
+              >
+                방제목 : {room.roomName} / 방장 : {room.moderator}
+              </div>
+            );
+          })}
       </div>
     </>
   );

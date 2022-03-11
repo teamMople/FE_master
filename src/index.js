@@ -1,25 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-<<<<<<< HEAD
-<<<<<<< HEAD
 import App from './shared/page/App';
-=======
->>>>>>> main
-=======
-import App from './shared/page/App';
->>>>>>> f447579d82aef4f7284c45ca951190a1bf95435e
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux';
 import store from './modules/configStore';
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-import App from './shared/page/App';
->>>>>>> main
-=======
->>>>>>> f447579d82aef4f7284c45ca951190a1bf95435e
 
 ReactDOM.render(
   <Provider store={store}>

@@ -19,6 +19,7 @@
     "sockjs-client": "^1.5.2",
     "stompjs": "^2.3.3",
     "styled-components": "^5.3.3",
+    "styled-normalize": "^8.0.7",
     "web-vitals": "^2.1.0",
     "workbox-webpack-plugin": "^6.2.2"
   },

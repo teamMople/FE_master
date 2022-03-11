@@ -19,38 +19,58 @@ const isRightEmailType = (email) => {
 
 export const loginAsync = createAsyncThunk(
   'users/login',
-  async ({ email, password }, thunkAPI) => {
-    if (isRightEmailType === false) {
-      window.alert('올바른 이메일 형식이 아닙니다.');
-    } else {
-      await apis
-        .login(email, password)
-        .then((response) => {
-          if (response.data.status === 'ok') {
-            setCookie('token', response.data.token, 1);
-            setCookie('userPassword', password, 1);
-            const loginUserInfo = {
-              id: response.data.id,
-              nickname: response.data.nickname,
-            };
-            localStorage.setItem(
-              'json',
-              JSON.stringify({
-                loginUser: loginUserInfo,
-              }),
-            );
-            return { loginUser: loginUserInfo };
-          }
-          return response.data;
-        })
-        .catch((error) => {
-          if (error) {
-            window.alert('잘못된 로그인 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-          }
-          return thunkAPI.rejectWithValue();
-        });
+  async (userInfo, thunkAPI) => {
+    const { email, password } = userInfo;
+
+    const response = await fetch('http://18.117.124.131/api/login', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    let data = await response.json();
+    console.log('data', data);
+    if (response.data.status === 200) {
+      console.log('success');
     }
+
+    // if (isRightEmailType === false) {
+    //   window.alert('올바른 이메일 형식이 아닙니다.');
+    // } else {
+    //   await apis
+    //     .login(email, password)
+    //     .then((response) => {
+    //       if (response.data.status === 'ok') {
+    //         setCookie('token', response.data.token, 1);
+    //         setCookie('userPassword', password, 1);
+    //         const loginUserInfo = {
+    //           id: response.data.id,
+    //           nickname: response.data.nickname,
+    //         };
+    //         localStorage.setItem(
+    //           'json',
+    //           JSON.stringify({
+    //             loginUser: loginUserInfo,
+    //           }),
+    //         );
+    //         return { loginUser: loginUserInfo };
+    //       }
+    //       return response.data;
+    //     })
+    //     .catch((error) => {
+    //       if (error) {
+    //         window.alert('잘못된 로그인 요청입니다.');
+    //         console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
+    //       }
+    //       return thunkAPI.rejectWithValue();
+    //     });
+    // }
   },
 );
 
@@ -72,27 +92,40 @@ export const logout = createAsyncThunk('users/logout', async () => {
     });
 });
 
-export const signup = createAsyncThunk(
+export const signupAsync = createAsyncThunk(
   'users/signup',
-  async ({ email, name, nickname, password }, thunkAPI) => {
-    if (email === '' || name === '' || nickname === '' || password === '') {
-      window.alert('모든 항목들을 기입해주세요');
-    } else if (isRightEmailType === false) {
-      window.alert('올바른 이메일 형식이 아닙니다.');
-    } else {
-      await apis
-        .signup(email, name, nickname, password)
-        .then((response) => {
-          return response.data.status === 'ok' && response.data;
-        })
-        .catch((error) => {
-          if (error) {
-            window.alert('잘못된 회원 가입 요청입니다.');
-            console.log(error.response.data.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-          }
-          return thunkAPI.rejectWithValue();
-        });
+  async (userInfo, thunkAPI) => {
+    const { email, profileImageUrl, nickname, password } = userInfo;
+    const response = await fetch('http://18.117.124.131/api/signup', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      body: JSON.stringify({
+        email,
+        profileImageUrl,
+        nickname,
+        password,
+      }),
+    });
+
+    let data = await response.json();
+    console.log('data', data);
+    if (response.data.status === 200) {
+      console.log('success');
     }
+
+    // .then((response) => {
+    //   return response.data.status === 'ok' && response.data;
+    // })
+    // .catch((error) => {
+    //   if (error) {
+    //     window.alert('잘못된 회원 가입 요청입니다.');
+    //     console.log(error.response.data.message); // 어떻게 서버에서 에러 메시지 오는지 확인
+    //   }
+    //   return thunkAPI.rejectWithValue();
+    // });
   },
 );
 
@@ -157,13 +190,14 @@ export const userSlice = createSlice({
     [loginAsync.rejected]: (state, action) => {
       state.isLogin = false;
     },
-    [signup.pending]: (state, action) => {
+    [signupAsync.pending]: (state, action) => {
       state.isLogin = false;
     },
-    [signup.fulfilled]: (state, action) => {
+    [signupAsync.fulfilled]: (state, { payload }) => {
       state.isLogin = false;
+      return { ...state, payload };
     },
-    [signup.rejected]: (state, action) => {
+    [signupAsync.rejected]: (state, action) => {
       state.isLogin = false;
     },
   },

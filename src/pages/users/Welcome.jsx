@@ -12,7 +12,6 @@ import {
 } from '../../components/atoms';
 
 function Welcome(props) {
-  console.log(props);
   const { nickname } = props;
 
   return (

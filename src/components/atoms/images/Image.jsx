@@ -6,14 +6,20 @@ import { css } from 'styled-components';
 function Image(props) {
   const { _onClick, shape, size, src } = props;
 
+  const styles = {
+    shape,
+    size,
+    src,
+  };
+
   if (shape === 'circle') {
-    return <CircleImage size={size} onClick={_onClick} />;
+    return <CircleImage {...styles} onClick={_onClick} />;
   }
 
   if (shape === 'retangle') {
     return (
-      <AspectOuter style={{ position: 'relative' }}>
-        <AspectInner size={size} />
+      <AspectOuter {...styles}>
+        <AspectInner {...styles} size={size} />
       </AspectOuter>
     );
   }
@@ -30,7 +36,7 @@ Image.defaultProps = {
   _onClick: null,
   shape: 'retangle',
   size: 75,
-  src: 'https://w.namu.la/s/6d37d2792f61b69511edc288e16598d0722ff0407af67089c0004ddeda7ad7b9bdc0b2e4880db9548efe21f2082a4c34545902a67aaa00eafce75c7f89fcdcb81cbca1649556026b3c72a3ee9382429b',
+  src: null,
 };
 
 const AspectOuter = styled.div`
@@ -51,9 +57,10 @@ const CircleImage = styled.div`
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
-  background-color: #eee;
   background-image: url('${(props) => props.src}');
   background-size: cover;
+  cursor: pointer;
+  background-color: #a0aec0;
 `;
 
 export default Image;

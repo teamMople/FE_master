@@ -32,9 +32,8 @@ Wrapper.defaltProps = {
 };
 
 const WRAPPER = styled.div`
-  width: 100vw;
-  height: 100vh;
-  min-width: 375px;
+  min-width: 100vw;
+  min-height: 100vh;
   box-sizing: border-box;
 
   float: ${(props) => props.float};

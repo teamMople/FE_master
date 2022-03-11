@@ -12,26 +12,35 @@ function Login(props, { history }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [id, setId] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const changeId = (e) => {
-    setId(e.target.value);
+  const changeEmail = (e) => {
+    setEmail(e.target.value);
   };
 
   const changePassword = (e) => {
     setPassword(e.target.value);
   };
 
-  useEffect(() => {}, []);
+  const handleKakaoLoginClick = (e) => {
+    window.location.href =
+      'https://kauth.kakao.com/oauth/authorize?client_id=91ee90dad2384a8f06ab7106b2f92daf&redirect_uri=http://18.117.124.131/api/kakao/login&response_type=code';
+  };
+
+  const userInfo = { email, password };
+
+  useEffect(() => {
+    console.log(email, password);
+  }, []);
 
   return (
     <Wrapper padding="53px 24px 0px 24px">
       <Input
         placeholder="이름"
         marign-bottom="16px"
-        value={id}
-        _onChange={changeId}
+        value={email}
+        _onChange={changeEmail}
       />
       <Input
         placeholder="이메일(아이디)"
@@ -42,7 +51,7 @@ function Login(props, { history }) {
       />
       <Button
         _onClick={() => {
-          dispatch(loginAsync);
+          dispatch(loginAsync(userInfo));
         }}
         width="100%"
         backgroundColor={themeContext.colors.tertiary}
@@ -56,7 +65,11 @@ function Login(props, { history }) {
       <Button width="100%" backgroundColor={themeContext.colors.secondary}>
         네이버 로그인
       </Button>
-      <Button width="100%" backgroundColor={themeContext.colors.tertiary}>
+      <Button
+        _onClick={handleKakaoLoginClick}
+        width="100%"
+        backgroundColor={themeContext.colors.tertiary}
+      >
         카카오 로그인
       </Button>
       <p>회원이 아니신가요?</p>

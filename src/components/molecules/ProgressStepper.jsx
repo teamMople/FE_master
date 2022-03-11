@@ -32,6 +32,7 @@ ProgressStepper.propTypes = {
 };
 
 const ProgressBar = styled.div`
+  position: relative;
   width: 100%;
   height: 4px;
   background-color: ${(props) => props.backgroundColor};
@@ -40,6 +41,7 @@ const ProgressBar = styled.div`
 `;
 
 const Highlight = styled.div`
+  position: absolute;
   width: ${(props) => props.width};
   height: 4px;
   background-color: ${(props) => props.highlightColor};

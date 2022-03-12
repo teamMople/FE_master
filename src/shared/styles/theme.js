@@ -55,15 +55,6 @@ const device = {
   tabletL: `only screen and (max-width: ${deviceSizes.tabletL})`,
 };
 
-const colors = {
-  black: '#000000',
-  white: '#FFFFFF',
-  primary: '#E2E8F0',
-  secondary: '#CBD5E0',
-  tertiary: '#A0AEC0',
-  quaternary: '#718096',
-};
-
 const lightThemeColors = {
   black: '#000000',
   white: '#FFFFFF',
@@ -84,7 +75,6 @@ const darkThemeColors = {
 
 const defaultTheme = {
   fontSizes,
-  colors,
   deviceSizes,
   device,
   paddings,

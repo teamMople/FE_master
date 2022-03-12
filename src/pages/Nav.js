@@ -1,11 +1,26 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const Nav = (props) => {
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
 
   const showCreateMenu = () => {
     setShow(!show);
+  };
+
+  const goHome = () => {
+    navigate('/');
+  };
+  const goSearch = () => {
+    navigate('/');
+  };
+  const goNoti = () => {
+    navigate('/');
+  };
+  const goMyPage = () => {
+    navigate('/');
   };
   return (
     <NavWrapper>
@@ -19,10 +34,10 @@ const Nav = (props) => {
         </CreateMenu>
       )}
       <MenuWrapper>
-        <div>home</div>
-        <div>search</div>
-        <div>noti</div>
-        <div>myPage</div>
+        <div onClick={goHome}>home</div>
+        <div onClick={goSearch}>search</div>
+        <div onClick={goNoti}>noti</div>
+        <div onClick={goMyPage}>myPage</div>
       </MenuWrapper>
     </NavWrapper>
   );

@@ -15,7 +15,7 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     height: inherit;
-    overflow: hidden;
+    //overflow: hidden;
     //background-color: #ddd;
   }
   #root {

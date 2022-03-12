@@ -15,6 +15,7 @@
     "react-redux": "^7.2.6",
     "react-router-dom": "6.2.1",
     "react-scripts": "5.0.0",
+    "react-select": "^5.2.2",
     "simple-peer": "^9.11.1",
     "sockjs-client": "^1.5.2",
     "stompjs": "^2.3.3",

@@ -86,10 +86,6 @@ function Signup(props) {
 
   const userInfo = { email, profileImageUrl, nickname, password };
 
-  useEffect(() => {
-    console.log(userInfo);
-  }, [email, nickname, password, profileImageUrl]);
-
   return (
     <Wrapper padding="53px 24px 53px 24px">
       <Grid isFlex>

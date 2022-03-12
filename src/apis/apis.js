@@ -23,6 +23,8 @@ const apis = {
   signup: (email, profileImageUrl, nickname, password) =>
     api.post('/api/signup', { email, profileImageUrl, nickname, password }),
   login: (email, password) => api.post('/api/login', { email, password }),
+  kakaoLogin: (kakaoAuthCode) =>
+    api.post('/api/kakao/login', { kakaoAuthCode }),
   logout: () => api.get('/api/logout'),
   editMyInfo: (email, name, nickname, password) =>
     api.put('/api/user/update', { email, name, nickname, password }),

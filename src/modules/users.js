@@ -1,4 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import apis from '../apis/apis';
 import { deleteCookie, setCookie } from '../shared/utils/Cookie';
 
@@ -21,56 +23,54 @@ export const loginAsync = createAsyncThunk(
   'users/login',
   async (userInfo, thunkAPI) => {
     const { email, password } = userInfo;
+    const navigate = useNavigate();
 
-    const response = await fetch('http://18.117.124.131/api/login', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
+    if (isRightEmailType === false) {
+      window.alert('올바른 이메일 형식이 아닙니다.');
+    } else {
+      await apis
+        .login(email, password)
+        .then((response) => {
+          if (response.data.status === 'ok') {
+            setCookie('token', response.data.token, 1);
+            setCookie('userPassword', password, 1);
+            const loginUserInfo = {
+              id: response.data.id,
+              nickname: response.data.nickname,
+            };
+            localStorage.setItem(
+              'json',
+              JSON.stringify({
+                loginUser: loginUserInfo,
+              }),
+            );
+            navigate('/');
+            return { loginUser: loginUserInfo };
+          }
+          return response.data;
+        })
+        .catch((error) => {
+          if (error) {
+            window.alert('잘못된 로그인 요청입니다.');
+            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
+          }
+          return thunkAPI.rejectWithValue();
+        });
+    }
+  },
+);
 
+export const kakaoLoginAsync = createAsyncThunk(
+  'users/kakaoLogin',
+  async (kakaoAuthCode) => {
+    const response = await axios.get(
+      `http://18.117.124.131/api/kakao/login?code=${kakaoAuthCode}`,
+    );
     let data = await response.json();
     console.log('data', data);
     if (response.data.status === 200) {
       console.log('success');
     }
-
-    // if (isRightEmailType === false) {
-    //   window.alert('올바른 이메일 형식이 아닙니다.');
-    // } else {
-    //   await apis
-    //     .login(email, password)
-    //     .then((response) => {
-    //       if (response.data.status === 'ok') {
-    //         setCookie('token', response.data.token, 1);
-    //         setCookie('userPassword', password, 1);
-    //         const loginUserInfo = {
-    //           id: response.data.id,
-    //           nickname: response.data.nickname,
-    //         };
-    //         localStorage.setItem(
-    //           'json',
-    //           JSON.stringify({
-    //             loginUser: loginUserInfo,
-    //           }),
-    //         );
-    //         return { loginUser: loginUserInfo };
-    //       }
-    //       return response.data;
-    //     })
-    //     .catch((error) => {
-    //       if (error) {
-    //         window.alert('잘못된 로그인 요청입니다.');
-    //         console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-    //       }
-    //       return thunkAPI.rejectWithValue();
-    //     });
-    // }
   },
 );
 
@@ -96,36 +96,27 @@ export const signupAsync = createAsyncThunk(
   'users/signup',
   async (userInfo, thunkAPI) => {
     const { email, profileImageUrl, nickname, password } = userInfo;
-    const response = await fetch('http://18.117.124.131/api/signup', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      body: JSON.stringify({
-        email,
-        profileImageUrl,
-        nickname,
-        password,
-      }),
-    });
+    const navigate = useNavigate();
 
-    let data = await response.json();
-    console.log('data', data);
-    if (response.data.status === 200) {
-      console.log('success');
-    }
+    await apis
+      .signup(email, profileImageUrl, nickname, password)
+      .then((response) => {
+        console.log(response);
+        if (response.status === 'OK') {
+          navigate('/welcome', { replace: true });
+        } else if (response.status === 'BAD_REQUEST') {
+          window.alert('다시 회원가입을 진행해주세요.');
+          navigate('/signup', { replace: true });
+        }
+      })
+      .catch((error) => {
+        if (error) {
+          window.alert('잘못된 회원 가입 요청입니다.');
+          console.log(error.response.data.message); // 어떻게 서버에서 에러 메시지 오는지 확인
 
-    // .then((response) => {
-    //   return response.data.status === 'ok' && response.data;
-    // })
-    // .catch((error) => {
-    //   if (error) {
-    //     window.alert('잘못된 회원 가입 요청입니다.');
-    //     console.log(error.response.data.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-    //   }
-    //   return thunkAPI.rejectWithValue();
-    // });
+          return thunkAPI.rejectWithValue();
+        }
+      });
   },
 );
 

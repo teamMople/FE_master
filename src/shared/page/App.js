@@ -1,7 +1,13 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { Main, Login, Signup, Welcome } from '../../pages';
+import {
+  Home,
+  Login,
+  OAuthRedirectHandler,
+  Signup,
+  Welcome,
+} from '../../pages';
 import '../styles/App.css';
 import theme from '../../components/theme';
 
@@ -17,11 +23,12 @@ function App() {
     <ThemeProvider theme={theme}>
       <BrowserRouter history={history}>
         <Routes>
-          <Route path="/main" element={<Main />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/oauth/kakao/callback" component={<Welcome />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/welcome" element={<Welcome />} />
-          <Route path={'/'} element={<ChatRoomList />} />
+          <Route path={'/voice'} element={<ChatRoomList />} />
           <Route path={'/voice/create'} element={<CreateChatRoom />} />
           <Route path={'/voice/:roomId'} element={<VoiceRoom />} />
         </Routes>

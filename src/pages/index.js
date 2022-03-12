@@ -31,6 +31,7 @@ export {
   BoardDetail,
   BoardList,
   CreateBoard,
+  NotiList,
   SearchBoard,
   Home,
   Nav,

@@ -21,7 +21,7 @@ Text.propTypes = {
   bold: PropTypes.bool,
   color: PropTypes.string,
   size: PropTypes.string,
-  children: PropTypes.string,
+  children: PropTypes.any,
 };
 
 Text.defaultProps = {
@@ -35,6 +35,7 @@ const P = styled.p`
   font-family: ${(props) => props.font};
   font-size: ${(props) => props.size};
   font-weight: ${(props) => (props.bold ? '600' : '400')};
+  cursor: pointer;
 
   ${(props) =>
     props._onClick

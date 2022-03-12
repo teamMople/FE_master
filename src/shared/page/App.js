@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { Main, Login, Signup, Welcome } from '../../pages';
+import { Home, Login, Signup, Welcome } from '../../pages';
 import '../styles/App.css';
 
 import { darkTheme, lightTheme } from '../styles/theme';
@@ -31,11 +31,11 @@ function App() {
           테마변경
         </button>
         <Routes>
-          <Route path="/main" element={<Main />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/welcome" element={<Welcome />} />
-          <Route path={'/'} element={<ChatRoomList />} />
+          <Route path={'/voice'} element={<ChatRoomList />} />
           <Route path={'/voice/create'} element={<CreateChatRoom />} />
           <Route path={'/voice/:roomId'} element={<VoiceRoom />} />
         </Routes>

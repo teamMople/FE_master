@@ -7,6 +7,6 @@ function CreateBoard(props) {
       <div>생성</div>
     </Wrapper>
   );
-};
+}
 
 export default CreateBoard;

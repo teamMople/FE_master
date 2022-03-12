@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import queryString from 'query-string';
 
 import { kakaoLoginAsync, loginAsync } from '../../modules/users';
 
@@ -36,17 +35,13 @@ function Login(props, { history }) {
   const kakaoAuthUrl =
     'https://kauth.kakao.com/oauth/authorize?client_id=61d258f52ee7b081b616d4119c86ba99&redirect_uri=http://localhost:3000/oauth/kakao/callback&response_type=code';
 
-  const query = queryString.parse(window.location.search);
-
   const handleKakaoLoginClick = (e) => {
     window.location.href = kakaoAuthUrl;
   };
 
   const userInfo = { email, password };
 
-  useEffect(() => {
-    console.log(query.code);
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <Wrapper padding="53px 24px 0px 24px">

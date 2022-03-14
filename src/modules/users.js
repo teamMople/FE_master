@@ -60,17 +60,63 @@ export const loginAsync = createAsyncThunk(
   },
 );
 
+export const googleLoginAsync = createAsyncThunk(
+  'users/googleLogin',
+  async (accessToken) => {
+    const navigate = useNavigate();
+    await axios
+      .get('http://18.117.124.131/api/google/login', {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        navigate('/');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+);
+
+export const naverLoginAsync = createAsyncThunk(
+  'users/naverLogin',
+  async (accessToken) => {
+    const navigate = useNavigate();
+    await axios
+      .get('http://18.117.124.131/api/naver/login', {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        navigate('/');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+);
+
 export const kakaoLoginAsync = createAsyncThunk(
   'users/kakaoLogin',
-  async (kakaoAuthCode) => {
-    const response = await axios.get(
-      `http://18.117.124.131/api/kakao/login?code=${kakaoAuthCode}`,
-    );
-    let data = await response.json();
-    console.log('data', data);
-    if (response.data.status === 200) {
-      console.log('success');
-    }
+  async (accessToken) => {
+    const navigate = useNavigate();
+    await axios
+      .get('http://18.117.124.131/api/kakao/login', {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        navigate('/');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 );
 

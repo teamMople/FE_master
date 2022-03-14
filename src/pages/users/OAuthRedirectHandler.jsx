@@ -1,25 +1,52 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import PropTypes from 'prop-types';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+
 import { useAppDispatch } from '../../modules/configStore';
-import { kakaoLoginAsync } from '../../modules/users';
+import {
+  googleLoginAsync,
+  naverLoginAsync,
+  kakaoLoginAsync,
+} from '../../modules/users';
 
-const OAuthRedirectHandler = () => {
+import { LoadingSpinner } from 'components/molecules';
+
+const OAuthRedirectHandler = (props) => {
+  const { provider } = props;
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  let params = new URL(window.location).searchParams;
-  let code = params.get('code');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [accessToken, setAccessToken] = useState(
+    searchParams.get('Authorization'),
+  );
 
-  console.log(params);
-  console.log(code);
+  console.log(searchParams);
 
-  useEffect(async () => {
-    await dispatch(kakaoLoginAsync(code));
+  useEffect(() => {
+    // switch (provider) {
+    //   case 'google':
+    //     dispatch(googleLoginAsync(accessToken));
+    //   case 'naver':
+    //     dispatch(naverLoginAsync(accessToken));
+    //   case 'kakao':
+    //     dispatch(kakaoLoginAsync(accessToken));
+    //   default:
+    //     return;
+    // }
+    // setSearchParams({});
   }, []);
 
   return (
     <React.Fragment>
-      <div>loading...</div>
+      <LoadingSpinner />
     </React.Fragment>
   );
+};
+
+OAuthRedirectHandler.propTypes = {
+  provider: PropTypes.string.isRequired,
 };
 
 export default OAuthRedirectHandler;

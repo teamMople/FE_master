@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 
-import { Home, Login, Signup, Welcome } from '../../pages';
+import {
+  Home,
+  Login,
+  OAuthRedirectHandler,
+  Signup,
+  Welcome,
+} from '../../pages';
 import '../styles/App.css';
 
 import { darkTheme, lightTheme } from '../styles/theme';
@@ -23,6 +29,8 @@ function App() {
     }
   };
 
+  useEffect(() => {}, []);
+
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter history={history}>
@@ -32,7 +40,20 @@ function App() {
         </button>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/api" element={<Login />}>
+            <Route
+              path="google"
+              element={<OAuthRedirectHandler provider={'google'} />}
+            />
+            <Route
+              path="naver"
+              element={<OAuthRedirectHandler provider={'naver'} />}
+            />
+            <Route
+              path="kakao"
+              element={<OAuthRedirectHandler provider={'kakao'} />}
+            />
+          </Route>
           <Route path="/signup" element={<Signup />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path={'/voice'} element={<ChatRoomList />} />

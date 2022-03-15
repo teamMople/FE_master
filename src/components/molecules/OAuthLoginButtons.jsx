@@ -1,18 +1,12 @@
 import React, { useContext } from 'react';
-import { Outlet } from 'react-router-dom';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 import { ThemeContext } from 'styled-components';
 import { Button } from 'components/atoms';
-import { kakaoLoginAsync } from 'modules/users';
-import { useDispatch } from 'react-redux';
 
 const KAKAO_LOGIN_URL = process.env.REACT_APP_KAKAO_LOGIN_URL;
 
 const handleOAuthLoginClick = (url) => () => {
   window.location.replace(url);
-  // dispatch(kakaoLoginAsync);
 };
 
 const OAuthLoginButtons = ({ ...props }) => {
@@ -32,7 +26,6 @@ const OAuthLoginButtons = ({ ...props }) => {
       >
         카카오 로그인
       </Button>
-      <Outlet />
     </>
   );
 };

@@ -28,9 +28,10 @@ export const loginAsync = createAsyncThunk(
     if (isRightEmailType === false) {
       window.alert('올바른 이메일 형식이 아닙니다.');
     } else {
-      await apis
-        .login(email, password)
+      await axios
+        .get(email, password)
         .then((response) => {
+          console.log(response);
           if (response.data.status === 'ok') {
             setCookie('token', response.data.token, 1);
             setCookie('userPassword', password, 1);
@@ -62,14 +63,10 @@ export const loginAsync = createAsyncThunk(
 
 export const googleLoginAsync = createAsyncThunk(
   'users/googleLogin',
-  async (accessToken) => {
+  async (code) => {
     const navigate = useNavigate();
     await axios
-      .get('http://18.117.124.131/api/google/login', {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      })
+      .get(`http://18.117.124.131/api/google/login?code=${code}`)
       .then((res) => {
         console.log(res);
         navigate('/');
@@ -82,14 +79,10 @@ export const googleLoginAsync = createAsyncThunk(
 
 export const naverLoginAsync = createAsyncThunk(
   'users/naverLogin',
-  async (accessToken) => {
+  async (code) => {
     const navigate = useNavigate();
     await axios
-      .get('http://18.117.124.131/api/naver/login', {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      })
+      .get(`http://18.117.124.131/api/naver/login?code=${code}`)
       .then((res) => {
         console.log(res);
         navigate('/');
@@ -102,14 +95,10 @@ export const naverLoginAsync = createAsyncThunk(
 
 export const kakaoLoginAsync = createAsyncThunk(
   'users/kakaoLogin',
-  async (accessToken) => {
+  async (code) => {
     const navigate = useNavigate();
     await axios
-      .get('http://18.117.124.131/api/kakao/login', {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      })
+      .get(`http://18.117.124.131/api/kakao/login?code=${code}`)
       .then((res) => {
         console.log(res);
         navigate('/');

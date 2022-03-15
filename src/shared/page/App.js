@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import {
   Home,
@@ -29,7 +29,9 @@ function App() {
     }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log(window.location);
+  }, [window.location]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -40,20 +42,19 @@ function App() {
         </button>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/api" element={<Login />}>
-            <Route
-              path="google"
-              element={<OAuthRedirectHandler provider={'google'} />}
-            />
-            <Route
-              path="naver"
-              element={<OAuthRedirectHandler provider={'naver'} />}
-            />
-            <Route
-              path="kakao"
-              element={<OAuthRedirectHandler provider={'kakao'} />}
-            />
-          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/api/google/login"
+            element={<OAuthRedirectHandler provider={'google'} />}
+          />
+          <Route
+            path="/api/naver/login"
+            element={<OAuthRedirectHandler provider={'naver'} />}
+          />
+          <Route
+            path="/api/kakao/login"
+            element={<OAuthRedirectHandler provider={'kakao'} />}
+          />
           <Route path="/signup" element={<Signup />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path={'/voice'} element={<ChatRoomList />} />

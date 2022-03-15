@@ -1,16 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch } from 'react-redux';
-
-import queryString from 'query-string';
-
-import { kakaoLoginAsync, loginAsync } from '../../modules/users';
+import { loginAsync } from '../../modules/users';
 
 import { ThemeContext } from 'styled-components';
-import { Wrapper, Grid, Text, Input, Button } from '../../components/atoms';
+import { Wrapper, Text, Input, Button } from '../../components/atoms';
 import { useNavigate } from 'react-router-dom';
 import OAuthLoginButtons from 'components/molecules/OAuthLoginButtons';
 
-function Login(props, { history }) {
+function Login(props) {
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -31,8 +28,6 @@ function Login(props, { history }) {
   };
 
   const userInfo = { email, password };
-
-  const query = queryString.parse(window.location.search);
 
   React.useEffect(() => {}, []);
 

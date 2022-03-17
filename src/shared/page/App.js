@@ -2,11 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import {
+  Splash,
   Home,
+  Nav,
   Login,
+  MyAccount,
   OAuthRedirectHandler,
   Signup,
   Welcome,
+  SearchBoard,
+  Settings,
 } from '../../pages';
 import '../styles/App.css';
 
@@ -29,9 +34,7 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    console.log(window.location);
-  }, [window.location]);
+  useEffect(() => {}, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -41,26 +44,23 @@ function App() {
           테마변경
         </button>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Splash />} />
           <Route path="/login" element={<Login />} />
-          <Route
-            path="/api/google/login"
-            element={<OAuthRedirectHandler provider={'google'} />}
-          />
-          <Route
-            path="/api/naver/login"
-            element={<OAuthRedirectHandler provider={'naver'} />}
-          />
           <Route
             path="/api/kakao/login"
             element={<OAuthRedirectHandler provider={'kakao'} />}
           />
           <Route path="/signup" element={<Signup />} />
           <Route path="/welcome" element={<Welcome />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/search" element={<SearchBoard />} />
+          <Route path="/myaccount" element={<MyAccount />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path={'/voice'} element={<ChatRoomList />} />
           <Route path={'/voice/create'} element={<CreateChatRoom />} />
           <Route path={'/voice/:roomId'} element={<VoiceRoom />} />
         </Routes>
+        <Nav />
       </BrowserRouter>
     </ThemeProvider>
   );

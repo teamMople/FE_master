@@ -3,40 +3,26 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { css } from 'styled-components';
 
-function Image(props) {
-  const { _onClick, shape, size, src } = props;
-
-  const styles = {
-    shape,
-    size,
-    src,
-  };
-
-  if (shape === 'circle') {
-    return <CircleImage {...styles} onClick={_onClick} />;
+function Image({ ...props }) {
+  if (props.shape === 'circle') {
+    return <CircleImage {...props} />;
   }
 
-  if (shape === 'retangle') {
+  if (props.shape === 'retangle') {
     return (
-      <AspectOuter {...styles}>
-        <AspectInner {...styles} size={size} />
+      <AspectOuter {...props}>
+        <AspectInner {...props} />
       </AspectOuter>
     );
   }
 }
 
 Image.propTypes = {
-  _onClick: PropTypes.func,
   shape: PropTypes.oneOf(['circle', 'retangle']),
-  size: PropTypes.number,
-  src: PropTypes.string,
 };
 
 Image.defaultProps = {
-  _onClick: null,
   shape: 'retangle',
-  size: 75,
-  src: null,
 };
 
 const AspectOuter = styled.div`
@@ -61,6 +47,7 @@ const CircleImage = styled.div`
   background-size: cover;
   cursor: pointer;
   background-color: #a0aec0;
+  border: ${(props) => props.border};
 `;
 
 export default Image;

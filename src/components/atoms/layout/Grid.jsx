@@ -2,43 +2,20 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const Grid = (props) => {
-  const { isFlex, float, width, padding, margin, background, children } = props;
-
-  const styles = {
-    isFlex: isFlex,
-    width: width,
-    padding: padding,
-    margin: margin,
-    background: background,
-    float: float,
-  };
-
+const Grid = ({ ...props }) => {
   return (
     <React.Fragment>
-      <GridBox {...styles}>{children}</GridBox>
+      <GridBox {...props}>{props.children}</GridBox>
     </React.Fragment>
   );
 };
 
 Grid.propTypes = {
-  isFlex: PropTypes.bool,
-  float: PropTypes.bool,
-  width: PropTypes.any,
-  padding: PropTypes.any,
-  margin: PropTypes.any,
-  background: PropTypes.string,
-  children: PropTypes.any,
+  children: PropTypes.arrayOf(PropTypes.element),
 };
 
 Grid.defaltProps = {
   children: null,
-  isFlex: false,
-  width: '100%',
-  padding: false,
-  margin: false,
-  background: null,
-  float: 'none',
 };
 
 const GridBox = styled.div`
@@ -46,7 +23,6 @@ const GridBox = styled.div`
   height: 100%;
   box-sizing: border-box;
   overflow: overlay;
-  float: ${(props) => props.float};
 
   ${(props) => (props.padding ? `padding: ${props.padding}` : '')}
   ${(props) => (props.margin ? `margin: ${props.margin}` : '')}

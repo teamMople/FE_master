@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { loginAsync } from '../../modules/users';
 
 import { ThemeContext } from 'styled-components';
-import { Wrapper, Text, Input, Button } from '../../components/atoms';
+import { Wrapper, Text, Input, Button, Grid } from '../../components/atoms';
+import { Header } from '../../components/molecules';
 import { useNavigate } from 'react-router-dom';
 import OAuthLoginButtons from 'components/molecules/OAuthLoginButtons';
+import { useAppDispatch } from 'modules/configStore';
 
 function Login(props) {
   const themeContext = useContext(ThemeContext);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -33,6 +35,7 @@ function Login(props) {
 
   return (
     <Wrapper padding="53px 24px 0px 24px">
+      <Header label="" />
       <Input
         placeholder="이름"
         marign-bottom="16px"
@@ -46,25 +49,26 @@ function Login(props) {
         _onChange={changePassword}
         _type="password"
       />
+      <Grid isFlex>
+        <Text size="14px" color={themeContext.colors.blue}>
+          비밀번호 찾기
+        </Text>
+        <Link to="/signup">
+          <Text size="14px" color={themeContext.colors.blue}>
+            회원가입
+          </Text>
+        </Link>
+      </Grid>
       <Button
         _onClick={handleLoginClick}
         width="100%"
-        backgroundColor={themeContext.colors.tertiary}
+        height={38}
+        color={themeContext.colors.white}
+        backgroundColor={themeContext.colors.blue}
       >
-        LOGIN
+        로그인
       </Button>
-      <Text size="10px">비밀번호 찾기</Text>
       <OAuthLoginButtons />
-      <p>회원이 아니신가요?</p>
-      <Button
-        _onClick={() => {
-          navigate('/signup');
-        }}
-        width="50%"
-        backgroundColor={themeContext.colors.primary}
-      >
-        회원가입
-      </Button>
     </Wrapper>
   );
 }

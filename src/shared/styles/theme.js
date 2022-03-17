@@ -56,21 +56,31 @@ const device = {
 };
 
 const lightThemeColors = {
-  black: '#000000',
+  black: '#282828',
+  lightGray: '#F1F1F1',
+  gray: '#D0D0D0',
+  darkGray: '#718096',
   white: '#FFFFFF',
-  primary: '#E2E8F0',
-  secondary: '#CBD5E0',
-  tertiary: '#A0AEC0',
-  quaternary: '#718096',
+  primaryYellow: '#FADE86',
+  blue: '#6E6BF0',
+  lightBlue: '#CCE5FC',
+  lightPink: '#F6CAF2',
+  orange: '#F29E3B',
+  lightGreen: '#BFEA94',
 };
 
 const darkThemeColors = {
-  black: '#ffffff',
+  black: '#E0E0E0',
+  lightGray: '#222222',
+  gray: '#1D1D1D',
+  darkGray: '#EAECF0',
   white: '#000000',
-  primary: '#E2E8F0',
-  secondary: '#CBD5E0',
-  tertiary: '#A0AEC0',
-  quaternary: '#718096',
+  primaryYellow: '#8797FA',
+  blue: '#FAE687',
+  lightBlue: '#F2D9AE',
+  lightPink: '#DAFCCC',
+  orange: '#3BB7EB',
+  lightGreen: '#DC3AF2',
 };
 
 const defaultTheme = {

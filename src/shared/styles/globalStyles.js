@@ -52,6 +52,10 @@ const GlobalStyle = createGlobalStyle`
       font-weight: 700;
     src: url(${NotoBold});
   }
+
+  a {
+    text-decoration: none;
+  }
 `;
 
 export default GlobalStyle;

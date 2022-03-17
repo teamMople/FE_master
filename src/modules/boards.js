@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import apis from '../apis/apis';
+import axios from 'axios';
 
 const boardListInitialState = {
   data: [],
@@ -14,7 +15,7 @@ const detailInitialState = {
 export const getBoardListAsync = createAsyncThunk(
   'boards/getBoardList',
   async () => {
-    const response = await apis.getBoardList();
+    const response = await axios.get('/api/boards');
     return response.data;
   },
 );

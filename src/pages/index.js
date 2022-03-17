@@ -14,6 +14,7 @@ import CreateBoard from './boards/CreateBoard';
 import NotiList from './boards/NotiList';
 import SearchBoard from './boards/SearchBoard';
 
+import Splash from './Splash';
 import Home from './Home';
 import Nav from './Nav';
 import Settings from './Settings';
@@ -33,6 +34,7 @@ export {
   CreateBoard,
   NotiList,
   SearchBoard,
+  Splash,
   Home,
   Nav,
   Settings,

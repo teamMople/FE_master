@@ -13,18 +13,14 @@ const OAuthLoginButtons = ({ ...props }) => {
   const themeContext = useContext(ThemeContext);
   return (
     <>
-      <Button width="100%" backgroundColor={themeContext.colors.primary}>
-        구글 로그인
-      </Button>
-      <Button width="100%" backgroundColor={themeContext.colors.secondary}>
-        네이버 로그인
-      </Button>
       <Button
         _onClick={handleOAuthLoginClick(KAKAO_LOGIN_URL)}
         width="100%"
-        backgroundColor={themeContext.colors.tertiary}
+        height={38}
+        color={themeContext.colors.black}
+        backgroundColor={themeContext.colors.primaryYellow}
       >
-        카카오 로그인
+        <img src="/asset/icons/Kakao.svg" /> | 카카오 로그인
       </Button>
     </>
   );

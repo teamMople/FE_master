@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 
 const Grid = ({ ...props }) => {
@@ -26,17 +26,26 @@ const GridBox = styled.div`
 
   ${(props) => (props.padding ? `padding: ${props.padding}` : '')}
   ${(props) => (props.margin ? `margin: ${props.margin}` : '')}
-    ${(props) =>
+  ${(props) =>
     props.background ? `background-color: ${props.background}` : ''}
 
-    ${(props) =>
+  ${(props) =>
     props.isFlex
-      ? `display:flex; 
-				align-items: center; 
-				justify-content:space-between;
-				flex-wrap: wrap;
-			`
-      : ''}
+      ? `display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: nowrap;
+        `
+      : ``}
+
+  ${(props) =>
+    props.center
+      ? `display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: nowrap;
+        `
+      : ``}
 `;
 
 export default Grid;

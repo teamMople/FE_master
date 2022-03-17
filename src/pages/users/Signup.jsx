@@ -13,12 +13,15 @@ import { ThemeContext } from 'styled-components';
 import {
   Wrapper,
   Grid,
-  Image,
   Text,
-  Input,
+  Image,
   Button,
-} from '../../components/atoms';
-import ProgressStepper from '../../components/molecules/ProgressStepper';
+  Input,
+  Header,
+  ProgressStepper,
+  Check,
+  Survey,
+} from 'components';
 
 function Signup(props) {
   const dispatch = useAppDispatch();
@@ -29,6 +32,7 @@ function Signup(props) {
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('noname');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [previewProfileImage, setPreviewProfileImage] = useState(
     'http://localhost:3001/asset/icons/Image.svg',
   );
@@ -46,6 +50,10 @@ function Signup(props) {
 
   const changePassword = (e) => {
     setPassword(e.target.value);
+  };
+
+  const changeConfirmPassword = (e) => {
+    setConfirmPassword(e.target.value);
   };
 
   const changeNickname = (e) => {
@@ -87,116 +95,200 @@ function Signup(props) {
   const userInfo = { email, profileImageUrl, nickname, password };
 
   return (
-    <Wrapper padding="53px 24px 53px 24px">
-      <Grid isFlex>
-        <Text>회원가입</Text>
+    <Wrapper
+      backgroundColor={themeContext.colors.white}
+      padding="70px 0px 0px 0px"
+    >
+      <Grid padding="0px 24px 0px 24px">
+        <Header label="회원가입" leftArrow />
       </Grid>
       <ProgressStepper
         steps={3}
         currentStep={step}
-        backgroundColor={themeContext.colors.primary}
-        highlightColor={themeContext.colors.quaternary}
+        backgroundColor={themeContext.colors.white}
+        highlightColor={themeContext.colors.blue}
       />
       {(() => {
         switch (step) {
           case 0:
             return (
-              <>
-                <Text size="20px">
+              <Grid padding="32px 24px 0px 24px">
+                <Text color={themeContext.colors.darkGray} size="14px">
                   반가워요 ! 이메일, 비밀번호를 입력해주세요 :)
                 </Text>
                 <Input
-                  _onChange={changeEmail}
+                  backgroundColor={themeContext.colors.white}
+                  color={themeContext.colors.black}
+                  width="100%"
+                  margin="19px 0px 17px 0px"
+                  type="text"
+                  onChange={changeEmail}
                   placeholder="이메일(아이디)"
-                  marign-bottom="16px"
                 />
-                <Button
-                  height={48}
-                  backgroundColor={themeContext.colors.tertiary}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    width: '100%',
+                    padding: '0px 17.5px 0px 17.5px',
+                  }}
                 >
-                  중복확인
-                </Button>
-                <Text size="10px">비밀번호 찾기</Text>
+                  <Text size="10px" color={themeContext.colors.blue}>
+                    중복확인
+                  </Text>
+                </div>
                 <Input
-                  _onChange={changePassword}
+                  backgroundColor={themeContext.colors.white}
+                  color={themeContext.colors.black}
+                  width="100%"
+                  type="password"
+                  margin="17px 0px 8px 0px"
+                  onChange={changePassword}
                   placeholder="비밀번호"
-                  marign-bottom="16px"
                 />
-                <Input placeholder="비밀번호 확인" marign-bottom="16px" />
-                <Text>
+                <Input
+                  backgroundColor={themeContext.colors.white}
+                  color={themeContext.colors.black}
+                  width="100%"
+                  type="password"
+                  onChange={changeConfirmPassword}
+                  placeholder="비밀번호 확인"
+                />
+                <Text color={themeContext.colors.darkGray} size="14px">
                   비밀번호는 영문 대소문자, 숫자, 특수문자(.!@#$%)를 혼합하여
                   8~20자로 입력해주세요
                 </Text>
-                <Button
-                  _onClick={() => setStep(1)}
-                  width="155px"
-                  height={34}
-                  backgroundColor={themeContext.colors.primary}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '0px',
+                    bottom: '71px',
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
                 >
-                  다음
-                </Button>
-              </>
+                  <Button
+                    onClick={() => setStep(1)}
+                    width="148px"
+                    height={38}
+                    color={themeContext.colors.white}
+                    backgroundColor={themeContext.colors.blue}
+                    margin="0px 0px 8px 0px"
+                  >
+                    다음으로
+                  </Button>
+                </div>
+              </Grid>
             );
           case 1:
             return (
-              <>
-                <Text size="20px">
-                  사용하실 닉네임과 프로필이미지를 설정해주세요 :)
-                </Text>
-                <div>
+              <Grid padding="32px 24px 0px 24px">
+                <Grid padding="0px 0px 38px 0px">
+                  <Text color={themeContext.colors.darkGray} size="14px">
+                    사용하실 닉네임과 프로필이미지를 설정해주세요 :)
+                  </Text>
+                </Grid>
+                <Grid center width="100%">
                   <Image
                     shape="circle"
                     size={134}
                     src={previewProfileImage}
-                    _onClick={handleProfileImageClick}
+                    onClick={handleProfileImageClick}
                   />
-                  <input
-                    type="file"
-                    style={{ display: 'none' }}
-                    accept=".jpg,.jpeg,.png"
-                    ref={hiddenProfileImageInput}
-                    onChange={onImageChange}
+                </Grid>
+                <input
+                  type="file"
+                  style={{ display: 'none' }}
+                  accept=".jpg,.jpeg,.png"
+                  ref={hiddenProfileImageInput}
+                  onChange={onImageChange}
+                />
+                <Grid>
+                  <Input
+                    backgroundColor={themeContext.colors.white}
+                    color={themeContext.colors.black}
+                    width="100%"
+                    type="text"
+                    onChange={changeNickname}
+                    placeholder="닉네임"
                   />
-                </div>
-                <Input _onChange={changeNickname} placeholder="닉네임" />
-                <Button backgroundColor={themeContext.colors.tertiary}>
-                  중복확인
-                </Button>
-
-                <Text>아직 닉네임을 입력하지 않았어요!</Text>
-                <Button
-                  _onClick={() => {
-                    setStep(2);
-                    handleUpload('profile', selectedFile);
+                </Grid>
+                <Grid isFlex>
+                  <Text size="10px" color={themeContext.colors.blue}>
+                    이미 존재하는 닉네임입니다
+                  </Text>
+                  <Text size="10px" color={themeContext.colors.blue}>
+                    중복확인
+                  </Text>
+                </Grid>
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '0px',
+                    bottom: '71px',
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
-                  width="50%"
-                  height={34}
-                  backgroundColor={themeContext.colors.primary}
                 >
-                  다음
-                </Button>
-              </>
+                  <Button
+                    onClick={() => {
+                      setStep(2);
+                      handleUpload('profile', selectedFile);
+                    }}
+                    width="148px"
+                    height={38}
+                    color={themeContext.colors.white}
+                    backgroundColor={themeContext.colors.blue}
+                    margin="0px 0px 8px 0px"
+                  >
+                    다음으로
+                  </Button>
+                </div>
+              </Grid>
             );
           case 2:
             return (
-              <>
-                <Text size="20px">
-                  이제 다 왔어요! <br />
-                  보일러 플레이트의 건강하고 자유로운 토론문화를 위해, 아래
-                  사항을 꼭 준수해주세요 :)
-                </Text>
-                <Button
-                  _onClick={() => {
-                    dispatch(signupAsync(userInfo));
-                    navigate('/welcome', { replace: true });
+              <Grid padding="32px 24px 0px 24px">
+                <Grid padding="0px 0px 38px 0px">
+                  <Text color={themeContext.colors.darkGray} size="14px">
+                    이제 다 왔어요!
+                    <br />
+                    건강하고 자유로운 토론문화를 위해,
+                    <br />
+                    아래 사항을 꼭 준수해주세요 :)
+                  </Text>
+                </Grid>
+                <Survey />
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '0px',
+                    bottom: '71px',
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
-                  width="50%"
-                  height={34}
-                  backgroundColor={themeContext.colors.primary}
                 >
-                  다음
-                </Button>
-              </>
+                  <Button
+                    onClick={() => {
+                      dispatch(signupAsync(userInfo));
+                      navigate('/welcome', { replace: true });
+                    }}
+                    width="148px"
+                    height={38}
+                    color={themeContext.colors.white}
+                    backgroundColor={themeContext.colors.blue}
+                    margin="0px 0px 8px 0px"
+                  >
+                    다음으로
+                  </Button>
+                </div>
+              </Grid>
             );
           default:
             return null;

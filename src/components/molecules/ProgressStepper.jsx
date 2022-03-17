@@ -13,14 +13,10 @@ const ProgressStepper = (props) => {
   };
 
   return (
-    <React.Fragment>
-      <ProgressBar {...styles}>
-        <Highlight
-          {...styles}
-          width={((currentStep + 1) / steps) * 100 + '%'}
-        />
-      </ProgressBar>
-    </React.Fragment>
+    <ProgressBar {...styles}>
+      <Highlight {...styles} width={((currentStep + 1) / steps) * 100 + '%'} />
+      <Hidden {...styles} width={(currentStep / steps) * 100 + '%'} />
+    </ProgressBar>
   );
 };
 
@@ -32,19 +28,32 @@ ProgressStepper.propTypes = {
 };
 
 const ProgressBar = styled.div`
+  --color: ${(props) => props.backgroundColor};
   position: relative;
   width: 100%;
   height: 4px;
-  background-color: ${(props) => props.backgroundColor};
+  background-color: var(--color);
   display: flex;
   align-items: center;
+  border: none;
+  border-bottom: 1px solid #6e6bf0;
 `;
 
 const Highlight = styled.div`
   position: absolute;
   width: ${(props) => props.width};
-  height: 4px;
+  height: 100%;
   background-color: ${(props) => props.highlightColor};
+  border: none;
+  transition: 1s width;
+`;
+
+const Hidden = styled.div`
+  position: absolute;
+  width: ${(props) => props.width};
+  height: 100%;
+  background-color: ${(props) => props.backgroundColor};
+  border: none;
   transition: 1s width;
 `;
 

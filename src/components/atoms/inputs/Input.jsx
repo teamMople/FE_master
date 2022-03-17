@@ -31,6 +31,7 @@ const I = styled.input`
   border-radius: 50px;
   padding: 15px;
   font-size: 14px;
+  color: ${(props) => props.color};
 `;
 
 export default Input;

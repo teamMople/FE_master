@@ -8,6 +8,7 @@ import {
   Login,
   MyAccount,
   OAuthRedirectHandler,
+  FindPassword,
   Signup,
   Welcome,
   SearchBoard,
@@ -25,6 +26,7 @@ import ChatRoomList from '../../chatTestDir/ChatRoomList';
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
+  const [isLogin, setIsLogin] = useState(false);
 
   // 테마 변경 값 로컬 스토리지에 저장해야함!
   const changeTheme = () => {
@@ -55,12 +57,13 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/search" element={<SearchBoard />} />
           <Route path="/myaccount" element={<MyAccount />} />
+          <Route path="/findpassword" element={<FindPassword />} />
           <Route path="/settings" element={<Settings />} />
           <Route path={'/voice'} element={<ChatRoomList />} />
           <Route path={'/voice/create'} element={<CreateChatRoom />} />
           <Route path={'/voice/:roomId'} element={<VoiceRoom />} />
         </Routes>
-        <Nav />
+        <Nav active={isLogin} />
       </BrowserRouter>
     </ThemeProvider>
   );

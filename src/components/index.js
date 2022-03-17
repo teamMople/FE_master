@@ -2,6 +2,7 @@ import {
   Button,
   LeftArrow,
   RightArrow,
+  Check,
   Image,
   Text,
   Wrapper,
@@ -20,6 +21,7 @@ import {
   ProgressStepper,
   SelectTab,
   Tile,
+  Survey,
 } from './molecules';
 import { BoardList, CardCarousel, CategoryCarousel } from './organisms';
 
@@ -27,6 +29,7 @@ export {
   Button,
   LeftArrow,
   RightArrow,
+  Check,
   Image,
   Text,
   Wrapper,
@@ -43,6 +46,7 @@ export {
   ProgressStepper,
   SelectTab,
   Tile,
+  Survey,
   BoardList,
   CardCarousel,
   CategoryCarousel,

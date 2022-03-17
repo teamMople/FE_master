@@ -13,7 +13,7 @@ const Nav = (props) => {
     console.log(rot);
   };
   return (
-    <NavWrapper>
+    <NavWrapper {...props}>
       {show && (
         <SpeedDialMenu show={show}>
           <div className="leftMenu">일반토론</div>
@@ -198,7 +198,7 @@ const NavWrapper = styled.div`
   position: absolute;
   width: 100%;
   bottom: 0;
-  display: flex;
+  display: ${(props) => (props.active ? 'flex' : 'none')};
   justify-content: space-around;
 `;
 const MenuWrapper = styled.div`

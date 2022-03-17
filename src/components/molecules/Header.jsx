@@ -1,28 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import { useNavigate } from 'react-router-dom';
 import { Grid, Text, LeftArrow, RightArrow } from '../atoms';
+import { ThemeContext } from 'styled-components';
 
 const Header = (props) => {
   const navigate = useNavigate();
+  const themeContext = useContext(ThemeContext);
+
   return (
-    <Grid isFlex>
-      <LeftArrow
-        onClick={() => {
-          navigate(-1);
-        }}
-      />
-      <Text color="6E6BF0" size="14px">
+    <Grid isFlex height={42}>
+      <LeftArrow active={props.leftArrow} />
+      <Text color={themeContext.colors.blue} size="14px">
         {props.label}
       </Text>
-      <RightArrow />
+      <RightArrow active={props.rightArrow} />
     </Grid>
   );
 };
 
 Header.propTypes = {
   label: PropTypes.string,
+  leftArrow: PropTypes.bool,
+  rightArrow: PropTypes.bool,
 };
 
 export default Header;

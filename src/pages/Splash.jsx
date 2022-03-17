@@ -9,7 +9,7 @@ const Splash = (props) => {
   useEffect(() => {
     setTimeout(() => {
       navigate('/login');
-    }, 3000);
+    }, 5000);
   }, []);
 
   return (

@@ -46,7 +46,7 @@ const CircleImage = styled.div`
   background-image: url('${(props) => props.src}');
   background-size: cover;
   cursor: pointer;
-  background-color: #a0aec0;
+  background-color: #f1f1f1;
   border: ${(props) => props.border};
 `;
 

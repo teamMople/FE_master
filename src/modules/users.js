@@ -25,12 +25,15 @@ export const loginAsync = createAsyncThunk(
     const { email, password } = userInfo;
     const navigate = useNavigate();
 
+    console.log('진입');
+
     if (isRightEmailType === false) {
       window.alert('올바른 이메일 형식이 아닙니다.');
     } else {
-      await apis
-        .login(email, password)
+      await axios
+        .post('http://13.125.244.227:8080/api/login', { email, password })
         .then((response) => {
+          console.log(response);
           if (response.data.status === 'ok') {
             setCookie('token', response.data.token, 1);
             setCookie('userPassword', password, 1);
@@ -62,14 +65,10 @@ export const loginAsync = createAsyncThunk(
 
 export const googleLoginAsync = createAsyncThunk(
   'users/googleLogin',
-  async (accessToken) => {
+  async (code) => {
     const navigate = useNavigate();
     await axios
-      .get('http://18.117.124.131/api/google/login', {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      })
+      .get(`http://13.125.244.227:8080/api/google/login?code=${code}`)
       .then((res) => {
         console.log(res);
         navigate('/');
@@ -82,14 +81,10 @@ export const googleLoginAsync = createAsyncThunk(
 
 export const naverLoginAsync = createAsyncThunk(
   'users/naverLogin',
-  async (accessToken) => {
+  async (code) => {
     const navigate = useNavigate();
     await axios
-      .get('http://18.117.124.131/api/naver/login', {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      })
+      .get(`http://13.125.244.227:8080/api/naver/login?code=${code}`)
       .then((res) => {
         console.log(res);
         navigate('/');
@@ -102,14 +97,10 @@ export const naverLoginAsync = createAsyncThunk(
 
 export const kakaoLoginAsync = createAsyncThunk(
   'users/kakaoLogin',
-  async (accessToken) => {
+  async (code) => {
     const navigate = useNavigate();
     await axios
-      .get('http://18.117.124.131/api/kakao/login', {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      })
+      .get(`http://13.125.244.227:8080/api/kakao/login?code=${code}`)
       .then((res) => {
         console.log(res);
         navigate('/');
@@ -225,6 +216,36 @@ export const userSlice = createSlice({
       return { ...state, payload };
     },
     [loginAsync.rejected]: (state, action) => {
+      state.isLogin = false;
+    },
+    [googleLoginAsync.pending]: (state, action) => {
+      state.isLogin = false;
+    },
+    [googleLoginAsync.fulfilled]: (state, { payload }) => {
+      state.isLogin = true;
+      return { ...state, payload };
+    },
+    [googleLoginAsync.rejected]: (state, action) => {
+      state.isLogin = false;
+    },
+    [naverLoginAsync.pending]: (state, action) => {
+      state.isLogin = false;
+    },
+    [naverLoginAsync.fulfilled]: (state, { payload }) => {
+      state.isLogin = true;
+      return { ...state, payload };
+    },
+    [naverLoginAsync.rejected]: (state, action) => {
+      state.isLogin = false;
+    },
+    [kakaoLoginAsync.pending]: (state, action) => {
+      state.isLogin = false;
+    },
+    [kakaoLoginAsync.fulfilled]: (state, { payload }) => {
+      state.isLogin = true;
+      return { ...state, payload };
+    },
+    [kakaoLoginAsync.rejected]: (state, action) => {
       state.isLogin = false;
     },
     [signupAsync.pending]: (state, action) => {

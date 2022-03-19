@@ -8,9 +8,9 @@ import { darkTheme, lightTheme } from '../styles/theme';
 import history from '../utils/history';
 import { ThemeProvider } from 'styled-components';
 
-import CreateChatRoom from '../../chatTestDir/CreateChatRoom';
-import VoiceRoom from '../../chatTestDir/VoiceRoom';
-import ChatRoomList from '../../chatTestDir/ChatRoomList';
+import CreateRoom from '../../chatTestDir/LiveRoom/CreateRoom';
+import LiveRoom from '../../chatTestDir/LiveRoom/LiveRoom';
+import RoomList from '../../chatTestDir/LiveRoom/RoomList';
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
@@ -35,9 +35,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/welcome" element={<Welcome />} />
-          <Route path={'/'} element={<ChatRoomList />} />
-          <Route path={'/voice/create'} element={<CreateChatRoom />} />
-          <Route path={'/voice/:roomId'} element={<VoiceRoom />} />
+          <Route path={'/room'} element={<RoomList />} />
+          <Route path={'/room/create'} element={<CreateRoom />} />
+          <Route path={'/room/:roomId'} element={<LiveRoom />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -4,37 +4,24 @@ import PropTypes from 'prop-types';
 import { css } from 'styled-components';
 
 const Text = (props) => {
-  const { font, bold, color, size, children } = props;
-
-  const styles = {
-    font: font,
-    bold: bold,
-    color: color,
-    size: size,
-  };
-
-  return <P {...styles}>{children}</P>;
+  return <P {...props}>{props.children}</P>;
 };
 
 Text.propTypes = {
-  font: PropTypes.string,
-  bold: PropTypes.bool,
-  color: PropTypes.string,
-  size: PropTypes.string,
-  children: PropTypes.string,
+  children: PropTypes.any,
 };
 
 Text.defaultProps = {
-  bold: false,
-  color: '#222831',
-  size: '14px',
+  children: '',
 };
 
-const P = styled.p`
+const P = styled.div`
   color: ${(props) => props.color};
   font-family: ${(props) => props.font};
   font-size: ${(props) => props.size};
-  font-weight: ${(props) => (props.bold ? '600' : '400')};
+  font-weight: ${(props) => (props.bold ? '700' : '500')};
+  line-height: ${(props) => props.lineHeight};
+  cursor: pointer;
 
   ${(props) =>
     props._onClick

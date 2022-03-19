@@ -1,4 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import apis from '../apis/apis';
 import { deleteCookie, setCookie } from '../shared/utils/Cookie';
 
@@ -19,13 +21,19 @@ const isRightEmailType = (email) => {
 
 export const loginAsync = createAsyncThunk(
   'users/login',
-  async ({ email, password }, thunkAPI) => {
+  async (userInfo, thunkAPI) => {
+    const { email, password } = userInfo;
+    const navigate = useNavigate();
+
+    console.log('진입');
+
     if (isRightEmailType === false) {
       window.alert('올바른 이메일 형식이 아닙니다.');
     } else {
-      await apis
-        .login(email, password)
+      await axios
+        .post('http://13.125.244.227:8080/api/login', { email, password })
         .then((response) => {
+          console.log(response);
           if (response.data.status === 'ok') {
             setCookie('token', response.data.token, 1);
             setCookie('userPassword', password, 1);
@@ -39,6 +47,7 @@ export const loginAsync = createAsyncThunk(
                 loginUser: loginUserInfo,
               }),
             );
+            navigate('/');
             return { loginUser: loginUserInfo };
           }
           return response.data;
@@ -51,6 +60,54 @@ export const loginAsync = createAsyncThunk(
           return thunkAPI.rejectWithValue();
         });
     }
+  },
+);
+
+export const googleLoginAsync = createAsyncThunk(
+  'users/googleLogin',
+  async (code) => {
+    const navigate = useNavigate();
+    await axios
+      .get(`http://13.125.244.227:8080/api/google/login?code=${code}`)
+      .then((res) => {
+        console.log(res);
+        navigate('/');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+);
+
+export const naverLoginAsync = createAsyncThunk(
+  'users/naverLogin',
+  async (code) => {
+    const navigate = useNavigate();
+    await axios
+      .get(`http://13.125.244.227:8080/api/naver/login?code=${code}`)
+      .then((res) => {
+        console.log(res);
+        navigate('/');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+);
+
+export const kakaoLoginAsync = createAsyncThunk(
+  'users/kakaoLogin',
+  async (code) => {
+    const navigate = useNavigate();
+    await axios
+      .get(`http://13.125.244.227:8080/api/kakao/login?code=${code}`)
+      .then((res) => {
+        console.log(res);
+        navigate('/');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 );
 
@@ -72,27 +129,31 @@ export const logout = createAsyncThunk('users/logout', async () => {
     });
 });
 
-export const signup = createAsyncThunk(
+export const signupAsync = createAsyncThunk(
   'users/signup',
-  async ({ email, name, nickname, password }, thunkAPI) => {
-    if (email === '' || name === '' || nickname === '' || password === '') {
-      window.alert('모든 항목들을 기입해주세요');
-    } else if (isRightEmailType === false) {
-      window.alert('올바른 이메일 형식이 아닙니다.');
-    } else {
-      await apis
-        .signup(email, name, nickname, password)
-        .then((response) => {
-          return response.data.status === 'ok' && response.data;
-        })
-        .catch((error) => {
-          if (error) {
-            window.alert('잘못된 회원 가입 요청입니다.');
-            console.log(error.response.data.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-          }
+  async (userInfo, thunkAPI) => {
+    const { email, profileImageUrl, nickname, password } = userInfo;
+    const navigate = useNavigate();
+
+    await apis
+      .signup(email, profileImageUrl, nickname, password)
+      .then((response) => {
+        console.log(response);
+        if (response.status === 'OK') {
+          navigate('/welcome', { replace: true });
+        } else if (response.status === 'BAD_REQUEST') {
+          window.alert('다시 회원가입을 진행해주세요.');
+          navigate('/signup', { replace: true });
+        }
+      })
+      .catch((error) => {
+        if (error) {
+          window.alert('잘못된 회원 가입 요청입니다.');
+          console.log(error.response.data.message); // 어떻게 서버에서 에러 메시지 오는지 확인
+
           return thunkAPI.rejectWithValue();
-        });
-    }
+        }
+      });
   },
 );
 
@@ -157,13 +218,44 @@ export const userSlice = createSlice({
     [loginAsync.rejected]: (state, action) => {
       state.isLogin = false;
     },
-    [signup.pending]: (state, action) => {
+    [googleLoginAsync.pending]: (state, action) => {
       state.isLogin = false;
     },
-    [signup.fulfilled]: (state, action) => {
+    [googleLoginAsync.fulfilled]: (state, { payload }) => {
+      state.isLogin = true;
+      return { ...state, payload };
+    },
+    [googleLoginAsync.rejected]: (state, action) => {
       state.isLogin = false;
     },
-    [signup.rejected]: (state, action) => {
+    [naverLoginAsync.pending]: (state, action) => {
+      state.isLogin = false;
+    },
+    [naverLoginAsync.fulfilled]: (state, { payload }) => {
+      state.isLogin = true;
+      return { ...state, payload };
+    },
+    [naverLoginAsync.rejected]: (state, action) => {
+      state.isLogin = false;
+    },
+    [kakaoLoginAsync.pending]: (state, action) => {
+      state.isLogin = false;
+    },
+    [kakaoLoginAsync.fulfilled]: (state, { payload }) => {
+      state.isLogin = true;
+      return { ...state, payload };
+    },
+    [kakaoLoginAsync.rejected]: (state, action) => {
+      state.isLogin = false;
+    },
+    [signupAsync.pending]: (state, action) => {
+      state.isLogin = false;
+    },
+    [signupAsync.fulfilled]: (state, { payload }) => {
+      state.isLogin = false;
+      return { ...state, payload };
+    },
+    [signupAsync.rejected]: (state, action) => {
       state.isLogin = false;
     },
   },

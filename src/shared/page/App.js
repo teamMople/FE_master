@@ -1,7 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { Main, Login, Signup, Welcome } from '../../pages';
+import {
+  Splash,
+  Home,
+  Nav,
+  Login,
+  MyAccount,
+  AlarmList,
+  OAuthRedirectHandler,
+  FindPassword,
+  Signup,
+  Welcome,
+  EditUserProfile,
+  SearchBoard,
+  SearchResult,
+  CreateBoard,
+  BoardList,
+  Settings,
+  NotFound,
+  Test,
+} from '../../pages';
 import '../styles/App.css';
 
 import { darkTheme, lightTheme } from '../styles/theme';
@@ -14,6 +33,19 @@ import RoomList from '../../chatTestDir/LiveRoom/RoomList';
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
+  const [isLogin, setIsLogin] = useState(false);
+
+  // 임시 (액세스 토큰 받으면 setIsLogin(true) 처리 예정)
+  console.log(window.location.pathname);
+  const locationArray = [
+    '/',
+    '/login',
+    '/signup',
+    '/welcome',
+    '/list',
+    '/settings',
+    '/editmyprofile',
+  ];
 
   // 테마 변경 값 로컬 스토리지에 저장해야함!
   const changeTheme = () => {
@@ -23,6 +55,16 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    // 임시
+    console.log(isLogin);
+    if (locationArray.indexOf(window.location.pathname) !== -1) {
+      setIsLogin(false);
+    } else {
+      setIsLogin(true);
+    }
+  }, [window.location.pathname]);
+
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter history={history}>
@@ -31,14 +73,35 @@ function App() {
           테마변경
         </button>
         <Routes>
-          <Route path="/main" element={<Main />} />
+          <Route path="/" element={<Splash />} />
           <Route path="/login" element={<Login />} />
+          <Route
+            path="/api/kakao/login"
+            element={<OAuthRedirectHandler provider={'kakao'} />}
+          />
           <Route path="/signup" element={<Signup />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path={'/room'} element={<RoomList />} />
           <Route path={'/room/create'} element={<CreateRoom />} />
           <Route path={'/room/:roomId'} element={<LiveRoom />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/search" element={<SearchBoard />}>
+            <Route path="result" element={<BoardList />} />
+          </Route>
+          <Route path="/list" element={<BoardList />} />
+          <Route path="/createboard" element={<CreateBoard />} />
+          <Route path="/myaccount" element={<MyAccount />}>
+            <Route path="boards" element={<BoardList />} />
+            <Route path="comments" element={<BoardList />} />
+          </Route>
+          <Route path="/editmyprofile" element={<EditUserProfile />} />
+          <Route path="/findpassword" element={<FindPassword />} />
+          <Route path="/alarm" element={<AlarmList />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/modal" element={<Test />} />
+          <Route path={'*'} element={<NotFound />} />
         </Routes>
+        <Nav active={isLogin} />
       </BrowserRouter>
     </ThemeProvider>
   );

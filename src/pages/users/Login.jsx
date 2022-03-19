@@ -1,74 +1,117 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useDispatch } from 'react-redux';
-
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppDispatch } from 'modules/configStore';
 import { loginAsync } from '../../modules/users';
 
 import { ThemeContext } from 'styled-components';
-import { Wrapper, Grid, Text, Input, Button } from '../../components/atoms';
-import { useNavigate } from 'react-router-dom';
+import {
+  Wrapper,
+  Text,
+  Input,
+  Button,
+  Grid,
+  Header,
+  OAuthLoginButtons,
+  Modal,
+} from 'components';
 
-function Login(props, { history }) {
+function Login(props) {
   const themeContext = useContext(ThemeContext);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [id, setId] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const changeId = (e) => {
-    setId(e.target.value);
+  const changeEmail = (e) => {
+    setEmail(e.target.value);
   };
 
   const changePassword = (e) => {
     setPassword(e.target.value);
   };
 
-  useEffect(() => {}, []);
+  const handleLoginClick = (e) => {
+    if (email === '' || password === '') {
+      window.alert('이메일, 비밀번호 모두 입력해주세요.');
+    } else {
+      dispatch(loginAsync(userInfo));
+    }
+  };
+
+  const userInfo = { email, password };
+
+  React.useEffect(() => {}, []);
 
   return (
-    <Wrapper padding="53px 24px 0px 24px">
-      <Input
-        placeholder="이름"
-        marign-bottom="16px"
-        value={id}
-        _onChange={changeId}
-      />
-      <Input
-        placeholder="이메일(아이디)"
-        marign-bottom="16px"
-        value={password}
-        _onChange={changePassword}
-        _type="password"
-      />
-      <Button
-        _onClick={() => {
-          dispatch(loginAsync);
-        }}
-        width="100%"
-        backgroundColor={themeContext.colors.tertiary}
-      >
-        LOGIN
-      </Button>
-      <Text size="10px">비밀번호 찾기</Text>
-      <Button width="100%" backgroundColor={themeContext.colors.primary}>
-        구글 로그인
-      </Button>
-      <Button width="100%" backgroundColor={themeContext.colors.secondary}>
-        네이버 로그인
-      </Button>
-      <Button width="100%" backgroundColor={themeContext.colors.tertiary}>
-        카카오 로그인
-      </Button>
-      <p>회원이 아니신가요?</p>
-      <Button
-        _onClick={() => {
-          navigate('/signup');
-        }}
-        width="50%"
-        backgroundColor={themeContext.colors.primary}
-      >
-        회원가입
-      </Button>
+    <Wrapper
+      backgroundColor={themeContext.colors.white}
+      padding="70px 24px 0px 24px"
+    >
+      <Header label="로그인" leftArrow={true} rightArrow={false} />
+      <Grid padding="44px 0px 0px 0px">
+        <Grid margin="0px 0px 8px 0px">
+          <Input
+            backgroundColor={themeContext.colors.white}
+            color={themeContext.colors.black}
+            width="100%"
+            marign-bottom="8px"
+            type="text"
+            placeholder="이름"
+            value={email}
+            onChange={changeEmail}
+          />
+        </Grid>
+        <Grid>
+          <Input
+            backgroundColor={themeContext.colors.white}
+            color={themeContext.colors.black}
+            width="100%"
+            marign-bottom="5px"
+            type="password"
+            placeholder="이메일(아이디)"
+            value={password}
+            onChange={changePassword}
+          />
+        </Grid>
+
+        <div
+          style={{
+            display: 'flex',
+            height: '48px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '35px',
+          }}
+        >
+          <Grid isFlex width="50%">
+            <Link to="/findpassword">
+              <Text size="14px" color={themeContext.colors.blue}>
+                비밀번호 찾기
+              </Text>
+            </Link>
+            <Link to="/signup">
+              <Text size="14px" color={themeContext.colors.blue}>
+                회원가입
+              </Text>
+            </Link>
+          </Grid>
+        </div>
+        <Grid padding="0px 15px 0px 15px">
+          <Button
+            onClick={handleLoginClick}
+            width="100%"
+            height={38}
+            color={themeContext.colors.white}
+            backgroundColor={themeContext.colors.blue}
+            margin="0px 0px 8px 0px"
+          >
+            로그인
+          </Button>
+          <OAuthLoginButtons />
+        </Grid>
+      </Grid>
+      <Modal />
     </Wrapper>
   );
 }

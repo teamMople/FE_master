@@ -1,66 +1,58 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 
-const Grid = (props) => {
-  const { isFlex, float, width, padding, margin, background, children } = props;
-
-  const styles = {
-    isFlex: isFlex,
-    width: width,
-    padding: padding,
-    margin: margin,
-    background: background,
-    float: float,
-  };
-
+const Grid = ({ ...props }) => {
   return (
     <React.Fragment>
-      <GridBox {...styles}>{children}</GridBox>
+      <GridBox {...props}>{props.children}</GridBox>
     </React.Fragment>
   );
 };
 
 Grid.propTypes = {
-  isFlex: PropTypes.bool,
-  float: PropTypes.bool,
-  width: PropTypes.any,
-  padding: PropTypes.any,
-  margin: PropTypes.any,
-  background: PropTypes.string,
   children: PropTypes.any,
+  padding: PropTypes.string,
+  margin: PropTypes.string,
 };
 
 Grid.defaltProps = {
   children: null,
-  isFlex: false,
-  width: '100%',
-  padding: false,
-  margin: false,
-  background: null,
-  float: 'none',
+  padding: '0px 0px 0px 0px',
+  margin: '0px 0px 0px 0px',
 };
 
 const GridBox = styled.div`
   width: ${(props) => props.width};
-  height: 100%;
+  height: ${(props) => props.height};
   box-sizing: border-box;
-  overflow: overlay;
-  float: ${(props) => props.float};
+  overflow-x: hidden;
+  overflow-y: hidden;
 
-  ${(props) => (props.padding ? `padding: ${props.padding}` : '')}
-  ${(props) => (props.margin ? `margin: ${props.margin}` : '')}
-    ${(props) =>
-    props.background ? `background-color: ${props.background}` : ''}
+  padding: ${(props) => props.padding};
+  margin: ${(props) => props.margin};
+  background-color: ${(props) => props.backgroundColor};
 
-    ${(props) =>
+  ${(props) =>
     props.isFlex
-      ? `display:flex; 
-				align-items: center; 
-				justify-content:space-between;
-				flex-wrap: wrap;
-			`
-      : ''}
+      ? `
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: nowrap;
+        `
+      : ``}
+
+  ${(props) =>
+    props.center
+      ? `
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: nowrap;
+        `
+      : ``};
 `;
 
 export default Grid;

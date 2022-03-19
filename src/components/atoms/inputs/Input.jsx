@@ -3,63 +3,47 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Text from '../text/Text';
 
-function InputText(props) {
-  const {
-    _onChange,
-    _type,
-    width,
-    height,
-    label,
-    placeholder,
-    margin,
-    children,
-  } = props;
-
-  const styles = {
-    width,
-    height,
-    margin,
-  };
-
+function Input({ ...props }) {
   return (
-    <>
-      <Text bold>{label}</Text>
-      <INPUT
-        onChange={_onChange}
-        type={_type}
-        {...styles}
-        placeholder={placeholder}
-      >
-        {children}
-      </INPUT>
-    </>
+    <React.Fragment>
+      <Text bold>{props.label}</Text>
+      <I {...props}>{props.children}</I>
+    </React.Fragment>
   );
 }
 
-InputText.propTypes = {
-  _onChange: PropTypes.func,
-  _type: PropTypes.string,
-  width: PropTypes.string || PropTypes.number,
-  height: PropTypes.number,
+Input.propTypes = {
   label: PropTypes.string,
-  placeholder: PropTypes.string,
-  margin: PropTypes.string,
+  bold: PropTypes.bool,
   children: PropTypes.string,
 };
 
-InputText.defaultProps = {
-  width: '100%',
-  height: 52,
-  children: null,
+Input.defaultProps = {
   label: null,
-  placeholder: null,
-  margin: '0px 0px 16px 0px',
+  bold: false,
+  children: null,
 };
 
-const INPUT = styled.input`
-  width: calc(${(props) => props.width} - 8px);
-  height: ${(props) => props.height}px;
+const I = styled.input`
+  background-color: ${(props) => props.backgroundColor};
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
   margin: ${(props) => props.margin};
+  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border-radius: 50px;
+  padding: 15px;
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.black};
+  font-weight: ${(props) => (props.bold ? 600 : 500)};
+
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.gray};
+    font-weight: ${(props) => (props.bold ? 600 : 500)};
+  }
 `;
 
-export default InputText;
+export default Input;

@@ -7,11 +7,19 @@ import {
   Nav,
   Login,
   MyAccount,
+  AlarmList,
   OAuthRedirectHandler,
+  FindPassword,
   Signup,
   Welcome,
+  EditUserProfile,
   SearchBoard,
+  SearchResult,
+  CreateBoard,
+  BoardList,
   Settings,
+  NotFound,
+  Test,
 } from '../../pages';
 import '../styles/App.css';
 
@@ -25,6 +33,19 @@ import ChatRoomList from '../../chatTestDir/ChatRoomList';
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
+  const [isLogin, setIsLogin] = useState(false);
+
+  // 임시 (액세스 토큰 받으면 setIsLogin(true) 처리 예정)
+  console.log(window.location.pathname);
+  const locationArray = [
+    '/',
+    '/login',
+    '/signup',
+    '/welcome',
+    '/list',
+    '/settings',
+    '/editmyprofile',
+  ];
 
   // 테마 변경 값 로컬 스토리지에 저장해야함!
   const changeTheme = () => {
@@ -34,7 +55,15 @@ function App() {
     }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    // 임시
+    console.log(isLogin);
+    if (locationArray.indexOf(window.location.pathname) !== -1) {
+      setIsLogin(false);
+    } else {
+      setIsLogin(true);
+    }
+  }, [window.location.pathname]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -53,14 +82,26 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/search" element={<SearchBoard />} />
-          <Route path="/myaccount" element={<MyAccount />} />
+          <Route path="/search" element={<SearchBoard />}>
+            <Route path="result" element={<BoardList />} />
+          </Route>
+          <Route path="/list" element={<BoardList />} />
+          <Route path="/createboard" element={<CreateBoard />} />
+          <Route path="/myaccount" element={<MyAccount />}>
+            <Route path="boards" element={<BoardList />} />
+            <Route path="comments" element={<BoardList />} />
+          </Route>
+          <Route path="/editmyprofile" element={<EditUserProfile />} />
+          <Route path="/findpassword" element={<FindPassword />} />
+          <Route path="/alarm" element={<AlarmList />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/modal" element={<Test />} />
           <Route path={'/voice'} element={<ChatRoomList />} />
           <Route path={'/voice/create'} element={<CreateChatRoom />} />
           <Route path={'/voice/:roomId'} element={<VoiceRoom />} />
+          <Route path={'*'} element={<NotFound />} />
         </Routes>
-        <Nav />
+        <Nav active={isLogin} />
       </BrowserRouter>
     </ThemeProvider>
   );

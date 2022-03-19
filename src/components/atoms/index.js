@@ -2,6 +2,7 @@
 export { default as Button } from './buttons/Button';
 export { default as LeftArrow } from './buttons/LeftArrow';
 export { default as RightArrow } from './buttons/RightArrow';
+export { default as Check } from './buttons/Check';
 
 // images
 export { default as Image } from './images/Image';

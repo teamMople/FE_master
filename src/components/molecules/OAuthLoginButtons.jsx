@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import { ThemeContext } from 'styled-components';
-import { Button } from 'components/atoms';
+import { Grid, Button } from 'components/atoms';
 
 const KAKAO_LOGIN_URL = process.env.REACT_APP_KAKAO_LOGIN_URL;
 
@@ -14,13 +14,17 @@ const OAuthLoginButtons = ({ ...props }) => {
   return (
     <>
       <Button
-        _onClick={handleOAuthLoginClick(KAKAO_LOGIN_URL)}
+        onClick={handleOAuthLoginClick(KAKAO_LOGIN_URL)}
         width="100%"
         height={38}
-        color={themeContext.colors.black}
+        color="#392020"
         backgroundColor={themeContext.colors.primaryYellow}
       >
-        <img src="/asset/icons/Kakao.svg" /> | 카카오 로그인
+        <div style={{ marginRight: '10px' }}>
+          <img src="/asset/icons/Kakao.svg" />
+        </div>
+        <div style={{ marginRight: '10px' }}>|</div>
+        <div>카카오 계정으로 로그인</div>
       </Button>
     </>
   );

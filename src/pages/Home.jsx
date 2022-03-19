@@ -14,6 +14,10 @@ const Home = (props) => {
   const themeContext = useContext(ThemeContext);
   const dispatch = useAppDispatch();
 
+  React.useEffect(() => {
+    //임시
+  }, []);
+
   const boards = [
     {
       title: '출근한다 vs. 연차쓴다',
@@ -194,7 +198,10 @@ const Home = (props) => {
         overfloxY: 'hidden',
       }}
     >
-      <Wrapper backgroundColor="#F8F8F8" padding="45px 0px 0px 0px">
+      <Wrapper
+        backgroundColor={themeContext.colors.backgroundGray}
+        padding="45px 0px 0px 0px"
+      >
         <CardCarousel label="실시간 HOT 라이브" type="live" boards={boards} />
         <BoardList label="HOT 게시글" boards={boards} />
         <CardCarousel
@@ -204,7 +211,7 @@ const Home = (props) => {
         />
         <CardCarousel label="보플 Pick 토론방" type="basic" boards={boards} />
         <CategoryCarousel label="카테고리 둘러보기" />
-        <div style={{ height: '80px' }}></div>
+        <div style={{ height: '89px' }}></div>
       </Wrapper>
     </div>
   );

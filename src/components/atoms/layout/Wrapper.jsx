@@ -7,7 +7,7 @@ function Wrapper({ ...props }) {
 }
 
 Wrapper.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.element),
+  children: PropTypes.any,
 };
 
 Wrapper.defaltProps = {
@@ -15,7 +15,9 @@ Wrapper.defaltProps = {
 };
 
 const W = styled.div`
-  min-width: 100vw;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
   box-sizing: border-box;
 
   float: ${(props) => props.float};

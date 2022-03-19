@@ -1,16 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
+import styled, { ThemeContext } from 'styled-components';
+
 import { useAppDispatch } from '../../modules/configStore';
 import {
   googleLoginAsync,
   naverLoginAsync,
   kakaoLoginAsync,
 } from '../../modules/users';
-import { LoadingSpinner } from 'components/molecules';
+import { Wrapper, Loader } from 'components';
 
 const OAuthRedirectHandler = (props) => {
   const { provider } = props;
   const dispatch = useAppDispatch();
+  const themeContext = useContext(ThemeContext);
 
   let params = new URL(window.location).searchParams;
   let code = params.get('code');
@@ -32,9 +35,9 @@ const OAuthRedirectHandler = (props) => {
   }, []);
 
   return (
-    <React.Fragment>
-      <LoadingSpinner />
-    </React.Fragment>
+    <Wrapper>
+      <Loader type="dot" backgroundColor={themeContext.colors.blue} />
+    </Wrapper>
   );
 };
 

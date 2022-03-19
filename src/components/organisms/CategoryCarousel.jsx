@@ -3,22 +3,20 @@ import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Carousel } from '@trendyol-js/react-carousel';
 
-import { Text, Wrapper } from '../atoms';
-import { CategoryTile } from '../molecules';
-import url from 'sockjs-client/lib/utils/url';
+import { Wrapper, Grid, Text, CategoryTile } from 'components';
 
 const CategoryCarousel = (props) => {
   const { label, categories } = props;
 
   return (
-    <div style={{ padding: '0px 5px 0px 5px' }}>
-      <div style={{ padding: '0px 24px 0px 24px' }}>
+    <Grid padding="0px 5px 0px 5px">
+      <Grid padding="0px 24px 16px 24px">
         <Text bold size="20px">
           {label}
         </Text>
-      </div>
+      </Grid>
       <Carousel
-        show={2.2}
+        show={2.15}
         slide={2}
         swiping={true}
         leftArrow={false}
@@ -34,7 +32,7 @@ const CategoryCarousel = (props) => {
           );
         })}
       </Carousel>
-    </div>
+    </Grid>
   );
 };
 

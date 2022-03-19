@@ -1,28 +1,51 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
 import { ThemeContext } from 'styled-components';
-import {
-  Wrapper,
-  Grid,
-  Image,
-  Text,
-  Input,
-  Button,
-} from '../../components/atoms';
+import { Wrapper, Grid, Text, Loader } from 'components';
 import { useSelector } from 'react-redux';
 import { selectUserState } from '../../modules/users';
+import { useNavigate } from 'react-router-dom';
 
 function Welcome(props) {
+  const navigate = useNavigate();
+  const themeContext = useContext(ThemeContext);
+  const nickname = localStorage.getItem('nickname');
   // const nickname = useSelector(selectUserState);
 
+  useEffect(() => {
+    setTimeout(() => {
+      navigate('/home');
+    }, 5000);
+  }, []);
+
   return (
-    <Wrapper padding="53px 24px 53px 24px">
-      <Text size="20px">
-        환영합니다!
-        <br />
-        흥미진진한 토론이 님을 기다리고 있어요 :)
-      </Text>
+    <Wrapper
+      backgroundColor={themeContext.colors.white}
+      padding="70px 24px 0px 24px"
+    >
+      <div
+        style={{
+          padding: '160px 0px 0px 0px',
+          margin: 'auto',
+        }}
+      >
+        <Grid center>
+          <img src="/asset/image/page/welcome.svg" />
+        </Grid>
+        <Grid>
+          <Text color={themeContext.colors.blue} size="14px">
+            <div style={{ textAlign: 'center' }}>환영합니다!</div>
+          </Text>
+          <Text color={themeContext.colors.blue} size="14px">
+            <div style={{ textAlign: 'center' }}>
+              흥미진진한 토론이 {nickname}님을 기다리고 있어요 :)
+            </div>
+          </Text>
+        </Grid>
+        <Grid center>
+          <Loader type="dot" backgroundColor={themeContext.colors.blue} />
+        </Grid>
+      </div>
     </Wrapper>
   );
 }

@@ -2,10 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { Text } from '../atoms';
+import { Text } from 'components';
 
 const CategoryTile = (props) => {
-  return <Tile {...props}>{props.category}</Tile>;
+  return (
+    <Tile {...props}>
+      <Text className="categoryLabel">{props.category}</Text>
+    </Tile>
+  );
 };
 
 CategoryTile.propTypes = {
@@ -13,19 +17,28 @@ CategoryTile.propTypes = {
   categoryImageUrl: PropTypes.string,
 };
 
+CategoryTile.defaultProps = {
+  width: '160px',
+  height: '95px',
+  borderRadius: '20px',
+};
+
 const Tile = styled.div`
-  width: 160px;
-  height: 95px;
-  border-radius: 20px;
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  border-radius: ${(props) => props.borderRadius};
   background-image: url('${(props) => props.categoryImageUrl}');
   background-repeat: no-repeat;
   background-position: center;
+  background-size: contain;
 
-  padding: 57px 20px 80px 20px;
-  line-height: 18px;
-  font-size: 16px;
-  color: #fff;
-  font-weight: 600;
+  > .categoryLabel {
+    padding: 57px 20px 80px 20px;
+    line-height: 16.65px;
+    font-size: 14px;
+    color: #fff;
+    font-weight: 600;
+  }
 `;
 
 export default CategoryTile;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { keyframes } from 'styled-components';
 
@@ -7,117 +7,121 @@ const Nav = (props) => {
   const [show, setShow] = useState(false);
   const [rot, setRot] = useState(false);
 
+  const navigate = useNavigate();
+
   const showSpeedDialMenu = () => {
     setShow(!show);
     setRot(!rot);
     console.log(rot);
   };
   return (
-    <NavWrapper>
-      {show && (
-        <SpeedDialMenu show={show}>
-          <div className="leftMenu">일반토론</div>
-          <div className="rightMenu">LIVE토론</div>
-        </SpeedDialMenu>
-      )}
-      <SpeedDial rot={rot} onClick={showSpeedDialMenu}>
-        <div>
-          <img src="/asset/icons/Add_Plus.svg" />
-        </div>
-      </SpeedDial>
+    <>
+      {show && <Overlay show={show} />}
+      <NavWrapper {...props}>
+        {show && (
+          <SpeedDialMenu show={show}>
+            <div
+              className="leftMenu"
+              onClick={() => {
+                navigate('/createboard');
+                setShow(false);
+              }}
+            >
+              일반토론
+            </div>
+            <div className="rightMenu">LIVE토론</div>
+          </SpeedDialMenu>
+        )}
+        <SpeedDial rot={rot} onClick={showSpeedDialMenu}>
+          <div>
+            <img src="/asset/icons/Add_Plus.svg" />
+          </div>
+        </SpeedDial>
 
-      <MenuWrapper>
-        <div>
-          <Link to="/">
-            <svg
-              width="18"
-              height="20"
-              viewBox="0 0 18 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M16.6585 8.20153L9.6585 2.07653C9.28148 1.74663 8.71852 1.74663 8.3415 2.07652L1.3415 8.20153C1.12448 8.39141 1 8.66574 1 8.9541V17.5003C1 18.0526 1.44772 18.5003 2 18.5003H6C6.55228 18.5003 7 18.0526 7 17.5003V13.5003C7 12.948 7.44772 12.5003 8 12.5003H10C10.5523 12.5003 11 12.948 11 13.5003V17.5003C11 18.0526 11.4477 18.5003 12 18.5003H16C16.5523 18.5003 17 18.0526 17 17.5003V8.9541C17 8.66574 16.8755 8.39141 16.6585 8.20153Z"
-                stroke="#4F4F4F"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
-        </div>
-        <div>
-          <Link to="/search">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z"
-                stroke="#4F4F4F"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M15 15L21 21"
-                stroke="#4F4F4F"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
-        </div>
-        <div>
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M9 17V16C8.44772 16 8 16.4477 8 17H9ZM15 17H16C16 16.4477 15.5523 16 15 16V17ZM9 18H15V16H9V18ZM14 17V18H16V17H14ZM10 18V17H8V18H10ZM12 20C10.8954 20 10 19.1046 10 18H8C8 20.2091 9.79086 22 12 22V20ZM14 18C14 19.1046 13.1046 20 12 20V22C14.2091 22 16 20.2091 16 18H14Z"
-              fill="#4F4F4F"
-            />
-            <path
-              d="M4.29289 14.7071L3.58579 14L3.58579 14L4.29289 14.7071ZM4.80372 14.1963L5.51082 14.9034L5.51082 14.9034L4.80372 14.1963ZM19.1963 14.1963L19.9034 13.4892L19.9034 13.4892L19.1963 14.1963ZM19.7071 14.7071L20.4142 14L20.4142 14L19.7071 14.7071ZM12 3L12 4L12 3ZM19 16H5V18H19V16ZM5 16V15.4142H3V16H5ZM5 15.4142L5.51082 14.9034L4.09661 13.4892L3.58579 14L5 15.4142ZM6 13.7224V10H4V13.7224H6ZM18 10V13.7224H20V10H18ZM18.4892 14.9034L19 15.4142L20.4142 14L19.9034 13.4892L18.4892 14.9034ZM19 15.4142V16H21V15.4142H19ZM19 15.4142L19 15.4142H21C21 14.8838 20.7893 14.3751 20.4142 14L19 15.4142ZM18 13.7224C18 14.1653 18.176 14.5901 18.4892 14.9034L19.9034 13.4892C19.9653 13.551 20 13.6349 20 13.7224H18ZM20 10C20 5.58171 16.4183 1.99999 12 2L12 4C15.3137 3.99999 18 6.68629 18 10H20ZM6 10C6 6.6863 8.68628 4.00001 12 4L12 2C7.58171 2.00001 4 5.58173 4 10H6ZM5.51082 14.9034C5.82404 14.5902 6 14.1654 6 13.7224H4C4 13.635 4.03475 13.5511 4.09661 13.4892L5.51082 14.9034ZM5 15.4142H5L3.58579 14C3.21071 14.3751 3 14.8838 3 15.4142H5ZM5 16H3C3 17.1046 3.89543 18 5 18V16ZM19 18C20.1046 18 21 17.1046 21 16H19V18Z"
-              fill="#4F4F4F"
-            />
-          </svg>
-        </div>
-        <div>
-          <Link to="/myaccount">
-            <svg
-              width="24"
-              height="25"
-              viewBox="0 0 24 25"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5 21.5C5 17.634 8.13401 14.5 12 14.5C15.866 14.5 19 17.634 19 21.5"
-                stroke="#4F4F4F"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M12 11.5C14.2091 11.5 16 9.70914 16 7.5C16 5.29086 14.2091 3.5 12 3.5C9.79086 3.5 8 5.29086 8 7.5C8 9.70914 9.79086 11.5 12 11.5Z"
-                stroke="#4F4F4F"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
-        </div>
-      </MenuWrapper>
-    </NavWrapper>
+        <MenuWrapper>
+          <div>
+            <Link to="/home">
+              <Svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <Path
+                  d="M9 21H4C3.44772 21 3 20.5523 3 20V12.4142C3 12.149 3.10536 11.8946 3.29289 11.7071L11.2929 3.70711C11.6834 3.31658 12.3166 3.31658 12.7071 3.70711L20.7071 11.7071C20.8946 11.8946 21 12.149 21 12.4142V20C21 20.5523 20.5523 21 20 21H15M9 21H15M9 21V15C9 14.4477 9.44772 14 10 14H14C14.5523 14 15 14.4477 15 15V21"
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                />
+              </Svg>
+            </Link>
+          </div>
+          <div>
+            <Link to="/search">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="10.5"
+                  cy="10.5"
+                  r="6.5"
+                  stroke="#4F4F4F"
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                />
+                <Path
+                  d="M19.4697 20.5303C19.7626 20.8232 20.2374 20.8232 20.5303 20.5303C20.8232 20.2374 20.8232 19.7626 20.5303 19.4697L19.4697 20.5303ZM20.5303 19.4697L15.5303 14.4697L14.4697 15.5303L19.4697 20.5303L20.5303 19.4697Z"
+                  fill="#4F4F4F"
+                />
+              </svg>
+            </Link>
+          </div>
+          <div>
+            <Link to="/alarm">
+              <Svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <Path
+                  d="M9.5 19C8.89555 19 7.01237 19 5.61714 19C4.87375 19 4.39116 18.2177 4.72361 17.5528L5.57771 15.8446C5.85542 15.2892 6 14.6774 6 14.0564C6 13.2867 6 12.1434 6 11C6 9 7 5 12 5C17 5 18 9 18 11C18 12.1434 18 13.2867 18 14.0564C18 14.6774 18.1446 15.2892 18.4223 15.8446L19.2764 17.5528C19.6088 18.2177 19.1253 19 18.382 19H14.5M9.5 19C9.5 21 10.5 22 12 22C13.5 22 14.5 21 14.5 19M9.5 19C11.0621 19 14.5 19 14.5 19"
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                />
+                <Path
+                  d="M12 5V3"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </Svg>
+            </Link>
+          </div>
+          <div>
+            <Link to="/myaccount">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11.2817 9.34661L10.8917 8.70597C10.6393 8.85964 10.5006 9.14722 10.5376 9.44043C10.5746 9.73364 10.7803 9.97781 11.063 10.064L11.2817 9.34661ZM6.6086 9.34661L6.82734 10.064C7.11002 9.97781 7.31573 9.73364 7.3527 9.44043C7.38967 9.14722 7.25101 8.85964 6.99857 8.70597L6.6086 9.34661ZM1.0068 16.002L0.262541 15.9094L1.0068 16.002ZM16.8835 16.002L17.6278 15.9094V15.9094L16.8835 16.002ZM12.6952 5.5C12.6952 6.85717 11.9747 8.04675 10.8917 8.70597L11.6717 9.98724C13.1831 9.06719 14.1952 7.40213 14.1952 5.5H12.6952ZM8.94515 1.75C11.0162 1.75 12.6952 3.42893 12.6952 5.5H14.1952C14.1952 2.6005 11.8446 0.25 8.94515 0.25V1.75ZM5.19515 5.5C5.19515 3.42893 6.87409 1.75 8.94515 1.75V0.25C6.04566 0.25 3.69515 2.6005 3.69515 5.5H5.19515ZM6.99857 8.70597C5.91564 8.04675 5.19515 6.85717 5.19515 5.5H3.69515C3.69515 7.40213 4.7072 9.06719 6.21862 9.98724L6.99857 8.70597ZM6.38985 8.62921C3.14027 9.62005 0.69304 12.45 0.262541 15.9094L1.75106 16.0946C2.10728 13.2322 4.13475 10.885 6.82734 10.064L6.38985 8.62921ZM0.262541 15.9094C0.130886 16.9673 1.00717 17.75 1.94515 17.75V16.25C1.87309 16.25 1.8166 16.2207 1.78385 16.1866C1.75503 16.1566 1.74688 16.1282 1.75106 16.0946L0.262541 15.9094ZM1.94515 17.75H15.9452V16.25H1.94515V17.75ZM15.9452 17.75C16.8831 17.75 17.7594 16.9673 17.6278 15.9094L16.1392 16.0946C16.1434 16.1282 16.1353 16.1567 16.1065 16.1866C16.0737 16.2207 16.0172 16.25 15.9452 16.25V17.75ZM17.6278 15.9094C17.1973 12.45 14.75 9.62005 11.5005 8.62921L11.063 10.064C13.7556 10.885 15.783 13.2322 16.1392 16.0946L17.6278 15.9094Z"
+                  fill="#4F4F4F"
+                />
+              </svg>
+            </Link>
+          </div>
+        </MenuWrapper>
+      </NavWrapper>
+    </>
   );
 };
 
@@ -138,6 +142,26 @@ const spinCounterClockwise = keyframes`
   to {
     transform: rotate(0deg);
   }
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: ${({ theme }) => theme.colors.black};
+  opacity: 0.5;
+  ${(props) =>
+    props.show
+      ? css`
+          display: flex;
+          transition: 1s ease-in;
+        `
+      : css`
+          display: none;
+          transition: 1s ease-in;
+        `};
 `;
 
 const SpeedDialMenu = styled.div`
@@ -198,7 +222,7 @@ const NavWrapper = styled.div`
   position: absolute;
   width: 100%;
   bottom: 0;
-  display: flex;
+  display: ${(props) => (props.active ? 'flex' : 'none')};
   justify-content: space-around;
 `;
 const MenuWrapper = styled.div`
@@ -247,6 +271,16 @@ const SpeedDial = styled.div`
   bottom: 50%;
 
   cursor: pointer;
+`;
+
+const Svg = styled.svg``;
+
+const Path = styled.path`
+  stroke: ${({ theme }) => theme.colors.black};
+
+  &:hover {
+    stroke: ${({ theme }) => theme.colors.primaryYellow};
+  }
 `;
 
 export default Nav;

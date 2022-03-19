@@ -1,6 +1,75 @@
-import React from 'react';
-import { Wrapper, Input } from '../../components/atoms';
-import { CategoryTile } from '../../components/molecules';
+import React, { useContext } from 'react';
+import { ThemeContext } from 'styled-components';
+import { Outlet } from 'react-router-dom';
+
+import { Wrapper, Grid, Input, CategoryTile } from 'components';
+
+function SearchBoard(props) {
+  const themeContext = useContext(ThemeContext);
+  return (
+    <Wrapper
+      backgroundColor={themeContext.colors.backgroundGray}
+      padding="56px 24px 0px 24px"
+    >
+      <Grid isFlex>
+        <Input
+          color={themeContext.colors.black}
+          backgroundColor="transparent"
+          width="100%"
+          height="36px"
+        />
+        <Grid padding="0px 0px 0px 10px">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z"
+              stroke={themeContext.colors.gray}
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M15 15L21 21"
+              stroke={themeContext.colors.gray}
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Grid>
+      </Grid>
+      <Grid margin="32px 0px 89px 0px">
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            rowGap: '18px',
+            columnGap: '16px',
+          }}
+        >
+          {categories.map((cat, index) => {
+            return (
+              <CategoryTile
+                key={index}
+                category={cat.category}
+                categoryImageUrl={cat.categoryImageUrl}
+                width="148px"
+                height="88px"
+                borderRadius="20px"
+              />
+            );
+          })}
+        </div>
+        <Outlet />
+      </Grid>
+    </Wrapper>
+  );
+}
 
 const categories = [
   {
@@ -28,66 +97,5 @@ const categories = [
     categoryImageUrl: '/asset/image/category/etc.svg',
   },
 ];
-
-function SearchBoard(props) {
-  return (
-    <div
-      style={{
-        backgroundColor: '#F8F8F8',
-        height: '100vh',
-        overflowX: 'hidden',
-        overfloxY: 'hidden',
-      }}
-    >
-      <Wrapper padding="45px 24px 0px 24px">
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div style={{ width: '90%' }}>
-            <Input width="100%" height={24} />
-          </div>
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z"
-              stroke="#C4C4C4"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M15 15L21 21"
-              stroke="#C4C4C4"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-
-        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          {categories.map((cat, index) => {
-            return (
-              <CategoryTile
-                key={index}
-                category={cat.category}
-                categoryImageUrl={cat.categoryImageUrl}
-              />
-            );
-          })}
-        </div>
-      </Wrapper>
-    </div>
-  );
-}
 
 export default SearchBoard;

@@ -1,10 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useContext } from 'react';
+import styled, { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Grid, Text, Heart, Image } from '../atoms';
 
 const ProfileImageStack = (props) => {
   const { nicknames, imageUrls } = props;
+  const themeContext = useContext(ThemeContext);
   let concatedNicknames = '';
 
   return (
@@ -43,7 +44,7 @@ const ProfileImageStack = (props) => {
         </div>
       </Stack>
       <div>
-        <Text bold color="#fff" size="12px">
+        <Text bold color={themeContext.colors.black} size="12px">
           {nicknames.slice(0, 3).map((name, index) => {
             return index === 0
               ? concatedNicknames.concat(name)

@@ -7,9 +7,28 @@ const Textarea = ({ fluid, ...props }) => {
 };
 
 const CustomTextarea = styled.textarea`
-  border: 1px solid ${({ theme }) => theme.colors.primary};
+  border: ${(props) => props.border};
+  background-color: ${(props) => props.backgroundColor};
+  color: ${({ theme }) => theme.colors.black};
+  font-size: ${(props) => props.fontSize};
+  font-weight: ${(props) => (props.bold ? 600 : 500)};
+  line-height: ${(props) => props.lineHeight};
   resize: none;
   width: ${({ fluid }) => (fluid ? '100%' : 'auto')};
+  height: ${(props) => props.height};
+
+  placeholder: ${(props) => props.placeholder};
+  padding: ${(props) => props.padding};
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.gray};
+    font-size: ${(props) => props.fontSize};
+    font-weight: ${(props) => (props.bold ? 600 : 500)};
+  }
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 Textarea.defaultProps = {

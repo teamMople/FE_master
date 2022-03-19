@@ -12,6 +12,7 @@ import {
   Grid,
   Header,
   OAuthLoginButtons,
+  Modal,
 } from 'components';
 
 function Login(props) {
@@ -31,7 +32,11 @@ function Login(props) {
   };
 
   const handleLoginClick = (e) => {
-    dispatch(loginAsync(userInfo));
+    if (email === '' || password === '') {
+      window.alert('이메일, 비밀번호 모두 입력해주세요.');
+    } else {
+      dispatch(loginAsync(userInfo));
+    }
   };
 
   const userInfo = { email, password };
@@ -45,26 +50,31 @@ function Login(props) {
     >
       <Header label="로그인" leftArrow={true} rightArrow={false} />
       <Grid padding="44px 0px 0px 0px">
-        <Input
-          backgroundColor={themeContext.colors.white}
-          color={themeContext.colors.black}
-          width="100%"
-          marign-bottom="8px"
-          type="text"
-          placeholder="이름"
-          value={email}
-          onChange={changeEmail}
-        />
-        <Input
-          backgroundColor={themeContext.colors.white}
-          color={themeContext.colors.black}
-          width="100%"
-          marign-bottom="5px"
-          type="password"
-          placeholder="이메일(아이디)"
-          value={password}
-          onChange={changePassword}
-        />
+        <Grid margin="0px 0px 8px 0px">
+          <Input
+            backgroundColor={themeContext.colors.white}
+            color={themeContext.colors.black}
+            width="100%"
+            marign-bottom="8px"
+            type="text"
+            placeholder="이름"
+            value={email}
+            onChange={changeEmail}
+          />
+        </Grid>
+        <Grid>
+          <Input
+            backgroundColor={themeContext.colors.white}
+            color={themeContext.colors.black}
+            width="100%"
+            marign-bottom="5px"
+            type="password"
+            placeholder="이메일(아이디)"
+            value={password}
+            onChange={changePassword}
+          />
+        </Grid>
+
         <div
           style={{
             display: 'flex',
@@ -101,6 +111,7 @@ function Login(props) {
           <OAuthLoginButtons />
         </Grid>
       </Grid>
+      <Modal />
     </Wrapper>
   );
 }

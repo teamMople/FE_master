@@ -57,8 +57,9 @@ const device = {
 
 const lightThemeColors = {
   black: '#282828',
-  lightGray: '#F1F1F1',
-  gray: '#D0D0D0',
+  lightGray: '#E5E5E5',
+  backgroundGray: '#F8F8F8',
+  gray: '#D5D8DB',
   darkGray: '#718096',
   white: '#FFFFFF',
   primaryYellow: '#FADE86',

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ThemeContext } from 'styled-components';
-import { Wrapper, Grid, Text } from 'components';
+import { Wrapper, Grid, Text, Loader } from 'components';
 import { useSelector } from 'react-redux';
 import { selectUserState } from '../../modules/users';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 function Welcome(props) {
   const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
+  const nickname = localStorage.getItem('nickname');
   // const nickname = useSelector(selectUserState);
 
   useEffect(() => {
@@ -37,9 +38,12 @@ function Welcome(props) {
           </Text>
           <Text color={themeContext.colors.blue} size="14px">
             <div style={{ textAlign: 'center' }}>
-              흥미진진한 토론이 님을 기다리고 있어요 :)
+              흥미진진한 토론이 {nickname}님을 기다리고 있어요 :)
             </div>
           </Text>
+        </Grid>
+        <Grid center>
+          <Loader type="dot" backgroundColor={themeContext.colors.blue} />
         </Grid>
       </div>
     </Wrapper>

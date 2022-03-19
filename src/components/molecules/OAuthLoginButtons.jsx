@@ -14,7 +14,7 @@ const OAuthLoginButtons = ({ ...props }) => {
   return (
     <>
       <Button
-        _onClick={handleOAuthLoginClick(KAKAO_LOGIN_URL)}
+        onClick={handleOAuthLoginClick(KAKAO_LOGIN_URL)}
         width="100%"
         height={38}
         color="#392020"

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,7 +11,12 @@ const LeftArrow = (props) => {
   };
 
   return (
-    <ArrowWrapper {...props} onClick={handleArrowClick}>
+    <ArrowWrapper
+      {...props}
+      onClick={
+        props.leftArrowOnClick ? props.leftArrowOnClick : handleArrowClick
+      }
+    >
       <Svg
         width="24"
         height="24"
@@ -22,6 +28,10 @@ const LeftArrow = (props) => {
       </Svg>
     </ArrowWrapper>
   );
+};
+
+LeftArrow.propTypes = {
+  leftArrowOnClick: PropTypes.func,
 };
 
 const ArrowWrapper = styled.div``;

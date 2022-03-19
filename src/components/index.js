@@ -14,7 +14,7 @@ import {
 import {
   CategoryTile,
   Header,
-  LoadingSpinner,
+  Loader,
   Logo,
   OAuthLoginButtons,
   ProfileImageStack,
@@ -22,8 +22,10 @@ import {
   SelectTab,
   Tile,
   Survey,
+  MenuTab,
+  AlarmTile,
 } from './molecules';
-import { BoardList, CardCarousel, CategoryCarousel } from './organisms';
+import { BoardList, CardCarousel, CategoryCarousel, Modal } from './organisms';
 
 export {
   Button,
@@ -39,7 +41,7 @@ export {
   DropdownSelect,
   CategoryTile,
   Header,
-  LoadingSpinner,
+  Loader,
   Logo,
   OAuthLoginButtons,
   ProfileImageStack,
@@ -47,7 +49,10 @@ export {
   SelectTab,
   Tile,
   Survey,
+  MenuTab,
+  AlarmTile,
   BoardList,
   CardCarousel,
   CategoryCarousel,
+  Modal,
 };

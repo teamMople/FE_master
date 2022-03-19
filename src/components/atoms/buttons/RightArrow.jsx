@@ -1,9 +1,22 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 const RightArrow = (props) => {
+  const navigate = useNavigate();
+
+  const handleArrowClick = (e) => {
+    navigate(1);
+  };
+
   return (
-    <ArrowWrapper {...props}>
+    <ArrowWrapper
+      {...props}
+      onClick={
+        props.rightArrowOnClick ? props.rightArrowOnClick : handleArrowClick
+      }
+    >
       <Svg
         width="24"
         height="24"
@@ -15,6 +28,10 @@ const RightArrow = (props) => {
       </Svg>
     </ArrowWrapper>
   );
+};
+
+RightArrow.propTypes = {
+  rightArrowOnClick: PropTypes.func,
 };
 
 const ArrowWrapper = styled.div``;

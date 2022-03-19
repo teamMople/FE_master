@@ -11,27 +11,32 @@ const Grid = ({ ...props }) => {
 };
 
 Grid.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.element),
+  children: PropTypes.any,
+  padding: PropTypes.string,
+  margin: PropTypes.string,
 };
 
 Grid.defaltProps = {
   children: null,
+  padding: '0px 0px 0px 0px',
+  margin: '0px 0px 0px 0px',
 };
 
 const GridBox = styled.div`
   width: ${(props) => props.width};
-  height: 100%;
+  height: ${(props) => props.height};
   box-sizing: border-box;
-  overflow: overlay;
+  overflow-x: hidden;
+  overflow-y: hidden;
 
-  ${(props) => (props.padding ? `padding: ${props.padding}` : '')}
-  ${(props) => (props.margin ? `margin: ${props.margin}` : '')}
-  ${(props) =>
-    props.background ? `background-color: ${props.background}` : ''}
+  padding: ${(props) => props.padding};
+  margin: ${(props) => props.margin};
+  background-color: ${(props) => props.backgroundColor};
 
   ${(props) =>
     props.isFlex
-      ? `display: flex;
+      ? `
+          display: flex;
           align-items: center;
           justify-content: space-between;
           flex-wrap: nowrap;
@@ -40,12 +45,14 @@ const GridBox = styled.div`
 
   ${(props) =>
     props.center
-      ? `display: flex;
+      ? `
+          display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
           flex-wrap: nowrap;
         `
-      : ``}
+      : ``};
 `;
 
 export default Grid;

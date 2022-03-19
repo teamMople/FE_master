@@ -3,21 +3,20 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Carousel } from '@trendyol-js/react-carousel';
 
-import { Text, Wrapper } from '../atoms';
-import { Tile } from '../molecules';
+import { Grid, Text, Tile } from 'components';
 
 const CardCarousel = (props) => {
   const { label, type, boards } = props;
 
   return (
-    <div style={{ padding: '0px 5px 0px 5px' }}>
-      <div style={{ padding: '0px 24px 0px 24px' }}>
+    <Grid padding="0px 5px 32px 5px">
+      <Grid padding="0px 19px 0px 19px" margin="0px 0px 16px 0px">
         <Text bold size="20px">
           {label}
         </Text>
-      </div>
+      </Grid>
       <Carousel
-        show={1.2}
+        show={1.15}
         slide={1}
         swiping={true}
         leftArrow={false}
@@ -31,7 +30,7 @@ const CardCarousel = (props) => {
           );
         })}
       </Carousel>
-    </div>
+    </Grid>
   );
 };
 

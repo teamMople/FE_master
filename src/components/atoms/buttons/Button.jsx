@@ -7,7 +7,7 @@ function Button({ ...props }) {
 }
 
 Button.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.element),
+  children: PropTypes.any,
 };
 
 Button.defaultProps = {

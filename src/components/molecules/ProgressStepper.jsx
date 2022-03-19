@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { Grid, Text } from '../atoms';
+import { Grid, Text } from 'components';
 
 const ProgressStepper = (props) => {
   const { steps, currentStep, backgroundColor, highlightColor } = props;

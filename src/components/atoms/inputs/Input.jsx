@@ -21,6 +21,7 @@ Input.propTypes = {
 Input.defaultProps = {
   label: null,
   bold: false,
+  padding: '15px',
   children: null,
 };
 
@@ -31,10 +32,11 @@ const I = styled.input`
   margin: ${(props) => props.margin};
   border: 1px solid ${({ theme }) => theme.colors.gray};
   border-radius: 50px;
-  padding: 15px;
+  padding: ${(props) => props.padding};
   font-size: 14px;
   color: ${({ theme }) => theme.colors.black};
   font-weight: ${(props) => (props.bold ? 600 : 500)};
+  line-height: ${(props) => props.lineHeight};
 
   &:focus {
     outline: none;

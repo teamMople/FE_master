@@ -27,9 +27,9 @@ import { darkTheme, lightTheme } from '../styles/theme';
 import history from '../utils/history';
 import { ThemeProvider } from 'styled-components';
 
-import CreateChatRoom from '../../chatTestDir/CreateChatRoom';
-import VoiceRoom from '../../chatTestDir/VoiceRoom';
-import ChatRoomList from '../../chatTestDir/ChatRoomList';
+import CreateRoom from '../../chatTestDir/LiveRoom/CreateRoom';
+import LiveRoom from '../../chatTestDir/LiveRoom/LiveRoom';
+import RoomList from '../../chatTestDir/LiveRoom/RoomList';
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
@@ -81,6 +81,9 @@ function App() {
           />
           <Route path="/signup" element={<Signup />} />
           <Route path="/welcome" element={<Welcome />} />
+          <Route path={'/room'} element={<RoomList />} />
+          <Route path={'/room/create'} element={<CreateRoom />} />
+          <Route path={'/room/:roomId'} element={<LiveRoom />} />
           <Route path="/home" element={<Home />} />
           <Route path="/search" element={<SearchBoard />}>
             <Route path="result" element={<BoardList />} />
@@ -96,9 +99,6 @@ function App() {
           <Route path="/alarm" element={<AlarmList />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/modal" element={<Test />} />
-          <Route path={'/voice'} element={<ChatRoomList />} />
-          <Route path={'/voice/create'} element={<CreateChatRoom />} />
-          <Route path={'/voice/:roomId'} element={<VoiceRoom />} />
           <Route path={'*'} element={<NotFound />} />
         </Routes>
         <Nav active={isLogin} />

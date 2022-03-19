@@ -12,11 +12,11 @@ import {
   Sender,
   SenderInner,
   SenderWrapper,
-} from './style';
+} from '../LiveRoom/style';
 
 let stompClient = null;
 
-const ChatRoom = ({ roomId, sockUrl, disconnect }) => {
+const ChatRoom = ({ roomId, sockUrl, disconnect, userId }) => {
   const [publicChats, setPublicChats] = useState([]);
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
@@ -26,7 +26,8 @@ const ChatRoom = ({ roomId, sockUrl, disconnect }) => {
   });
   useEffect(() => {
     console.log(userData);
-  }, [userData]);
+    connect();
+  }, []);
 
   const connect = () => {
     let sock = new SockJS(sockUrl);
@@ -61,7 +62,8 @@ const ChatRoom = ({ roomId, sockUrl, disconnect }) => {
 
   const userJoin = () => {
     let chatMessage = {
-      sender: userData.sender,
+      // sender: userData.sender,
+      sender: userId,
       type: 'ENTER',
       roomId: roomId,
     };
@@ -86,7 +88,7 @@ const ChatRoom = ({ roomId, sockUrl, disconnect }) => {
     console.log('👍 메시지 보내기 클릭!');
     if (stompClient) {
       let chatMessage = {
-        sender: userData.sender,
+        sender: userId,
         message: userData.message,
         type: 'CHAT',
         roomId: roomId,
@@ -123,9 +125,11 @@ const ChatRoom = ({ roomId, sockUrl, disconnect }) => {
           {publicChats.map((chat, index) => (
             <>
               {chat.type === 'ENTER' && (
-                <JoinerLeaver>{chat.sender}님께서 입장~</JoinerLeaver>
+                <JoinerLeaver key={index}>
+                  {chat.sender}님께서 입장~
+                </JoinerLeaver>
               )}
-              {chat.type === 'CHAT' && chat.sender !== userData.sender && (
+              {chat.type === 'CHAT' && chat.sender !== userId && (
                 <ReceiverWrapper key={index}>
                   <ReceiverInner>
                     <Receiver>{chat.sender}</Receiver>
@@ -133,7 +137,7 @@ const ChatRoom = ({ roomId, sockUrl, disconnect }) => {
                   </ReceiverInner>
                 </ReceiverWrapper>
               )}
-              {chat.type === 'CHAT' && chat.sender === userData.sender && (
+              {chat.type === 'CHAT' && chat.sender === userId && (
                 <SenderWrapper key={index}>
                   <SenderInner>
                     <Sender>{chat.sender}</Sender>
@@ -142,7 +146,9 @@ const ChatRoom = ({ roomId, sockUrl, disconnect }) => {
                 </SenderWrapper>
               )}
               {chat.type === 'LEAVE' && (
-                <JoinerLeaver>{chat.sender}님이 나가셨습니다.</JoinerLeaver>
+                <JoinerLeaver key={index}>
+                  {chat.sender}님이 나가셨습니다.
+                </JoinerLeaver>
               )}
             </>
           ))}
@@ -182,6 +188,7 @@ ChatRoom.propTypes = {
   roomId: PropTypes.string,
   sockUrl: PropTypes.string,
   disconnect: PropTypes.bool,
+  userId: PropTypes.string,
 };
 
 export default ChatRoom;

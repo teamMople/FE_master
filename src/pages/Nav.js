@@ -14,6 +14,19 @@ const Nav = (props) => {
     setRot(!rot);
     console.log(rot);
   };
+
+  const goHome = () => {
+    navigate('/');
+  };
+  const goSearch = () => {
+    navigate('/');
+  };
+  const goNoti = () => {
+    navigate('/');
+  };
+  const goMyPage = () => {
+    navigate('/');
+  };
   return (
     <>
       {show && <Overlay show={show} />}

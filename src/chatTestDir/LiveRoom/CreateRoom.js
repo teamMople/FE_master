@@ -4,11 +4,15 @@ import styled from 'styled-components';
 import { Textarea, SelectTab, DropdownSelect } from 'components';
 import { useNavigate } from 'react-router-dom';
 
-const CreateChatRoom = () => {
+const CreateRoom = () => {
   const [roomName, setRoomName] = useState('');
   const [currentTab, setCurrentTab] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [memberCount, setMemberCount] = useState(2);
+  const [memberCount, setMemberCount] = useState(10);
+  const [content, setContent] = useState(null);
+  const [moderator, setModerator] = useState('TestUser');
+  const [roomId, setRoomId] = useState(null);
+  const [publisher, setPublisher] = useState(undefined);
   const navigate = useNavigate();
 
   const selectMenu = [{ value: '공개토론' }, { value: '비공개토론' }];
@@ -21,29 +25,57 @@ const CreateChatRoom = () => {
     { value: '기타', label: '기타' },
   ];
 
-  const createRoom = () => {
-    // if (roomName === '') {
-    //   alert('방 제목을 입력하세요!');
-    //   return;
-    // }
+  const createRoom = async () => {
     const data = {
-      moderator: 'TestUser',
+      moderator: moderator,
       roomName: roomName,
+      content: content,
+      isPrivate: false,
+      maxParticipantCount: memberCount,
     };
-    axios
+
+    await axios
       .post('http://localhost:8080/api/chat/room', data)
-      .then((res) => {
-        console.log(res);
-        navigate('/', { replace: true });
+
+      // 이거는 방을 만들 때!!!!!!
+      .then(async (res) => {
+        console.log(res.data.roomId);
+        await setRoomId(res.data.roomId);
+        await setRoomName(res.data.roomName);
+        // navigateVoiceRoom(roomId, roomName);
+        await navigateVoiceRoom(
+          res.data.roomId,
+          res.data.roomName,
+          res.data.maxParticipantCount,
+        );
+        //
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
+  // console.log('😊😊😊️', roomName, moderator, publisher);
+
+  const navigateVoiceRoom = (roomId, roomName, maxParticipantCount) => {
+    //navigate 로 state 넘기지 말자... publisher 객체가 너무 커서 안넘어간다... 하...
+    navigate(`/room/${roomId}`, {
+      state: {
+        roomId: roomId,
+        roomName: roomName,
+        role: 'MODERATOR',
+        maxParticipantCount: maxParticipantCount,
+      },
+      replace: true,
+    });
+  };
   const handleChangeValue = (e) => {
     const value = e.target.value;
     setRoomName(value);
+  };
+  const handleChangeContent = (e) => {
+    const value = e.target.value;
+    setContent(value);
   };
 
   const handleMember = (param) => {
@@ -81,7 +113,11 @@ const CreateChatRoom = () => {
         onChange={handleChangeValue}
         placeholder="방 제목을 입력해주세요."
       />
-      <Textarea fluid placeholder="토론하고 싶은 내용을 작성해주세요." />
+      <Textarea
+        fluid
+        placeholder="토론하고 싶은 내용을 작성해주세요."
+        onChange={handleChangeContent}
+      />
       <div>
         참여인원
         {memberCount}
@@ -101,6 +137,7 @@ const CreateChatRoom = () => {
       <button onClick={createRoom} disabled={roomName === ''}>
         만들기
       </button>
+      <button onClick={navigateVoiceRoom}>이동</button>
     </>
   );
 };
@@ -110,4 +147,4 @@ const SelectTabBox = styled.div`
   align-items: center;
 `;
 
-export default CreateChatRoom;
+export default CreateRoom;

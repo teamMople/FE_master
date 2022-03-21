@@ -9,6 +9,20 @@ const Tile = (props) => {
   const { type, board } = props;
   const themeContext = useContext(ThemeContext);
 
+  const getDateString = (dateArray) => {
+    const now = parseInt(Date.now()) / 1000;
+    const regDt = parseInt(Date.parse(dateArray[6])) / 1000;
+    const result = (now - regDt) / 3600;
+
+    if (result > 24) {
+      return parseInt(result / 24) + '일 전';
+    } else if (0 < result < 1) {
+      return parseInt(result * 60) + '분 전';
+    } else {
+      return parseInt(result) + '시간 전';
+    }
+  };
+
   switch (type) {
     case 'live':
       return (
@@ -90,7 +104,7 @@ const Tile = (props) => {
               marginBottom: '18px',
             }}
           >
-            <Image shape="circle" size={32} src={board.authorProfileImageUrl} />
+            <Image shape="circle" size={32} src={board.profileImageUrl} />
             <Grid margin="0px 0px 0px 8px">
               <Text
                 bold
@@ -98,7 +112,7 @@ const Tile = (props) => {
                 lineHeight="18px"
                 color={themeContext.colors.black}
               >
-                {board.authorNickname}
+                {board.nickname}
               </Text>
               <Text
                 size="10px"
@@ -182,13 +196,15 @@ Tile.propTypes = {
     content: PropTypes.string,
     selected: PropTypes.bool,
     imageUrls: PropTypes.array,
-    authorNickname: PropTypes.string,
-    authorProfileImageUrl: PropTypes.string,
+    nickname: PropTypes.string,
+    profileImageUrl: PropTypes.string,
     participants: PropTypes.array,
     participantsProfileImageUrls: PropTypes.array,
     recommendCount: PropTypes.number,
     agreeCount: PropTypes.number,
     disagreeCount: PropTypes.number,
+    category: PropTypes.string,
+    createdAt: PropTypes.array,
   }),
 };
 
@@ -198,13 +214,15 @@ Tile.defaultProps = {
     content: '',
     selected: false,
     imageUrls: [null, null, null],
-    authorNickname: '',
-    authorProfileImageUrl: '',
+    nickname: '',
+    profileImageUrl: '',
     participants: [],
     participantsProfileImageUrls: [],
     recommendCount: 0,
     agreeCount: 0,
     disagreeCount: 0,
+    category: '',
+    createdAt: [],
   },
 };
 

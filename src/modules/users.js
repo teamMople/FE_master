@@ -25,13 +25,16 @@ export const loginAsync = createAsyncThunk(
     const { email, password } = userInfo;
     const navigate = useNavigate();
 
-    console.log('진입');
+    console.log('로그인');
 
     if (isRightEmailType === false) {
       window.alert('올바른 이메일 형식이 아닙니다.');
     } else {
       await axios
-        .post('http://13.125.244.227:8080/api/login', { email, password })
+        .post(
+          'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/api/login',
+          { email, password },
+        )
         .then((response) => {
           console.log(response);
           if (response.data.status === 'ok') {
@@ -100,7 +103,9 @@ export const kakaoLoginAsync = createAsyncThunk(
   async (code) => {
     const navigate = useNavigate();
     await axios
-      .get(`http://13.125.244.227:8080/api/kakao/login?code=${code}`)
+      .get(
+        `https://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/api/kakao/login?code=${code}`,
+      )
       .then((res) => {
         console.log(res);
         navigate('/');
@@ -131,12 +136,15 @@ export const logout = createAsyncThunk('users/logout', async () => {
 
 export const signupAsync = createAsyncThunk(
   'users/signup',
-  async (userInfo, thunkAPI) => {
-    const { email, profileImageUrl, nickname, password } = userInfo;
+  async (userInfo) => {
     const navigate = useNavigate();
-
-    await apis
-      .signup(email, profileImageUrl, nickname, password)
+    console.log(userInfo);
+    await axios
+      .post(
+        'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/api/signup',
+        JSON.stringify(userInfo),
+        { headers: { 'Content-Type': 'application/json' } },
+      )
       .then((response) => {
         console.log(response);
         if (response.status === 'OK') {
@@ -150,8 +158,6 @@ export const signupAsync = createAsyncThunk(
         if (error) {
           window.alert('잘못된 회원 가입 요청입니다.');
           console.log(error.response.data.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-
-          return thunkAPI.rejectWithValue();
         }
       });
   },

@@ -21,7 +21,7 @@ Input.propTypes = {
 Input.defaultProps = {
   label: null,
   bold: false,
-  padding: '15px',
+  padding: '0px',
   children: null,
 };
 

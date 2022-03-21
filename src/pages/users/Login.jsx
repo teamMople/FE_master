@@ -1,7 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAppDispatch } from 'modules/configStore';
 import { loginAsync } from '../../modules/users';
+import axios from 'axios';
+import { setCookie } from '../../shared/utils/Cookie';
 
 import { ThemeContext } from 'styled-components';
 import {
@@ -12,12 +13,12 @@ import {
   Grid,
   Header,
   OAuthLoginButtons,
-  Modal,
 } from 'components';
+import { useDispatch } from 'react-redux';
 
 function Login(props) {
   const themeContext = useContext(ThemeContext);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -35,7 +36,21 @@ function Login(props) {
     if (email === '' || password === '') {
       window.alert('이메일, 비밀번호 모두 입력해주세요.');
     } else {
-      dispatch(loginAsync(userInfo));
+      axios
+        .post(
+          'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/api/login',
+          JSON.stringify({ email, password }),
+          { headers: { 'Content-Type': 'application/json' } },
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            setCookie('token', response.headers.authorization, 1);
+            localStorage.setItem('email', response.data.email);
+            localStorage.setItem('nickname', response.data.nickname);
+            navigate('/home');
+          }
+        })
+        .catch((e) => console.log(e));
     }
   };
 
@@ -48,7 +63,7 @@ function Login(props) {
       backgroundColor={themeContext.colors.white}
       padding="70px 24px 0px 24px"
     >
-      <Header label="로그인" leftArrow={true} rightArrow={false} />
+      <Header label="" leftArrow={true} rightArrow={false} />
       <Grid padding="44px 0px 0px 0px">
         <Grid margin="0px 0px 8px 0px">
           <Input
@@ -111,7 +126,6 @@ function Login(props) {
           <OAuthLoginButtons />
         </Grid>
       </Grid>
-      <Modal />
     </Wrapper>
   );
 }

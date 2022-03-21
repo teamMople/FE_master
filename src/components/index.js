@@ -25,7 +25,7 @@ import {
   MenuTab,
   AlarmTile,
 } from './molecules';
-import { BoardList, CardCarousel, CategoryCarousel, Modal } from './organisms';
+import { BoardList, CardCarousel, CategoryCarousel } from './organisms';
 
 export {
   Button,
@@ -54,5 +54,4 @@ export {
   BoardList,
   CardCarousel,
   CategoryCarousel,
-  Modal,
 };

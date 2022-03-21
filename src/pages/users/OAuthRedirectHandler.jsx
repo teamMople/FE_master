@@ -2,17 +2,17 @@ import React, { useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeContext } from 'styled-components';
 
-import { useAppDispatch } from '../../modules/configStore';
 import {
   googleLoginAsync,
   naverLoginAsync,
   kakaoLoginAsync,
 } from '../../modules/users';
 import { Wrapper, Loader } from 'components';
+import { useDispatch } from 'react-redux';
 
 const OAuthRedirectHandler = (props) => {
   const { provider } = props;
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
 
   let params = new URL(window.location).searchParams;

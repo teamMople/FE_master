@@ -15,8 +15,8 @@ const boards = [
       'https://pbs.twimg.com/profile_images/1407597260729294848/UzMFFFCP_400x400.jpg',
       'https://mblogthumb-phinf.pstatic.net/MjAxODA1MjZfOTYg/MDAxNTI3MzM1NTM4NzEy.UXrS2MyyNtuYipF-GQ1NtSqP349RyGJ0jpdx5URgdCIg.7iIQYiKLh9gwCvXiqoGbek72oyqFcB7tnhJ1bHN77Tgg.PNG.lara1224/1524992422846.png?type=w800',
     ],
-    authorNickname: '짜파게티요리사',
-    authorProfileImageUrl: '/asset/image/users/test.png',
+    nickname: '짜파게티요리사',
+    profileImageUrl: '/asset/image/users/test.png',
     participants: ['어피치', '춘식이', '무지'],
     participantsProfileImageUrls: [
       'https://post-phinf.pstatic.net/MjAxNzA2MjlfMjU5/MDAxNDk4NzM5NzI3MjA0.Aon2aPyhufiwt9-Y21w0v1luZzlYnihR7Xcozypyf8Qg.QLFNlJRzJzd1TqWWSN0DyVeHxe8zsAxGc7PHwkNHy8gg.PNG/1483309553699.png?type=w1200',
@@ -26,6 +26,8 @@ const boards = [
     recommendCount: 10,
     agreeCount: 20,
     disagreeCount: 30,
+    category: '시사',
+    createdAt: [2022, 2, 34, 2, 3, 4, 34234242342],
   },
   {
     title: '쿨톤 vs. 웜톤',
@@ -36,8 +38,8 @@ const boards = [
       'https://pbs.twimg.com/profile_images/1407597260729294848/UzMFFFCP_400x400.jpg',
       'https://mblogthumb-phinf.pstatic.net/MjAxODA1MjZfOTYg/MDAxNTI3MzM1NTM4NzEy.UXrS2MyyNtuYipF-GQ1NtSqP349RyGJ0jpdx5URgdCIg.7iIQYiKLh9gwCvXiqoGbek72oyqFcB7tnhJ1bHN77Tgg.PNG.lara1224/1524992422846.png?type=w800',
     ],
-    authorNickname: '짜파게티요리사',
-    authorProfileImageUrl: '/asset/image/users/test.png',
+    nickname: '짜파게티요리사',
+    profileImageUrl: '/asset/image/users/test.png',
     participants: ['어피치', '춘식이', '무지'],
     participantsProfileImageUrls: [
       'https://post-phinf.pstatic.net/MjAxNzA2MjlfMjU5/MDAxNDk4NzM5NzI3MjA0.Aon2aPyhufiwt9-Y21w0v1luZzlYnihR7Xcozypyf8Qg.QLFNlJRzJzd1TqWWSN0DyVeHxe8zsAxGc7PHwkNHy8gg.PNG/1483309553699.png?type=w1200',
@@ -47,6 +49,8 @@ const boards = [
     recommendCount: 10,
     agreeCount: 20,
     disagreeCount: 30,
+    category: '시사',
+    createdAt: [2022, 2, 34, 2, 3, 4, 34234242342],
   },
   {
     title: '밀떡 vs. 쌀떡',
@@ -57,8 +61,8 @@ const boards = [
       'https://pbs.twimg.com/profile_images/1407597260729294848/UzMFFFCP_400x400.jpg',
       'https://mblogthumb-phinf.pstatic.net/MjAxODA1MjZfOTYg/MDAxNTI3MzM1NTM4NzEy.UXrS2MyyNtuYipF-GQ1NtSqP349RyGJ0jpdx5URgdCIg.7iIQYiKLh9gwCvXiqoGbek72oyqFcB7tnhJ1bHN77Tgg.PNG.lara1224/1524992422846.png?type=w800',
     ],
-    authorNickname: '짜파게티요리사',
-    authorProfileImageUrl: '/asset/image/users/test.png',
+    nickname: '짜파게티요리사',
+    profileImageUrl: '/asset/image/users/test.png',
     participants: ['어피치', '춘식이', '무지'],
     participantsProfileImageUrls: [
       'https://post-phinf.pstatic.net/MjAxNzA2MjlfMjU5/MDAxNDk4NzM5NzI3MjA0.Aon2aPyhufiwt9-Y21w0v1luZzlYnihR7Xcozypyf8Qg.QLFNlJRzJzd1TqWWSN0DyVeHxe8zsAxGc7PHwkNHy8gg.PNG/1483309553699.png?type=w1200',
@@ -68,6 +72,8 @@ const boards = [
     recommendCount: 10,
     agreeCount: 20,
     disagreeCount: 30,
+    category: '시사',
+    createdAt: [2022, 2, 34, 2, 3, 4, 34234242342],
   },
   {
     title: '부먹 vs. 찍먹',
@@ -90,6 +96,8 @@ const boards = [
     recommendCount: 10,
     agreeCount: 20,
     disagreeCount: 30,
+    category: '시사',
+    createdAt: [2022, 2, 34, 2, 3, 4, 34234242342],
   },
   {
     title: '민초 vs. 반민초',
@@ -111,6 +119,8 @@ const boards = [
     recommendCount: 10,
     agreeCount: 20,
     disagreeCount: 30,
+    category: '시사',
+    createdAt: [2022, 2, 34, 2, 3, 4, 34234242342],
   },
   {
     title: '오션뷰 vs. 마운틴뷰',
@@ -132,6 +142,8 @@ const boards = [
     recommendCount: 10,
     agreeCount: 20,
     disagreeCount: 30,
+    category: '시사',
+    createdAt: [2022, 2, 34, 2, 3, 4, 34234242342],
   },
   {
     title: '5마리 멍뭉이 vs. 5살 멍뭉이',
@@ -153,6 +165,8 @@ const boards = [
     recommendCount: 10,
     agreeCount: 20,
     disagreeCount: 30,
+    category: '시사',
+    createdAt: [2022, 2, 34, 2, 3, 4, 34234242342],
   },
   {
     title: '육식동물 vs. 초식동물',
@@ -174,16 +188,20 @@ const boards = [
     recommendCount: 10,
     agreeCount: 20,
     disagreeCount: 30,
+    category: '시사',
+    createdAt: [2022, 2, 34, 2, 3, 4, 34234242342],
   },
 ];
 
 function BoardList(props) {
-  // const { data, status } = useSelector(selectBoardListState);
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
 
-  useEffect(() => {
-    // dispatch(getBoardListAsync());
+  useEffect(async () => {
+    function loadBoardList() {
+      dispatch(getBoardListAsync());
+    }
+    loadBoardList();
   }, []);
 
   return (

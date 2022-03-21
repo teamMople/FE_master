@@ -5,8 +5,7 @@ import {
   awsS3Bucket,
   BASE_S3_URL,
 } from '../../shared/utils/awsBucketConfig';
-
-import { useAppDispatch } from '../../modules/configStore';
+import axios from 'axios';
 import { signupAsync } from '../../modules/users';
 
 import { ThemeContext } from 'styled-components';
@@ -22,9 +21,11 @@ import {
   Check,
   Survey,
 } from 'components';
+import Modal from 'react-modal';
+import { useDispatch } from 'react-redux';
 
 function Signup(props) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
 
@@ -38,6 +39,7 @@ function Signup(props) {
   );
   const [selectedFile, setSelectedFile] = useState(null);
   const [profileImageUrl, setProfileImageUrl] = useState(null);
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   const userInfo = { email, profileImageUrl, nickname, password };
 
@@ -49,6 +51,14 @@ function Signup(props) {
   const handleProfileImageClick = (e) => {
     hiddenProfileImageInput.current.click();
   };
+
+  // const handleSignupButtonClick = (userInfo) => {
+  //   // console.log('click');
+  //   // localStorage.setItem('nickname', nickname);
+  //   // localStorage.setItem('profileImageUrl', profileImageUrl);
+  //   dispatch(signupAsync(userInfo));
+  //   // navigate('/welcome', { replace: true });
+  // };
 
   const changeEmail = (e) => {
     setEmail(e.target.value);
@@ -95,7 +105,6 @@ function Signup(props) {
   const onImageChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
-    console.log(file);
     const reader = new FileReader();
 
     reader.onloadend = (finishedEvent) => {
@@ -119,8 +128,6 @@ function Signup(props) {
 
     await awsS3Bucket.putObject(params).send((response) => {
       const signedUrl = BASE_S3_URL + folderName + '/' + urlIdentifier;
-      console.log(signedUrl);
-      console.log(response);
       setProfileImageUrl(signedUrl);
     });
   };
@@ -345,8 +352,13 @@ function Signup(props) {
                     onClick={() => {
                       localStorage.setItem('nickname', nickname);
                       localStorage.setItem('profileImageUrl', profileImageUrl);
-                      dispatch(signupAsync(userInfo));
-                      navigate('/welcome', { replace: true });
+                      axios
+                        .post(
+                          'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/api/signup',
+                          JSON.stringify(userInfo),
+                          { headers: { 'Content-Type': 'application/json' } },
+                        )
+                        .then((response) => console.log(response));
                     }}
                     width="148px"
                     height={38}

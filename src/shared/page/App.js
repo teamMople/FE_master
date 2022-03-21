@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+import { getCookie } from '../utils/Cookie';
 import {
   Splash,
   Home,
@@ -34,6 +35,7 @@ import ChatRoomList from '../../chatTestDir/ChatRoomList';
 function App() {
   const [theme, setTheme] = useState(lightTheme);
   const [isLogin, setIsLogin] = useState(false);
+  const [showNav, setShowNav] = useState(false);
 
   // 임시 (액세스 토큰 받으면 setIsLogin(true) 처리 예정)
   console.log(window.location.pathname);
@@ -59,9 +61,9 @@ function App() {
     // 임시
     console.log(isLogin);
     if (locationArray.indexOf(window.location.pathname) !== -1) {
-      setIsLogin(false);
+      setShowNav(false);
     } else {
-      setIsLogin(true);
+      setShowNav(true);
     }
   }, [window.location.pathname]);
 
@@ -101,7 +103,7 @@ function App() {
           <Route path={'/voice/:roomId'} element={<VoiceRoom />} />
           <Route path={'*'} element={<NotFound />} />
         </Routes>
-        <Nav active={isLogin} />
+        <Nav active={showNav} />
       </BrowserRouter>
     </ThemeProvider>
   );

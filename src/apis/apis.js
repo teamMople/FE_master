@@ -1,10 +1,20 @@
 import axios from 'axios';
 import { getCookie } from '../shared/utils/Cookie';
 
-// member : 'http://18.117.124.131'
-
+// 액세스 토큰 없이 접근 가능한 API
 const api = axios.create({
-  baseURL: 'http://18.117.124.131',
+  baseURL:
+    'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/',
+  headers: {
+    'content-type': 'application/json;charset=UTF-8',
+    accept: 'application/json',
+  },
+});
+
+// 토큰이 있어야 접근 가능한 API
+const authApi = axios.create({
+  baseURL:
+    'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/',
   headers: {
     'content-type': 'application/json;charset=UTF-8',
     accept: 'application/json',
@@ -12,7 +22,7 @@ const api = axios.create({
 });
 
 /* eslint-disable no-param-reassign */
-api.interceptors.request.use(function (config) {
+authApi.interceptors.request.use(function (config) {
   const accessToken = getCookie('token');
   config.headers.common.Authorization = `Bearer ${accessToken}`;
   return config;
@@ -26,36 +36,52 @@ const apis = {
   kakaoLogin: (kakaoAuthCode) =>
     api.post('/api/kakao/login', { kakaoAuthCode }),
   logout: () => api.get('/api/logout'),
-  editMyInfo: (email, name, nickname, password) =>
-    api.put('/api/user/update', { email, name, nickname, password }),
+  // to-dos
+  editMyInfo: (email, profileImageUrl, nickname, password) =>
+    api.put('/api/user/update', { email, profileImageUrl, nickname, password }),
   findMyPassword: (email) => api.post('/api/user/mypw', { email }),
   // 비밀번호 생성
   // 이메일 중복 확인
   // 닉네임 중복 확인
 
   createBoard: (title, content, imageUrl, category) =>
-    api.post('/api/board', { title, content, imageUrl, category }),
-  getBoardList: () => api.get('/api/board'),
+    authApi.post('/auth/api/board', { title, content, imageUrl, category }),
+  getBoardList: () => authApi.get('/auth/api/board'),
   getBoardListByCategory: (categoryName) =>
-    api.get(`/api/board/${categoryName}`, { categoryName }),
-  getDetail: (boardId) => api.get(`/api/board/${boardId}`, { boardId }),
-  deleteBoard: (boardId) => api.delete(`/api/board/${boardId}`, { boardId }),
-
-  agreeBoard: (boardId) => api.get(`/api/board/agree/${boardId}`, { boardId }),
+    authApi.get(`/auth/api/board/${categoryName}`, { categoryName }),
+  getDetail: (boardId) =>
+    authApi.get(`/auth/api/board/${boardId}`, { boardId }),
+  deleteBoard: (boardId) =>
+    authApi.delete(`/auth/api/board/${boardId}`, { boardId }),
+  getMyBoardList: () => authApi.get('/auth/api/board/myboard'),
+  getMyCommentList: () => authApi.get('/auth/api/board/mycomments'),
+  agreeBoard: (boardId) =>
+    authApi.get(`/auth/api/board/agree/${boardId}`, { boardId }),
   disagreeBoard: (boardId) =>
-    api.get(`/api/board/disagree/${boardId}`, { boardId }),
+    authApi.get(`/api/board/disagree/${boardId}`, { boardId }),
   recommentBoard: (boardId) =>
-    api.get(`/api/board/recommend/${boardId}`, { boardId }),
-
+    authApi.get(`/api/board/recommend/${boardId}`, { boardId }),
   createComment: (boardId, content) =>
-    api.post(`/api/comment/${boardId}`, { boardId, content }),
+    authApi.post(`/api/comment/${boardId}`, { boardId, content }),
   getCommentsByBoard: (boardId) =>
-    api.get(`/api/comment/${boardId}`, { boardId }),
+    authApi.get(`/api/comment/${boardId}`, { boardId }),
   deleteComment: (commentId) =>
-    api.delete(`/api/comment/${commentId}`, { commentId }),
+    authApi.delete(`/api/comment/${commentId}`, { commentId }),
   recommendComment: (commentId) =>
-    api.get(`/api/comment/recommend/${commentId}`, { commentId }),
-
+    authApi.get(`/api/comment/recommend/${commentId}`, { commentId }),
+  createComment: (boardId, content) =>
+    authApi.post('/auth/api/comment', { boardId, content }),
+  getCommentListByBoard: () => authApi.get('/auth/api/comment'),
+  deleteComment: (commentId) =>
+    authApi.delete(`/auth/api/comment/${commentId}`),
+  recommendComment: (commentId) =>
+    authApi.get(`/auth/api/comment/recommend/${commentId}`),
+  searchBoard: (search) => authApi.get(`/auth/api/comment/search/${search}`),
+  pushAlarm: () => authApi.post('/auth/api/fcm/register'),
+  createReplyComment: (commentId) =>
+    authApi.post(`/auth/api/comment/${commentId}/reply`),
+  getReplyCommentList: (commentId) =>
+    authApi.get(`/auth/api/comment/${commentId}/reply`),
   // 실시간 토론방
 };
 

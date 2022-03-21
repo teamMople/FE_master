@@ -1,14 +1,21 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Wrapper, Image, Logo } from 'components';
+import { getCookie } from '../shared/utils/Cookie';
+import { Logo } from 'components';
 import { LoadingSpinner } from 'components/molecules';
 
 const Splash = (props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = getCookie('token');
+
     setTimeout(() => {
-      navigate('/login');
+      if (token) {
+        navigate('/home');
+      } else {
+        navigate('/login');
+      }
     }, 5000);
   }, []);
 

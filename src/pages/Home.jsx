@@ -3,19 +3,23 @@ import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import { Wrapper } from '../components/atoms';
 import Nav from './Nav';
-import { useAppDispatch } from 'modules/configStore';
 import {
   CardCarousel,
   CategoryCarousel,
   BoardList,
 } from '../components/organisms';
+import { getBoardListAsync } from 'modules/boards';
+import { useDispatch } from 'react-redux';
 
 const Home = (props) => {
   const themeContext = useContext(ThemeContext);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
-    //임시
+    async function fetchBoards() {
+      dispatch(getBoardListAsync());
+    }
+    fetchBoards();
   }, []);
 
   const boards = [

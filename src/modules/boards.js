@@ -15,7 +15,8 @@ const detailInitialState = {
 export const getBoardListAsync = createAsyncThunk(
   'boards/getBoardList',
   async () => {
-    const response = await axios.get('/api/boards');
+    const response = await apis.getBoardList();
+    console.log(response);
     return response.data;
   },
 );
@@ -32,6 +33,15 @@ export const getDetailAsync = createAsyncThunk(
   'boards/getDetail',
   async (boardId) => {
     const response = await apis.getDetail();
+    return response.data;
+  },
+);
+
+export const createBoardAsync = createAsyncThunk(
+  'boards/createBoard',
+  async (boardInfo) => {
+    const { title, content, imageUrl, category } = boardInfo;
+    const response = await apis.createBoard(title, content, imageUrl, category);
     return response.data;
   },
 );
@@ -110,7 +120,7 @@ export const increaseRecommendCountAsync = createAsyncThunk(
 
 export const boardListSlice = createSlice({
   name: 'boardList',
-  boardListInitialState,
+  initialState: boardListInitialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -119,7 +129,7 @@ export const boardListSlice = createSlice({
       })
       .addCase(getBoardListAsync.fulfilled, (state, action) => {
         state.status = 'success';
-        state.data.push(action.payload);
+        return { ...state, ...action.payload };
       })
       .addCase(getBoardListAsync.rejected, (state) => {
         state.status = 'failed';
@@ -129,7 +139,7 @@ export const boardListSlice = createSlice({
       })
       .addCase(getBoardListByCategoryAsync.fulfilled, (state, action) => {
         state.status = 'success';
-        state.data.push(action.payload);
+        return { ...state, ...action.payload };
       })
       .addCase(getBoardListByCategoryAsync.rejected, (state) => {
         state.status = 'failed';
@@ -173,3 +183,4 @@ export const {
 } = detailSlice.actions;
 export const selectBoardListState = (state) => state.boardList;
 export const selectDetailListState = (state) => state.detail;
+export default boardListSlice.reducer;

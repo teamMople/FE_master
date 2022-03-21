@@ -14,7 +14,7 @@ function Welcome(props) {
 
   useEffect(() => {
     setTimeout(() => {
-      navigate('/home');
+      navigate('/login');
     }, 5000);
   }, []);
 

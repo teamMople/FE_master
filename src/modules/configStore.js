@@ -21,5 +21,4 @@ const store = configureStore({
     }),
 });
 
-export const useAppDispatch = () => store.dispatch;
 export default store;

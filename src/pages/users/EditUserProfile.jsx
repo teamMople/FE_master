@@ -6,9 +6,6 @@ import {
   BASE_S3_URL,
 } from '../../shared/utils/awsBucketConfig';
 
-import { useAppDispatch } from '../../modules/configStore';
-import { signupAsync } from '../../modules/users';
-
 import { ThemeContext } from 'styled-components';
 import {
   Wrapper,
@@ -22,9 +19,10 @@ import {
   Check,
   Survey,
 } from 'components';
+import { useDispatch } from 'react-redux';
 
 function EditUserProfile(props) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
 

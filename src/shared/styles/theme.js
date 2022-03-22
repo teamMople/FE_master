@@ -61,6 +61,7 @@ const lightThemeColors = {
   backgroundGray: '#F8F8F8',
   gray: '#D5D8DB',
   darkGray: '#718096',
+  gray2: '#718096',
   white: '#FFFFFF',
   primaryYellow: '#FADE86',
   blue: '#6E6BF0',

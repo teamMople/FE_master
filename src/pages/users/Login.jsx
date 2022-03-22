@@ -70,6 +70,8 @@ function Login(props) {
             backgroundColor={themeContext.colors.white}
             color={themeContext.colors.black}
             width="100%"
+            height="52px"
+            padding="15px 23px 15px 23px"
             marign-bottom="8px"
             type="text"
             placeholder="이름"
@@ -82,6 +84,8 @@ function Login(props) {
             backgroundColor={themeContext.colors.white}
             color={themeContext.colors.black}
             width="100%"
+            height="52px"
+            padding="15px 23px 15px 23px"
             marign-bottom="5px"
             type="password"
             placeholder="이메일(아이디)"

@@ -185,6 +185,8 @@ function Signup(props) {
                   backgroundColor={themeContext.colors.white}
                   color={themeContext.colors.black}
                   width="100%"
+                  height="52px"
+                  padding="15px 23px 15px 23px"
                   margin="19px 0px 17px 0px"
                   type="text"
                   onChange={changeEmail}
@@ -206,6 +208,8 @@ function Signup(props) {
                   backgroundColor={themeContext.colors.white}
                   color={themeContext.colors.black}
                   width="100%"
+                  height="52px"
+                  padding="15px 23px 15px 23px"
                   type="password"
                   margin="17px 0px 8px 0px"
                   onChange={changePassword}
@@ -215,6 +219,8 @@ function Signup(props) {
                   backgroundColor={themeContext.colors.white}
                   color={themeContext.colors.black}
                   width="100%"
+                  height="52px"
+                  padding="15px 23px 15px 23px"
                   type="password"
                   onChange={changeConfirmPassword}
                   placeholder="비밀번호 확인"
@@ -276,6 +282,8 @@ function Signup(props) {
                     backgroundColor={themeContext.colors.white}
                     color={themeContext.colors.black}
                     width="100%"
+                    height="52px"
+                    padding="15px 23px 15px 23px"
                     type="text"
                     onChange={changeNickname}
                     placeholder="닉네임"
@@ -358,7 +366,10 @@ function Signup(props) {
                           JSON.stringify(userInfo),
                           { headers: { 'Content-Type': 'application/json' } },
                         )
-                        .then((response) => console.log(response));
+                        .then((response) => {
+                          console.log(response);
+                          navigate('/login');
+                        });
                     }}
                     width="148px"
                     height={38}

@@ -1,102 +1,162 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Wrapper } from 'components/atoms';
 import UserVideoComponent from './UserVideoComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { OpenVidu } from 'openvidu-browser';
 import axios from 'axios';
 import {
+  removeAllRoomSubscribers,
+  removeRoomSubscriber,
+  setRemoteForceMuteStatus,
   setRemoteHandsUpStatus,
   setRemotePermissionStatus,
-  setRoomInfo,
   setRoomSubscribers,
-} from '../../modules/voiceChat';
-// import Chat from './Chat';
-// import ChatRoom from '../Chat/ChatRoom';
-// import UserModel from '../models/user-model';
+} from '../../modules/chat';
+import ChatRoom from '../Chat/ChatRoom';
+import VoteView from './VoteView';
+import SockJS from 'sockjs-client';
+import { over } from 'stompjs';
 
-//!Todo 강제 음소거 되었을 시 '저요' 활성화 되도록
-//!Todo '그래 말해보거라' 허용해줬을 때 참여자별로 '그래 말해보걸' 비활성화
+//!Todo 마이크 선택 가능하도록!!
 
 const LiveRoom = () => {
-  const [disconnect, setDisconnect] = useState(false);
-  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [subscribersState, setSubscribersState] = useState([]);
   const [publisher, setPublisher] = useState(undefined);
   const [myMicStatus, setMyMicStatus] = useState(false);
   const [isHandsUp, setIsHandsUp] = useState(false);
+  const [myMutMute, setMyMicMute] = useState(false);
   const [remoteMicStatus, setRemoteMicStatus] = useState({
     remoteTarget: undefined,
     isAudioActive: undefined,
   });
   const remoteHandsUpStatus = useSelector(
-    (state) => state.rooms.room.remoteHandsUpStatus,
+    (state) => state.chats.room.remoteHandsUpStatus,
+  );
+  const remoteForceMuteStatus = useSelector(
+    (state) => state.chats.room.remoteForceMuteStatus,
   );
   const remotePermissionStatus = useSelector(
-    (state) => state.rooms.room.remotePermissionStatus,
+    (state) => state.chats.room.remotePermissionStatus,
   );
+  const [OV, setOV] = useState(new OpenVidu());
+  const [session, setSession] = useState(OV.initSession());
 
-  const [session, setSession] = useState(new OpenVidu().initSession());
+  const roomSubscribers = useSelector((state) => state.chats.room.subscribers);
+  const joinRoomStatus = useSelector(
+    (state) => state.chats.room.joinRoomStatus,
+  );
+  const memberVoteStatus = useSelector((state) => state.chats.vote.voteStatus);
 
-  const roomSubscribers = useSelector((state) => state.rooms.room.subscribers);
-  //
-  // console.log('🙉 🙉roomInfo : ', roomInfo);
-  // console.log('🙉 🙉roomSubscribers : ', roomSubscribers);
+  // Socket 초기화 - 여기서 초기화 해주고...
+  let sock = new SockJS(process.env.REACT_APP_SOCKET_URL);
+  let stompClient = over(sock);
 
-  // socket url
-  const sockUrl = 'http://localhost:8080/api/ws-stomp';
-
-  // 방 ID
-  const roomId = location.state.roomId;
-  const roomName = location.state.roomName;
-  const role = location.state.role;
-  const maxParticipantCount = location.state.maxParticipantCount;
+  const disconnectSocket = (streamManager) => {
+    let chatMessage = {
+      sender: streamManager ? streamManager : joinRoomStatus.memberName,
+      type: 'LEAVE',
+      roomId: joinRoomStatus.roomId,
+    };
+    stompClient.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
+    stompClient.disconnect();
+  };
 
   useEffect(() => {
     window.addEventListener('beforeunload', onbeforeunload);
-    return window.removeEventListener('beforeunload', onbeforeunload);
+    joinSession().then((r) => r);
+    console.log('useEffect useEffect useEffect useEffect useEffect');
+    return () => window.removeEventListener('beforeunload', onbeforeunload);
   }, []);
 
-  useEffect(() => {
-    joinSession();
-    // return leaveSession();
-  }, []);
+  const onbeforeunload = () => {
+    // event.preventDefault();
+    // eslint-disable-next-line no-param-reassign
+    // event.returnValue = '';
+    if (joinRoomStatus.role !== 'MODERATOR') {
+      leaveRoom().then((r) => r);
+    } else {
+      removeRoom().then((r) => r);
+    }
+  };
 
-  // let mySession = undefined;
-  let OV = new OpenVidu();
-  //=====================
-  function onbeforeunload(event) {
-    leaveSession();
-  }
-  function leaveSession() {
-    const mySession = session;
-
-    if (mySession) {
-      mySession.disconnect();
+  const leaveSession = () => {
+    if (session !== null) {
+      session.disconnect();
     }
 
     // Empty all properties...
-    OV = null;
-    setSession(undefined);
-    setSubscribersState([]);
+    // setSubscribersState([]);
+    setPublisher(undefined);
+    dispatch(removeAllRoomSubscribers());
+    // dispatch(removeRoomSubscriber());
     // setMySessionId('SessionA');
     // setMyUserName('Participant' + Math.floor(Math.random() * 100));
     // setLocalUser(undefined);
-  }
+  };
 
-  const joinSession = () => {
-    subscribeToStreamCreated();
-    connectToSession();
+  // MODERATOR 만 사용 가능한 함수
+  const removeRoom = async () => {
+    const data = {
+      roomId: joinRoomStatus.roomId,
+      memberName: joinRoomStatus.memberName,
+      role: joinRoomStatus.role,
+    };
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${joinRoomStatus.accessToken}`,
+      },
+    };
+    await axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/auth/api/chat/room/close`,
+        data,
+        headers,
+      )
+      .then((res) => {
+        console.log(res);
+        roomSubscribers.forEach((sub) =>
+          session.forceDisconnect(sub.stream.connection.connectionId),
+        );
+        // session.forceDisconnect();
+        leaveRoom();
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const subscribeToStreamDestroyed = () => {
+    if (session) {
+      session.on('streamDestroyed', (event) => {
+        // Remove the stream from 'subscribers' array
+        console.log('🏙 streamDestroyed: streamDestroyed!!');
+        disconnectSocket(event.stream.streamManager.stream.connection.data);
+        deleteSubscriber(event.stream.streamManager);
+      });
+    }
+  };
+  const joinSession = async () => {
+    await subscribeToStreamCreated();
+
+    await session.on('exception', (exception) => {
+      console.warn(exception);
+    });
+    await connectToSession();
+    console.log('🔫 🔫 🔫 subscribersState: ', subscribersState);
+  };
+
+  const deleteSubscriber = (streamManager) => {
+    console.log('🏠 roomSubscribers : ', roomSubscribers);
+    console.log('🧲 streamManager : ', streamManager);
+    dispatch(removeRoomSubscriber({ streamManager: streamManager }));
   };
 
   const subscribeToStreamCreated = () => {
-    const mySession = session;
-    if (mySession) {
-      mySession.on('streamCreated', (event) => {
-        let subscriber = mySession.subscribe(event.stream, undefined);
+    if (session !== null) {
+      session.on('streamCreated', (event) => {
+        let subscriber = session.subscribe(event.stream, undefined);
         let subscribers = subscribersState;
         subscribers.push(subscriber);
         setSubscribersState(subscribers);
@@ -123,14 +183,13 @@ const LiveRoom = () => {
   };
 
   const connect = (token) => {
-    const mySession = session;
-    mySession
+    session
       .connect(
         token,
         // { clientData: this.state.myUserName },
       )
       .then(() => {
-        connectVoice();
+        connectVoice().then((r) => r);
       })
       .catch((error) => {
         alert(`There was an error connecting to the session: ${error.message}`);
@@ -139,6 +198,8 @@ const LiveRoom = () => {
           error.code,
           error.message,
         );
+        localStorage.removeItem('OVAccessToken');
+        navigate('/room', { replace: true });
       });
   };
 
@@ -151,52 +212,114 @@ const LiveRoom = () => {
       return device.kind === 'audioinput';
     });
     let initPublisher = OV.initPublisher(undefined, {
-      audioSource: role === 'PUBLISHER' ? true : audioDevices[0].deviceId, // The source of audio. If undefined default microphone
-      videoSource: role === 'PUBLISHER' ? false : videoDevices[1].deviceId, // The source of video. If undefined default webcam
-      publishAudio: role === 'PUBLISHER' ? false : true, // Whether you want to start publishing with your audio unmuted or not
-      publishVideo: role === 'PUBLISHER' ? false : true, // Whether you want to start publishing with your video enabled or not
+      audioSource:
+        joinRoomStatus.role === 'PUBLISHER' ? true : audioDevices[0].deviceId, // The source of audio. If undefined default microphone
+      videoSource:
+        joinRoomStatus.role === 'PUBLISHER' ? false : videoDevices[1].deviceId, // The source of video. If undefined default webcam
+      publishAudio: joinRoomStatus.role !== 'PUBLISHER', // Whether you want to start publishing with your audio unmuted or not
+      publishVideo: joinRoomStatus.role !== 'PUBLISHER', // Whether you want to start publishing with your video enabled or not
       resolution: '640x480', // The resolution of your video
       frameRate: 30, // The frame rate of your video
       insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
       mirror: false, // Whether to mirror your local video or not
     });
 
+    subscribeToStreamDestroyed();
+
     await session.publish(initPublisher);
     await setPublisher(initPublisher);
 
-    dispatch(
-      setRoomInfo({
-        publisher: initPublisher,
-      }),
-    );
+    // dispatch(
+    //   setRoomInfo({
+    //     publisher: initPublisher,
+    //   }),
+    // );
   };
 
   const getToken = async () => {
     const data = {
-      roomId: roomId,
-      memberName: 'Participant' + Math.floor(Math.random() * 100),
-      role: role,
-      participantCount: maxParticipantCount,
+      roomId: joinRoomStatus.roomId,
+      // memberName: 'Participant' + Math.floor(Math.random() * 100),
+      memberName: joinRoomStatus.memberName,
+      role: joinRoomStatus.role,
+      participantCount: joinRoomStatus.maxParticipantCount,
     };
+    // console.log(data);
+    // console.log(joinRoomStatus.accessToken);
+    // const headers = {
+    //   headers: {
+    //     Authorization: `Bearer ${headerToken}`,
+    //   },
+    // };
     return await axios
       //!Todo auth/api/openvidu/getToken 로 추후에 변경해야 함
-      .post(`http://localhost:8080/api/audio/join`, data)
+      .post(
+        `${process.env.REACT_APP_OPENVIDU_URL}/auth/api/openvidu/getToken`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${joinRoomStatus.accessToken}`,
+          },
+        },
+      )
       .then((res) => {
-        console.log('😽', res.data);
+        // console.log('😽', res.data);
+        localStorage.setItem('OVAccessToken', res.data.token);
         return res.data.token;
       })
       .catch((err) => console.log(err));
   };
   //=====================
 
-  const leaveRoom = () => {
+  const leaveRoom = async () => {
+    //!Todo api 요청 보내기 무조건!!
+    // console.log('leave data : ', memberVoteStatus.memberAgreed);
+    const data = {
+      roomId: joinRoomStatus.roomId,
+      memberName: joinRoomStatus.memberName,
+      role: joinRoomStatus.role,
+      agreed: memberVoteStatus.memberAgreed,
+      disagreed: memberVoteStatus.memberDisagreed,
+    };
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${joinRoomStatus.accessToken}`,
+      },
+    };
+    await axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/auth/api/chat/room/leave`,
+        data,
+        headers,
+      )
+      .then(() => {
+        console.log('방 떠나기 성공!');
+      })
+      .catch((error) => console.log(error));
+    const openviduData = {
+      roomId: joinRoomStatus.roomId,
+      memberName: joinRoomStatus.memberName,
+      role: joinRoomStatus.role,
+      token: localStorage.getItem('OVAccessToken'),
+    };
+    await axios
+      .post(
+        `${process.env.REACT_APP_OPENVIDU_URL}/auth/api/openvidu/deleteToken`,
+        openviduData,
+      )
+      .then(() => {
+        alert('퇴장 토큰 삭제 성공!');
+        localStorage.removeItem('OVAccessToken');
+      })
+      .catch(() => alert('퇴장 토큰 삭제 실패!'));
+    disconnectSocket();
     leaveSession();
+    dispatch(removeAllRoomSubscribers);
     navigate('/room', { replace: true });
   };
 
   // 마이크 상태가 변할 때 메세지를 보낸다
   const sendChangeMicStatus = () => {
-    const mySession = session;
     console.log('mute publisher::::: ', publisher);
     setMyMicStatus(!myMicStatus);
     publisher.publishAudio(myMicStatus);
@@ -204,29 +327,10 @@ const LiveRoom = () => {
       data: JSON.stringify({ isAudioActive: myMicStatus }),
       type: 'userChanged',
     };
-    mySession
+    session
       .signal(signalOptions)
       .then(() => console.log('마이크 상태가 정상적으로 전송되었습니다!'))
       .catch((error) => console.error(error));
-    // try {
-    //   const devices = await OV.getDevices();
-    //
-    //   let newPublisher = OV.initPublisher(undefined, {
-    //     videoSource: false,
-    //     audioSource: true,
-    //     publishVideo: false,
-    //     publishAudio: false,
-    //   });
-    //
-    //   const oldPublisher = publisher;
-    //
-    //   await session.unpublish(oldPublisher);
-    //   await session.publish(newPublisher);
-    //
-    //   setPublisher(newPublisher);
-    // } catch (e) {
-    //   console.log(e);
-    // }
   };
 
   useEffect(() => {
@@ -235,16 +339,17 @@ const LiveRoom = () => {
 
   // 마이크 상태가 변하면 메세지를 받는다.
   const receiveMicStatus = () => {
-    const mySession = session;
-    mySession.on('signal:userChanged', (event) => {
-      const isAudioActive = JSON.parse(event.data).isAudioActive;
-      const remoteTarget = event.from.connectionId;
-      setRemoteMicStatus({
-        remoteTarget: remoteTarget,
-        isAudioActive: isAudioActive,
+    if (session !== null) {
+      session.on('signal:userChanged', (event) => {
+        const isAudioActive = JSON.parse(event.data).isAudioActive;
+        const remoteTarget = event.from.connectionId;
+        setRemoteMicStatus({
+          remoteTarget: remoteTarget,
+          isAudioActive: isAudioActive,
+        });
+        console.log('마이크 상태를 정상적으로 전송 받았습니다!');
       });
-      console.log('마이크 상태를 정상적으로 전송 받았습니다!');
-    });
+    }
   };
 
   // 방장이 강제로 구독자 권한 박탈할 때
@@ -258,53 +363,70 @@ const LiveRoom = () => {
     //   .catch((error) => console.error(error));
     // -----------
 
-    const mySession = session;
     const requester = sub.stream.connection.connectionId;
     const options = {
       data: JSON.stringify({ forceMute: true, requester: requester }),
       type: 'forceMute',
     };
-    mySession
-      .signal(options)
-      .then(() =>
-        console.log('참여자에 대한 강제 음소거 메시지가 전송되었습니다!'),
-      )
-      .catch((error) => console.error(error));
+    if (session !== null) {
+      session
+        .signal(options)
+        .then(() => {
+          console.log('참여자에 대한 강제 음소거 메시지가 전송되었습니다!');
+        })
+        .catch((error) => console.error(error));
+      dispatch(
+        setRemoteForceMuteStatus({
+          remoteTarget: requester,
+          forceMute: false,
+        }),
+      );
+    }
   };
   useEffect(() => {
     receiveForceMute();
   }, [publisher]);
   const receiveForceMute = () => {
-    const mySession = session;
-    mySession.on('signal:forceMute', (event) => {
-      const data = JSON.parse(event.data);
-      const remoteTarget = event.from.connectionId;
-      console.log(
-        '참여자에 대한 강제 음소거 메시지를 받았습니다!',
-        data,
-        remoteTarget,
-      );
-      if (
-        publisher &&
-        data.requester === publisher.session.connection.connectionId
-      ) {
-        publisher.publishAudio(false);
-      }
-    });
+    if (session !== null) {
+      session.on('signal:forceMute', (event) => {
+        const data = JSON.parse(event.data);
+        const remoteTarget = event.from.connectionId;
+        console.log(
+          '참여자에 대한 강제 음소거 메시지를 받았습니다!',
+          data,
+          remoteTarget,
+        );
+        if (
+          publisher &&
+          data.requester === publisher.session.connection.connectionId
+        ) {
+          publisher.publishAudio(false);
+        }
+        dispatch(
+          setRemoteHandsUpStatus({
+            remoteTarget: data.requester,
+            isHandsUp: false,
+          }),
+        );
+        setIsHandsUp(false);
+        setMyMicMute(false);
+      });
+    }
   };
 
   useEffect(() => {
     receiveHandsUp();
-  }, [publisher]);
+  }, []);
 
   // 발언권을 요청할 때
-  const sendHandsUp = () => {
-    const mySession = session;
+  const sendHandsUp = (publisher) => {
+    const requester = publisher.stream.connection.connectionId;
+    console.log('🎊 🎊 requester::', requester);
     const handsUpOptions = {
-      data: JSON.stringify({ isHandsUp: true }),
+      data: JSON.stringify({ requester: requester, isHandsUp: true }),
       type: 'handsUp',
     };
-    mySession
+    session
       .signal(handsUpOptions)
       .then(() => console.log('발언하고 싶다고 전송되었습니다!'))
       .catch((error) => console.error(error));
@@ -315,29 +437,36 @@ const LiveRoom = () => {
 
   // 발언권 요청자를 받을 때
   const receiveHandsUp = () => {
-    const mySession = session;
-    mySession.on('signal:handsUp', (event) => {
-      const data = JSON.parse(event.data).isHandsUp;
-      const remoteTarget = event.from.connectionId;
-      // setRemoteHandsUpStatus([
-      //   ...remoteHandsUpStatus,
-      //   {
-      //     remoteTarget: remoteTarget,
-      //     isHandsUp: data,
-      //   },
-      // ]);
+    if (session !== null) {
+      session.on('signal:handsUp', (event) => {
+        const data = JSON.parse(event.data);
+        const remoteTarget = event.from.connectionId;
+        // setRemoteHandsUpStatus([
+        //   ...remoteHandsUpStatus,
+        //   {
+        //     remoteTarget: remoteTarget,
+        //     isHandsUp: data,
+        //   },
+        // ]);
 
-      // 전역에서 관리해야 발언권 요청자 모두를 보여줄 수 있다.
-      dispatch(
-        setRemoteHandsUpStatus({
-          remoteTarget: remoteTarget,
-          isHandsUp: data,
-        }),
-      );
-
-      console.log('발언 요청을 받았습니다!');
-      console.log('퍼블리셔 핸즈업 리시브 :: ', publisher);
-    });
+        // 전역에서 관리해야 발언권 요청자 모두를 보여줄 수 있다.
+        dispatch(
+          setRemoteHandsUpStatus({
+            remoteTarget: data.requester,
+            isHandsUp: data.isHandsUp,
+          }),
+        );
+        dispatch(
+          setRemotePermissionStatus({
+            remoteTarget: remoteTarget,
+            permitSpeaking: false,
+          }),
+        );
+        console.log('💎💎 remotePermissionStatus', remotePermissionStatus);
+        console.log('발언 요청을 받았습니다!');
+        // console.log('퍼블리셔 핸즈업 리시브 :: ', publisher);
+      });
+    }
   };
 
   // 발언권을 요청한 요청자와 구독자가 일치하는지 판단
@@ -346,7 +475,15 @@ const LiveRoom = () => {
       (item) => item.remoteTarget === sub.stream.connection.connectionId,
     );
     if (val.length > 0) {
-      return val[0].remoteTarget;
+      return val[val.length - 1].remoteTarget;
+    }
+  };
+  const remoteTargetForceMuteStatus = (sub) => {
+    const val = remoteForceMuteStatus.filter(
+      (item) => item.remoteTarget === sub.stream.connection.connectionId,
+    );
+    if (val.length > 0) {
+      return val[val.length - 1].forceMute;
     }
   };
 
@@ -356,7 +493,7 @@ const LiveRoom = () => {
       (item) => item.remoteTarget === sub.stream.connection.connectionId,
     );
     if (val.length > 0) {
-      return val[0].permitSpeaking;
+      return val[val.length - 1].permitSpeaking;
     }
   };
 
@@ -377,22 +514,29 @@ const LiveRoom = () => {
 
   // 발언권 부여 메시지
   const sendPermitSpeaking = (sub) => {
-    const mySession = session;
     const requester = sub.stream.connection.connectionId;
     const options = {
       data: JSON.stringify({ permission: true, requester: requester }),
       type: 'speaking',
     };
-    mySession
-      .signal(options)
-      .then(() => console.log('발언 요청에 대한 허가를 전송하였습니다!'))
-      .catch((error) => console.error(error));
-    dispatch(
-      setRemotePermissionStatus({
-        remoteTarget: requester,
-        permitSpeaking: true,
-      }),
-    );
+    if (session !== null) {
+      session
+        .signal(options)
+        .then(() => console.log('발언 요청에 대한 허가를 전송하였습니다!'))
+        .catch((error) => console.error(error));
+      dispatch(
+        setRemotePermissionStatus({
+          remoteTarget: requester,
+          permitSpeaking: true,
+        }),
+      );
+      dispatch(
+        setRemoteForceMuteStatus({
+          remoteTarget: requester,
+          forceMute: true,
+        }),
+      );
+    }
   };
 
   // deps 에 publisher 를 넣어놓은 이유는 메시지를 받을 때는 항상 publisher 가 초기화된다. 메시지 보낼 때 같이 보내줘야하는데 보내는 것 자체가 불가능한 것 같다.
@@ -403,21 +547,26 @@ const LiveRoom = () => {
 
   // 발언권 부여 수락 메시지
   const receivePermitSpeaking = () => {
-    const mySession = session;
-    mySession.on('signal:speaking', (event) => {
-      const data = JSON.parse(event.data);
-      const connectionId = event.target.connection.connectionId;
-      const remoteTarget = event.from.connectionId;
-      console.log('발언 요청에 대한 허가가 떨어졌습니다!', data, remoteTarget);
-      console.log('퍼블리셔...::', publisher);
-      if (publisher && data.requester === isPublisherId(publisher)) {
-        console.log('퍼블리셔와 리퀘스터가 똑같아!!');
-        publisher.publishAudio(true);
-      }
-      if (publisher && publisher.stream.audioActive) {
-        setIsHandsUp(true);
-      }
-    });
+    if (session !== null) {
+      session.on('signal:speaking', (event) => {
+        const data = JSON.parse(event.data);
+        const remoteTarget = event.from.connectionId;
+        console.log(
+          '발언 요청에 대한 허가가 떨어졌습니다!',
+          data,
+          remoteTarget,
+        );
+        // console.log('퍼블리셔...::', publisher);
+        if (publisher && data.requester === isPublisherId(publisher)) {
+          console.log('퍼블리셔와 리퀘스터가 똑같아!!');
+          publisher.publishAudio(true);
+        }
+        if (publisher && publisher.stream.audioActive) {
+          setIsHandsUp(true);
+          setMyMicMute(true);
+        }
+      });
+    }
   };
 
   return (
@@ -425,9 +574,9 @@ const LiveRoom = () => {
       <Wrapper padding={'16px'}>
         {/* ---- 채팅방 ----*/}
         <div>실시간 채팅방</div>
-        <p>방제 : {roomName}</p>
+        <p>방제 : {joinRoomStatus.roomName}</p>
         {/*<p>방장 : {moderator}</p>*/}
-        <p>역할 : {role}</p>
+        <p>역할 : {joinRoomStatus.role}</p>
         <hr />
 
         <div
@@ -444,9 +593,11 @@ const LiveRoom = () => {
               <img
                 src={'/asset/image/userIcon.jpeg'}
                 style={{ width: 30, height: 30 }}
+                alt={'profile-image'}
               />
               <UserVideoComponent streamManager={publisher} />
-              {isModerator(publisher) && (
+              {(isModerator(publisher) ||
+                (isPublisher(publisher) && myMutMute)) && (
                 <>
                   <button onClick={sendChangeMicStatus}>음소거</button>
                   <div>
@@ -457,7 +608,10 @@ const LiveRoom = () => {
                 </>
               )}
               {isPublisher(publisher) && !isHandsUp && (
-                <button onClick={sendHandsUp}>저요!!</button>
+                <button onClick={() => sendHandsUp(publisher)}>손 들기</button>
+              )}
+              {isModerator(publisher) && (
+                <button onClick={removeRoom}>방 종료하기</button>
               )}
             </div>
           )}
@@ -471,6 +625,7 @@ const LiveRoom = () => {
               <img
                 src={'/asset/image/userIcon.jpeg'}
                 style={{ width: 30, height: 30 }}
+                alt={'profile-image'}
               />
               {sub.stream.connection.connectionId ===
                 remoteMicStatus.remoteTarget && (
@@ -483,16 +638,21 @@ const LiveRoom = () => {
               <UserVideoComponent streamManager={sub} />
 
               {/* 방장이 강제로 구독자 권한 박탈 시킬 수 있음*/}
-              {publisher && isModerator(publisher) && (
-                <button onClick={() => sendForceMute(sub)}>닥쳐라 요놈!</button>
-              )}
+              {publisher &&
+                isModerator(publisher) &&
+                remoteTarget(sub) &&
+                remoteTargetForceMuteStatus(sub) && (
+                  <button onClick={() => sendForceMute(sub)}>
+                    강제 음소거
+                  </button>
+                )}
 
               {publisher &&
                 isModerator(publisher) &&
-                sub.stream.connection.connectionId === remoteTarget(sub) &&
+                remoteTarget(sub) &&
                 !remoteTargetPermissionStatus(sub) && (
                   <button onClick={() => sendPermitSpeaking(sub)}>
-                    그래 말해보거라
+                    발언권 부여
                   </button>
                 )}
             </div>
@@ -500,16 +660,28 @@ const LiveRoom = () => {
         </div>
 
         <button onClick={leaveRoom}>방 나가기</button>
-      </Wrapper>
 
-      {/*!!Todo subscriber로 들어오면 어떻게 할 지??? */}
-      {/*{publisher && (*/}
-      {/*  <ChatRoom*/}
-      {/*    roomId={roomId}*/}
-      {/*    sockUrl={sockUrl}*/}
-      {/*    userId={publisher.session.connection.data}*/}
-      {/*  />*/}
-      {/*)}*/}
+        {publisher && (
+          <VoteView
+            roomId={joinRoomStatus.roomId}
+            userId={publisher.session.connection.data}
+            memberAgreed={joinRoomStatus.memberAgreed}
+            memberDisagreed={joinRoomStatus.memberDisagreed}
+            // disconnect={disconnect}
+            stompClient={stompClient}
+            sock={sock}
+          />
+        )}
+      </Wrapper>
+      {publisher && (
+        <ChatRoom
+          roomId={joinRoomStatus.roomId}
+          userId={publisher.session.connection.data}
+          // disconnect={disconnect}
+          stompClient={stompClient}
+          sock={sock}
+        />
+      )}
     </>
   );
 };

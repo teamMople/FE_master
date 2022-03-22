@@ -3,8 +3,8 @@ import OpenViduVideoComponent from './OvVideo';
 import './UserVideo.css';
 import PropTypes from 'prop-types';
 
-const UserVideoComponent = ({ streamManager, onClick }) => {
-  console.log('🐝 🐝 streamManager', streamManager);
+const UserVideoComponent = ({ streamManager }) => {
+  // console.log('🐝 🐝 streamManager', streamManager);
   // console.log('🐝 🐝 subscriber', subscriber);
   // const [stream, setStream] = useState(undefined);
   // const [name, setName] = useState(undefined);
@@ -42,9 +42,9 @@ const UserVideoComponent = ({ streamManager, onClick }) => {
           {/*  ref={videoRef}*/}
           {/*/>*/}
           <div>{/*<p>{getNicknameTag()}</p>*/}</div>
-          {streamManager.openvidu?.role === 'MODERATOR' && (
-            <button onClick={onClick}>발언권 주기</button>
-          )}
+          {/*{streamManager.openvidu?.role === 'MODERATOR' && (*/}
+          {/*  <button onClick={onClick}>발언권 주기</button>*/}
+          {/*)}*/}
         </div>
       )}
       {/*{subscriber && (*/}

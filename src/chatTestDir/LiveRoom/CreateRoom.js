@@ -3,6 +3,8 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { Textarea, SelectTab, DropdownSelect } from 'components';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setJoinRoomStatus } from '../../modules/chat';
 
 const CreateRoom = () => {
   const [roomName, setRoomName] = useState('');
@@ -11,9 +13,8 @@ const CreateRoom = () => {
   const [memberCount, setMemberCount] = useState(10);
   const [content, setContent] = useState(null);
   const [moderator, setModerator] = useState('TestUser');
-  const [roomId, setRoomId] = useState(null);
-  const [publisher, setPublisher] = useState(undefined);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const selectMenu = [{ value: '공개토론' }, { value: '비공개토론' }];
   const options = [
@@ -25,24 +26,57 @@ const CreateRoom = () => {
     { value: '기타', label: '기타' },
   ];
 
+  // 임시 방장 token
+  const token = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhQGEuY29tIiwic2NvcGVzIjpbIlVTRVIiXSwiaXNzIjoiMiIsImF1ZCI6ImEiLCJpYXQiOjE2NDc4ODYyNzYsImV4cCI6MTY0Nzk1ODI3Nn0.ZmSAY3KwJfSCJiy7zPcOqJyNLF5E0tL7zl2Y_rVlv3kA5HZ2tQiPt4hnDCfL0jSx7LggPrcOBu8UTibYjVDbYA`;
+
   const createRoom = async () => {
     const data = {
-      moderator: moderator,
       roomName: roomName,
+      category: null,
+      moderator: moderator,
+      maxParticipantCount: memberCount,
       content: content,
       isPrivate: false,
-      maxParticipantCount: memberCount,
     };
 
+    // 임시 : header 에 토큰값 넘길 것
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
     await axios
-      .post('http://localhost:8080/api/chat/room', data)
+      .post(
+        `${process.env.REACT_APP_API_URL}/auth/api/chat/room`,
+        data,
+        headers,
+      )
 
       // 이거는 방을 만들 때!!!!!!
       .then(async (res) => {
         console.log(res.data.roomId);
-        await setRoomId(res.data.roomId);
         await setRoomName(res.data.roomName);
         // navigateVoiceRoom(roomId, roomName);
+        const status = {
+          role: 'MODERATOR',
+          roomId: res.data.roomId,
+          roomName: res.data.roomName,
+          category: res.data.category,
+          moderatorId: res.data.moderatorId,
+          moderatorNickname: res.data.moderatorNickname,
+          maxParticipantCount: res.data.maxParticipantCount,
+          content: res.data.content,
+          isPrivate: res.data.isPrivate,
+          agreeCount: res.data.agreeCount,
+          disagreeCount: res.data.disagreeCount,
+          onAir: res.data.onAir,
+          createdAt: res.data.createdAt,
+          memberAgreed: res.data.memberAgreed,
+          memberDisagreed: res.data.memberDisagreed,
+          memberName: 'a',
+          accessToken: token,
+        };
+        dispatch(setJoinRoomStatus(status));
         await navigateVoiceRoom(
           res.data.roomId,
           res.data.roomName,
@@ -55,19 +89,30 @@ const CreateRoom = () => {
       });
   };
 
-  // console.log('😊😊😊️', roomName, moderator, publisher);
-
-  const navigateVoiceRoom = (roomId, roomName, maxParticipantCount) => {
-    //navigate 로 state 넘기지 말자... publisher 객체가 너무 커서 안넘어간다... 하...
-    navigate(`/room/${roomId}`, {
-      state: {
-        roomId: roomId,
-        roomName: roomName,
-        role: 'MODERATOR',
-        maxParticipantCount: maxParticipantCount,
+  const navigateVoiceRoom = async (roomId, roomName, maxParticipantCount) => {
+    const data = {
+      roomId: roomId,
+      memberName: 'a',
+      role: 'MODERATOR',
+      participantCount: maxParticipantCount,
+    };
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-      replace: true,
-    });
+    };
+    await axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/auth/api/chat/room/join`,
+        data,
+        headers,
+      )
+      .then((res) => {
+        console.log('🚦 join response(create room) =====> ', res.data);
+      })
+      .catch((error) => console.error(error));
+    //navigate 로 state 넘기지 말자... publisher 객체가 너무 커서 안넘어간다... 하...
+    navigate(`/room/${roomId}`, { replace: true });
   };
   const handleChangeValue = (e) => {
     const value = e.target.value;

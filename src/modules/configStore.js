@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './users';
-import roomReducer from './voiceChat';
+import chatReducer from './chat';
 
 const store = configureStore({
   reducer: {
     users: userReducer,
-    rooms: roomReducer,
+    chats: chatReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

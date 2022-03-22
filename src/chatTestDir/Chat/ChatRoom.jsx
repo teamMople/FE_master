@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { over } from 'stompjs';
-import SockJS from 'sockjs-client';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
 import {
   ChatWrapper,
   JoinerLeaver,
@@ -14,24 +11,22 @@ import {
   SenderWrapper,
 } from '../LiveRoom/style';
 
-let stompClient = null;
+// let stompClient = null;
 
-const ChatRoom = ({ roomId, sockUrl, disconnect, userId }) => {
+const ChatRoom = ({ stompClient, sock, roomId, userId }) => {
   const [publicChats, setPublicChats] = useState([]);
-  const navigate = useNavigate();
   const [userData, setUserData] = useState({
     sender: '',
     connected: false,
     message: '',
   });
   useEffect(() => {
-    console.log(userData);
     connect();
   }, []);
 
   const connect = () => {
-    let sock = new SockJS(sockUrl);
-    stompClient = over(sock);
+    // let sock = new SockJS(process.env.REACT_APP_SOCKET_URL);
+    // stompClient = over(sock);
     stompClient.connect({}, onConnected, onError);
 
     sock.addEventListener('open', () => {
@@ -44,11 +39,12 @@ const ChatRoom = ({ roomId, sockUrl, disconnect, userId }) => {
       console.log('Disconnected to Server😀');
     });
   };
-  const leaveRoom = () => {
-    stompClient.disconnect(() => {
-      navigate('/', { replace: true });
-    });
-  };
+  // const leaveRoom = () => {
+  //   // stompClient.disconnect(() => {
+  //   //   navigate('/', { replace: true });
+  //   // });
+  //   stompClient.disconnect();
+  // };
 
   const onConnected = () => {
     setUserData({ ...userData, connected: true });
@@ -85,7 +81,7 @@ const ChatRoom = ({ roomId, sockUrl, disconnect, userId }) => {
     setUserData({ ...userData, message: value });
   };
   const sendMessage = () => {
-    console.log('👍 메시지 보내기 클릭!');
+    // console.log('👍 메시지 보내기 클릭!');
     if (stompClient) {
       let chatMessage = {
         sender: userId,
@@ -93,34 +89,28 @@ const ChatRoom = ({ roomId, sockUrl, disconnect, userId }) => {
         type: 'CHAT',
         roomId: roomId,
       };
-      console.log('👍 내가 보낸 메시지 ==>', chatMessage);
+      // console.log('👍 내가 보낸 메시지 ==>', chatMessage);
       stompClient.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
       setUserData({ ...userData, message: '' });
     }
   };
 
-  const handleUsername = (event) => {
-    const { value } = event.target;
-    setUserData({ ...userData, sender: value });
-  };
+  // const registerUser = () => {
+  //   connect();
+  // };
 
-  const registerUser = () => {
-    connect();
-  };
-
-  if (disconnect) {
-    window.confirm('연결을 끊으시겠어요?');
-    let chatMessage = {
-      sender: userData.sender,
-      type: 'LEAVE',
-      roomId: roomId,
-    };
-    stompClient.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
-    leaveRoom();
-  }
+  // if (disconnect) {
+  //   let chatMessage = {
+  //     sender: userId,
+  //     type: 'LEAVE',
+  //     roomId: roomId,
+  //   };
+  //   stompClient.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
+  //   leaveRoom();
+  // }
   return (
     <div className="container">
-      {userData.connected ? (
+      {userData.connected && (
         <ChatWrapper>
           {publicChats.map((chat, index) => (
             <>
@@ -166,27 +156,15 @@ const ChatRoom = ({ roomId, sockUrl, disconnect, userId }) => {
             </button>
           </div>
         </ChatWrapper>
-      ) : (
-        <div className="register">
-          <input
-            id="user-name"
-            placeholder="Enter your name"
-            name="userName"
-            value={userData.sender}
-            onChange={handleUsername}
-          />
-          <button type="button" onClick={registerUser}>
-            connect
-          </button>
-        </div>
       )}
     </div>
   );
 };
 
 ChatRoom.propTypes = {
-  roomId: PropTypes.string,
-  sockUrl: PropTypes.string,
+  stompClient: PropTypes.any,
+  sock: PropTypes.any,
+  roomId: PropTypes.number,
   disconnect: PropTypes.bool,
   userId: PropTypes.string,
 };

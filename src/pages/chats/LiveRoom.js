@@ -14,7 +14,7 @@ import {
   setRemotePermissionStatus,
   setRoomSubscribers,
 } from '../../modules/chat';
-import ChatRoom from '../Chat/ChatRoom';
+import TextChatView from './TextChatView';
 import VoteView from './VoteView';
 import SockJS from 'sockjs-client';
 import { over } from 'stompjs';
@@ -674,7 +674,7 @@ const LiveRoom = () => {
         )}
       </Wrapper>
       {publisher && (
-        <ChatRoom
+        <TextChatView
           roomId={joinRoomStatus.roomId}
           userId={publisher.session.connection.data}
           // disconnect={disconnect}

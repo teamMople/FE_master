@@ -28,9 +28,9 @@ import { darkTheme, lightTheme } from '../styles/theme';
 import history from '../utils/history';
 import { ThemeProvider } from 'styled-components';
 
-import CreateRoom from '../../chatTestDir/LiveRoom/CreateRoom';
-import LiveRoom from '../../chatTestDir/LiveRoom/LiveRoom';
-import RoomList from '../../chatTestDir/LiveRoom/RoomList';
+import CreateRoom from '../../pages/chats/CreateRoom';
+import LiveRoom from '../../pages/chats/LiveRoom';
+import RoomList from '../../pages/chats/RoomList';
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);

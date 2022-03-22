@@ -9,11 +9,11 @@ import {
   Sender,
   SenderInner,
   SenderWrapper,
-} from '../LiveRoom/style';
+} from './style';
 
 // let stompClient = null;
 
-const ChatRoom = ({ stompClient, sock, roomId, userId }) => {
+const TextChatView = ({ stompClient, sock, roomId, userId }) => {
   const [publicChats, setPublicChats] = useState([]);
   const [userData, setUserData] = useState({
     sender: '',
@@ -161,7 +161,7 @@ const ChatRoom = ({ stompClient, sock, roomId, userId }) => {
   );
 };
 
-ChatRoom.propTypes = {
+TextChatView.propTypes = {
   stompClient: PropTypes.any,
   sock: PropTypes.any,
   roomId: PropTypes.number,
@@ -169,4 +169,4 @@ ChatRoom.propTypes = {
   userId: PropTypes.string,
 };
 
-export default ChatRoom;
+export default TextChatView;

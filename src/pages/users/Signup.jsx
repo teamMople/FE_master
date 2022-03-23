@@ -241,14 +241,7 @@ function Signup(props) {
                     justifyContent: 'center',
                   }}
                 >
-                  <Button
-                    onClick={() => setStep(1)}
-                    width="148px"
-                    height={38}
-                    color={themeContext.colors.white}
-                    backgroundColor={themeContext.colors.blue}
-                    margin="0px 0px 8px 0px"
-                  >
+                  <Button onClick={() => setStep(1)} secondary size={'large'}>
                     다음으로
                   </Button>
                 </div>
@@ -313,11 +306,8 @@ function Signup(props) {
                       setStep(2);
                       handleUpload('profile', selectedFile);
                     }}
-                    width="148px"
-                    height={38}
-                    color={themeContext.colors.white}
-                    backgroundColor={themeContext.colors.blue}
-                    margin="0px 0px 8px 0px"
+                    secondary
+                    size={'large'}
                   >
                     다음으로
                   </Button>
@@ -371,11 +361,8 @@ function Signup(props) {
                           navigate('/login');
                         });
                     }}
-                    width="148px"
-                    height={38}
-                    color={themeContext.colors.white}
-                    backgroundColor={themeContext.colors.blue}
-                    margin="0px 0px 8px 0px"
+                    secondary
+                    size={'large'}
                   >
                     다음으로
                   </Button>

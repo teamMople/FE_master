@@ -24,6 +24,7 @@ import {
   Survey,
   MenuTab,
   AlarmTile,
+  ChatUserProfile,
 } from './molecules';
 import { BoardList, CardCarousel, CategoryCarousel } from './organisms';
 
@@ -54,4 +55,5 @@ export {
   BoardList,
   CardCarousel,
   CategoryCarousel,
+  ChatUserProfile,
 };

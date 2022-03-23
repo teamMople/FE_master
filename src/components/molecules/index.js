@@ -10,3 +10,4 @@ export { default as Survey } from './Survey';
 export { default as Loader } from './Loader';
 export { default as MenuTab } from './MenuTab';
 export { default as AlarmTile } from './AlarmTile';
+export { default as ChatUserProfile } from './ChatUserProfile';

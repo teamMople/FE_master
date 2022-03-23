@@ -119,10 +119,8 @@ function Login(props) {
         <Grid padding="0px 15px 0px 15px">
           <Button
             onClick={handleLoginClick}
-            width="100%"
-            height={38}
-            color={themeContext.colors.white}
-            backgroundColor={themeContext.colors.blue}
+            fluid
+            secondary
             margin="0px 0px 8px 0px"
           >
             로그인

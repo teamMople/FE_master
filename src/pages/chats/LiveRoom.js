@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Wrapper } from 'components/atoms';
-import UserVideoComponent from './UserVideoComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { OpenVidu } from 'openvidu-browser';
 import axios from 'axios';
@@ -18,6 +17,8 @@ import TextChatView from './TextChatView';
 import VoteView from './VoteView';
 import SockJS from 'sockjs-client';
 import { over } from 'stompjs';
+import ChatUserProfile from '../../components/molecules/ChatUserProfile';
+import { Button } from '../../components';
 
 //!Todo 마이크 선택 가능하도록!!
 
@@ -615,60 +616,49 @@ const LiveRoom = () => {
           style={{ display: 'flex' }}
         >
           {publisher && (
-            <div
-              className="stream-container col-md-6 col-xs-6"
-              style={{ border: '1px solid red' }}
-            >
-              <div>{publisher.stream.connection.connectionId}</div>
-              <img
-                src={'/asset/image/userIcon.jpeg'}
-                style={{ width: 30, height: 30 }}
-                alt={'profile-image'}
+            <div>
+              <ChatUserProfile
+                streamManager={publisher}
+                isMute={
+                  (isModerator(publisher) ||
+                    (isPublisher(publisher) && myMutMute)) &&
+                  publisher.stream.audioActive
+                }
+                userName={publisher.stream.connection.data}
               />
-              <UserVideoComponent streamManager={publisher} />
-              {(isModerator(publisher) ||
-                (isPublisher(publisher) && myMutMute)) && (
-                <>
-                  <button onClick={sendChangeMicStatus}>음소거</button>
-                  <div>
-                    {publisher.stream.audioActive
-                      ? '음소거 상태가 아닙니다.'
-                      : '음소거 상태입니다.'}
-                  </div>
-                </>
-              )}
+
               {isPublisher(publisher) && !isHandsUp && (
                 <button onClick={() => sendHandsUp(publisher)}>손 들기</button>
               )}
               {isModerator(publisher) && (
                 <>
-                  <button onClick={leaveRoom}>방 종료하기</button>
-                  <button onClick={sendForceLeave}>방 종료하기 메시지</button>
+                  <Button backgroundColor={'blue'} fluid onClick={leaveRoom}>
+                    방 종료하기
+                  </Button>
+                  <Button onClick={sendForceLeave}>방 종료하기 메시지</Button>
                 </>
               )}
             </div>
           )}
           {roomSubscribers.map((sub, i) => (
-            <div
-              key={i}
-              className="stream-container col-md-6 col-xs-6"
-              style={{ border: '1px solid blue' }}
-            >
-              <div>{sub.stream.connection.connectionId}</div>
-              <img
-                src={'/asset/image/userIcon.jpeg'}
-                style={{ width: 30, height: 30 }}
-                alt={'profile-image'}
-              />
-              {sub.stream.connection.connectionId ===
+            <div key={i} style={{ border: '1px solid blue' }}>
+              {/*{sub.stream.connection.connectionId ===
                 remoteMicStatus.remoteTarget && (
                 <div>
                   {remoteMicStatus.isAudioActive
                     ? '마이크 활성화'
                     : '마이크 비활성화'}
                 </div>
-              )}
-              <UserVideoComponent streamManager={sub} />
+              )}*/}
+              <ChatUserProfile
+                streamManager={sub}
+                isMute={
+                  sub.stream.connection.connectionId ===
+                    remoteMicStatus.remoteTarget &&
+                  remoteMicStatus.isAudioActive
+                }
+                userName={sub.stream.connection.data}
+              />
 
               {/* 방장이 강제로 구독자 권한 박탈 시킬 수 있음*/}
               {publisher &&
@@ -693,7 +683,10 @@ const LiveRoom = () => {
         </div>
 
         <button onClick={leaveRoom}>방 나가기</button>
-
+        {publisher &&
+          (isModerator(publisher) || (isPublisher(publisher) && myMutMute)) && (
+            <button onClick={sendChangeMicStatus}>음소거</button>
+          )}
         {publisher && (
           <VoteView
             roomId={joinRoomStatus.roomId}

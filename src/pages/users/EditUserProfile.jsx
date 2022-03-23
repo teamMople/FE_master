@@ -179,11 +179,7 @@ function EditUserProfile(props) {
             onClick={() => {
               handleUpload('profile', selectedFile);
             }}
-            width="148px"
-            height={38}
-            color={themeContext.colors.white}
-            backgroundColor={themeContext.colors.blue}
-            margin="0px 0px 8px 0px"
+            secondary
           >
             저장
           </Button>

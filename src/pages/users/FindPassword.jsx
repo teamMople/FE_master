@@ -52,14 +52,7 @@ function FindPassword(props) {
         />
       </Grid>
       <Grid center>
-        <Button
-          onClick={handleButtonClick}
-          width="148px"
-          height={38}
-          color={themeContext.colors.white}
-          backgroundColor={themeContext.colors.blue}
-          margin="0px 0px 8px 0px"
-        >
+        <Button onClick={handleButtonClick} secondary>
           비밀번호 찾기
         </Button>
       </Grid>

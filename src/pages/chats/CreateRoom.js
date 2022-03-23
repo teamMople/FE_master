@@ -27,12 +27,12 @@ const CreateRoom = () => {
   ];
 
   // 임시 방장 token
-  const token = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhQGEuY29tIiwic2NvcGVzIjpbIlVTRVIiXSwiaXNzIjoiMiIsImF1ZCI6ImEiLCJpYXQiOjE2NDc5NTk3NTYsImV4cCI6MTY0ODAzMTc1Nn0.TziOAxoy0iX8wZh3r8U__HQUic8WaUuBqE1GzsZdb27_aDMKo7wp9ETaKBDlXJsj2UeDO-2tBQPpfjWk-nmBcw`;
+  const token = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhQGEuY29tIiwic2NvcGVzIjpbIlVTRVIiXSwiaXNzIjoiMiIsImF1ZCI6ImEiLCJpYXQiOjE2NDgwNTY1MTcsImV4cCI6MTY0ODEyODUxN30.mAU6nlGWXQhAyoVo34PE7TJFkzn7H7ZJ2DdoMdZjFHZ4bZTS0hfvdLPO6pq4_1Pm24KcBh_ZcmdlmfLB3ESyig`;
 
   const createRoom = async () => {
     const data = {
       roomName: roomName,
-      category: null,
+      category: selectedOption,
       moderator: moderator,
       maxParticipantCount: memberCount,
       content: content,

@@ -6,7 +6,6 @@ import {
   Input,
   Header,
   Textarea,
-  SelectTab,
   DropdownSelect,
 } from 'components';
 import { useDispatch } from 'react-redux';
@@ -53,11 +52,12 @@ function CreateBoard(props) {
         <Header
           label="게시글 작성"
           leftArrow
-          rightButton
-          rightButtonChildren="완료"
-          rightButtonOnClick={() => {
-            dispatch(createBoardAsync(boardInfo));
-            navigate('/home');
+          rightButtonRender={{
+            label: '완료',
+            onClickButton: () => {
+              dispatch(createBoardAsync(boardInfo));
+              navigate('/home');
+            },
           }}
         />
       </Grid>

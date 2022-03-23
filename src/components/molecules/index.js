@@ -13,3 +13,4 @@ export { default as AlarmTile } from './AlarmTile';
 export { default as ProfileBox } from './ProfileBox';
 export { default as VoteResultBar } from './VoteResultBar';
 export { default as CommentBox } from './CommentBox';
+export { default as ReplyCommentBox } from './ReplyCommentBox';

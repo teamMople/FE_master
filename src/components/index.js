@@ -27,6 +27,7 @@ import {
   ProfileBox,
   VoteResultBar,
   CommentBox,
+  ReplyCommentBox,
 } from './molecules';
 import {
   BoardList,
@@ -63,6 +64,7 @@ export {
   MenuTab,
   AlarmTile,
   CommentBox,
+  ReplyCommentBox,
   BoardList,
   CardCarousel,
   CategoryCarousel,

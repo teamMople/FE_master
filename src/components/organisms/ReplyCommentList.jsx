@@ -1,35 +1,23 @@
 import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ThemeContext } from 'styled-components';
-import { Grid, Button, ProfileBox, CommentBox } from 'components';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  getReplyCommentListAsync,
-  selectedCommentList,
-} from 'modules/comments';
+import { Grid, ReplyCommentBox } from 'components';
 
 const ReplyCommentList = (props) => {
-  const { commentId } = props;
-  const dispatch = useDispatch();
+  const { replyComments } = props;
   const themeContext = useContext(ThemeContext);
-  const comments = useSelector(selectedCommentList);
-  console.log(comments);
-
-  useEffect(() => {
-    dispatch(getReplyCommentListAsync(commentId));
-  }, [dispatch]);
 
   return (
     <Grid width="100%">
-      {comments.map((comment, index) => {
-        <CommentBox key={index} comment={comment} />;
+      {replyComments.map((reply, index) => {
+        <ReplyCommentBox key={index} replyComment={reply} />;
       })}
     </Grid>
   );
 };
 
 ReplyCommentList.propTypes = {
-  commentId: PropTypes.number,
+  replyComments: PropTypes.array,
 };
 
 export default ReplyCommentList;

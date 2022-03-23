@@ -16,16 +16,19 @@ import {
   CommentList,
   CommentInputWindow,
 } from 'components';
+import { getCommentListAsync, selectedCommentList } from 'modules/comments';
 
 function BoardDetail(props) {
   const params = useParams();
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
   const detail = useSelector(selectedDetail);
-  console.log(detail);
+  const comments = useSelector(selectedCommentList);
+  console.log(comments);
 
   useEffect(() => {
     dispatch(getDetailAsync(params.boardId));
+    dispatch(getCommentListAsync(params.boardId));
   }, []);
 
   return (
@@ -66,7 +69,7 @@ function BoardDetail(props) {
         </Grid>
         <Grid margin="0px 0px 30px 0px" style={{ float: 'right' }}>
           <Text size="14px" lineHeight="22px">
-            댓글 수 ()
+            댓글 수 ({comments.length})
           </Text>
         </Grid>
       </Grid>
@@ -75,7 +78,7 @@ function BoardDetail(props) {
         height="8px"
         backgroundColor={themeContext.colors.lightGray}
       />
-      <CommentList boardId={detail.id} />
+      <CommentList comments={comments} />
       <CommentInputWindow boardId={detail.id} />
     </Wrapper>
   );

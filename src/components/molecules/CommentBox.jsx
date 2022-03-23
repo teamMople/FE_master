@@ -1,11 +1,24 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Grid, Text, Button, ProfileBox } from 'components';
+import ReplyCommentBox from './ReplyCommentBox';
+import ReplyCommentList from 'components/organisms/ReplyCommentList';
+import {
+  getReplyCommentListAsync,
+  selectedReplyCommentList,
+} from 'modules/comments';
 
 const CommentBox = (props) => {
   const { comment } = props;
   const themeContext = useContext(ThemeContext);
+  const dispatch = useDispatch();
+  const replyComments = useSelector(selectedReplyCommentList);
+
+  useEffect(() => {
+    dispatch(getReplyCommentListAsync(comment.commentId));
+  }, []);
 
   return (
     <Grid width="100%">
@@ -21,8 +34,8 @@ const CommentBox = (props) => {
       </Grid>
       <Grid>
         <Button
-          width="58px"
-          height={32}
+          width="49px"
+          height={26}
           backgroundColor={themeContext.colors.lightGray}
         >
           <Grid margin="0px 5px 0px 0px">
@@ -31,8 +44,8 @@ const CommentBox = (props) => {
           <Text>{comment.recommendCount}</Text>
         </Button>
         <Button
-          width="58px"
-          height={32}
+          width="49px"
+          height={26}
           backgroundColor={themeContext.colors.lightGray}
         >
           <Grid margin="0px 5px 0px 0px">
@@ -41,6 +54,7 @@ const CommentBox = (props) => {
           <Text>{comment.recommendCount}</Text>
         </Button>
       </Grid>
+      <ReplyCommentList replyComments={replyComments} />
     </Grid>
   );
 };

@@ -3,25 +3,20 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { ThemeContext } from 'styled-components';
-import { Grid, Text, Image, Button, ProfileImageStack } from 'components';
+import {
+  Grid,
+  Text,
+  Image,
+  Button,
+  ProfileImageStack,
+  ProfileBox,
+} from 'components';
+import { useNavigate } from 'react-router-dom';
 
 const Tile = (props) => {
   const { type, board } = props;
   const themeContext = useContext(ThemeContext);
-
-  const getDateString = (dateArray) => {
-    const now = parseInt(Date.now()) / 1000;
-    const regDt = parseInt(Date.parse(dateArray[6])) / 1000;
-    const result = (now - regDt) / 3600;
-
-    if (result > 24) {
-      return parseInt(result / 24) + '일 전';
-    } else if (0 < result < 1) {
-      return parseInt(result * 60) + '분 전';
-    } else {
-      return parseInt(result) + '시간 전';
-    }
-  };
+  const navigate = useNavigate();
 
   switch (type) {
     case 'live':
@@ -29,8 +24,8 @@ const Tile = (props) => {
         <LiveTileWrapper>
           <Grid margin="0px 0px 18px 0px">
             <ProfileImageStack
-              nicknames={board.participants}
-              imageUrls={board.participantsProfileImageUrls}
+              nicknames={board.participantsNicknames}
+              imageUrls={Object.values(board.participantsProfileImageUrls)}
             />
           </Grid>
           <Grid margin="0px 0px 14px 0px">
@@ -40,7 +35,7 @@ const Tile = (props) => {
               size="14px"
               lineHeight="18px"
             >
-              {board.title}
+              {board.roomName}
             </Text>
           </Grid>
           <Grid height={40}>
@@ -49,7 +44,9 @@ const Tile = (props) => {
               size="12px"
               lineHeight="20px"
             >
-              {board.content}
+              {board.content && board.content.length > 51
+                ? board.content.slice(0, 51) + '...'
+                : board.content}
             </Text>
           </Grid>
           <Grid isFlex width="252px" className="buttonGroup">
@@ -62,7 +59,7 @@ const Tile = (props) => {
                 <Grid margin="0px 5px 0px 0px">
                   <img src="/asset/icons/Join.svg" />
                 </Grid>
-                <Text>{board.recommendCount}</Text>
+                <Text>{board.participantsNicknames.length}</Text>
               </Button>
             </Grid>
             <Grid isFlex>
@@ -96,33 +93,17 @@ const Tile = (props) => {
       );
     case 'basic':
       return (
-        <BasicTileWrapper>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginBottom: '18px',
-            }}
-          >
-            <Image shape="circle" size={32} src={board.profileImageUrl} />
-            <Grid margin="0px 0px 0px 8px">
-              <Text
-                bold
-                size="12px"
-                lineHeight="18px"
-                color={themeContext.colors.black}
-              >
-                {board.nickname}
-              </Text>
-              <Text
-                size="10px"
-                lineHeight="18px"
-                color={themeContext.colors.gray}
-              >
-                3일전
-              </Text>
-            </Grid>
-          </div>
+        <BasicTileWrapper
+          onClick={() => {
+            navigate('/board/' + board.id);
+          }}
+        >
+          <ProfileBox
+            profileImageUrl={board.profileImageUrl}
+            nickname={board.nickname}
+            createdAt={board.createdAt}
+            margin="0px 0px 18px 0px"
+          />
           <Grid margin="0px 0px 14px 0px">
             <Text
               bold
@@ -148,6 +129,7 @@ const Tile = (props) => {
                 width="58px"
                 height={32}
                 backgroundColor={themeContext.colors.lightGray}
+                onClick={() => {}}
               >
                 <Grid margin="0px 5px 0px 0px">
                   <img src="/asset/icons/Vote.svg" />
@@ -192,14 +174,16 @@ const Tile = (props) => {
 Tile.propTypes = {
   type: PropTypes.string.isRequired,
   board: PropTypes.shape({
+    id: PropTypes.number,
     title: PropTypes.string,
+    roomName: PropTypes.string,
     content: PropTypes.string,
     selected: PropTypes.bool,
     imageUrls: PropTypes.array,
     nickname: PropTypes.string,
     profileImageUrl: PropTypes.string,
-    participants: PropTypes.array,
-    participantsProfileImageUrls: PropTypes.array,
+    participantsNicknames: PropTypes.array,
+    participantsProfileImageUrls: PropTypes.object,
     recommendCount: PropTypes.number,
     agreeCount: PropTypes.number,
     disagreeCount: PropTypes.number,
@@ -211,6 +195,7 @@ Tile.propTypes = {
 Tile.defaultProps = {
   board: {
     title: '',
+    roomName: '',
     content: '',
     selected: false,
     imageUrls: [null, null, null],

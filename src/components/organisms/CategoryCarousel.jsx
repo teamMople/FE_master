@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import { Carousel } from '@trendyol-js/react-carousel';
 
 import { Wrapper, Grid, Text, CategoryTile } from 'components';
+import { useNavigate } from 'react-router-dom';
 
 const CategoryCarousel = (props) => {
   const { label, categories } = props;
+  const navigate = useNavigate();
 
   return (
     <Grid padding="0px 5px 0px 5px">
@@ -28,6 +30,14 @@ const CategoryCarousel = (props) => {
               key={index}
               category={cat.category}
               categoryImageUrl={cat.categoryImageUrl}
+              onClick={() => {
+                if (cat.category.indexOf('/') === -1) {
+                  navigate('/list/' + cat.category);
+                } else {
+                  const uriParam = cat.category.replace('/', '');
+                  navigate('/list/' + uriParam);
+                }
+              }}
             />
           );
         })}

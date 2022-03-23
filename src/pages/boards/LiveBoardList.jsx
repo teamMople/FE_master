@@ -2,27 +2,27 @@ import React, { useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  getBoardListAsync,
-  getBoardListByCategoryAsync,
-  selectedBoardList,
+  getLiveBoardListAsync,
+  getLiveBoardListByCategoryAsync,
+  selectedLiveBoardList,
 } from '../../modules/boards';
 
 import { Wrapper, Grid, Tile, Text } from 'components';
 import { useParams } from 'react-router-dom';
 
-function BoardList(props) {
+function LiveBoardList(props) {
   const params = useParams();
   console.log(params.categoryName);
-  const data = useSelector(selectedBoardList);
+  const data = useSelector(selectedLiveBoardList);
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
   console.log(data);
 
   useEffect(() => {
     if (typeof params.categoryName === 'undefined') {
-      dispatch(getBoardListAsync());
+      dispatch(getLiveBoardListAsync());
     } else {
-      dispatch(getBoardListByCategoryAsync(params.categoryName));
+      dispatch(getLiveBoardListByCategoryAsync(params.categoryName));
     }
     return dispatch;
   }, [dispatch]);
@@ -38,7 +38,7 @@ function BoardList(props) {
           {data.map((board, index) => {
             return (
               <Grid key={index} padding="0px 0px 16px 0px">
-                <Tile type="basic" board={board} />
+                <Tile type="live" board={board} />
               </Grid>
             );
           })}
@@ -47,7 +47,7 @@ function BoardList(props) {
         <Grid
           backgroundColor={themeContext.colors.backgroundGray}
           style={{
-            height: 'auto',
+            height: '100%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -65,4 +65,4 @@ function BoardList(props) {
   );
 }
 
-export default BoardList;
+export default LiveBoardList;

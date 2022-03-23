@@ -95,5 +95,10 @@ const Tab = styled.div`
   border: none;
   border-bottom: 1px solid ${(props) => props.highlightColor};
 `;
+const Line = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${(props) => props.highlightColor};
+`;
 
 export default MenuTab;

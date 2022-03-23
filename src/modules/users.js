@@ -116,14 +116,17 @@ export const kakaoLoginAsync = createAsyncThunk(
   },
 );
 
-export const logout = createAsyncThunk('users/logout', async () => {
+export const logoutAsync = createAsyncThunk('users/logout', async () => {
+  const navigate = useNavigate();
+
   await apis
     .logout()
     .then((response) => {
+      console.log(response);
       if (response.data.status === 'ok') {
         deleteCookie('token');
-        deleteCookie('userPassword');
         localStorage.removeItem('loginUser');
+        navigate('/');
       }
     })
     .catch((error) => {

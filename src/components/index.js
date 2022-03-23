@@ -29,6 +29,7 @@ import {
   VoteResultBar,
   CommentBox,
   ReplyCommentBox,
+  StatusBox,
 } from './molecules';
 import {
   BoardList,
@@ -72,4 +73,5 @@ export {
   CommentList,
   CommentInputWindow,
   ChatUserProfile,
+  StatusBox,
 };

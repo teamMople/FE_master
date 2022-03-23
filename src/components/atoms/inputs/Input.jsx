@@ -54,6 +54,7 @@ const I = styled.input`
   font-size: 14px;
   color: ${({ theme }) => theme.colors.black};
   padding: 15px 23px;
+  font-weight: ${(props) => (props.bold ? 600 : 500)};
 
   &:focus {
     outline: none;

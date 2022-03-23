@@ -31,23 +31,17 @@ function FindPassword(props) {
         </Grid>
 
         <Input
-          backgroundColor={themeContext.colors.white}
-          color={themeContext.colors.black}
+          fluid
           placeholder="이름"
-          marign-bottom="8px"
           value={email}
           onChange={changeEmail}
-          width="100%"
           type="text"
         />
         <Input
-          backgroundColor={themeContext.colors.white}
-          color={themeContext.colors.black}
+          fluid
           placeholder="이메일(아이디)"
-          marign-bottom="5px"
           value={password}
           onChange={changePassword}
-          width="100%"
           type="password"
         />
       </Grid>

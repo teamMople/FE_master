@@ -2,8 +2,6 @@ import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ThemeContext } from 'styled-components';
 import { Wrapper, Grid, Text, Loader } from 'components';
-import { useSelector } from 'react-redux';
-import { selectUserState } from '../../modules/users';
 import { useNavigate } from 'react-router-dom';
 
 function Welcome(props) {
@@ -33,10 +31,10 @@ function Welcome(props) {
           <img src="/asset/image/page/welcome.svg" />
         </Grid>
         <Grid>
-          <Text color={themeContext.colors.blue} size="14px">
+          <Text color={themeContext.colors.blue}>
             <div style={{ textAlign: 'center' }}>환영합니다!</div>
           </Text>
-          <Text color={themeContext.colors.blue} size="14px">
+          <Text color={themeContext.colors.blue}>
             <div style={{ textAlign: 'center' }}>
               흥미진진한 토론이 {nickname}님을 기다리고 있어요 :)
             </div>

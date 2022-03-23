@@ -22,6 +22,7 @@ function Button({
       primary={primary}
       secondary={secondary}
       color={color}
+      shape={shape}
       {...props}
     >
       {props.children}
@@ -38,7 +39,7 @@ Button.propTypes = {
   primary: PropTypes.bool,
   secondary: PropTypes.bool,
   color: PropTypes.any,
-  shape: PropTypes.oneOf(['circle', 'round']),
+  shape: PropTypes.oneOf(['circular', 'rounded']),
 };
 
 Button.defaultProps = {
@@ -53,9 +54,8 @@ const B = styled.button`
   min-height: ${({ size }) =>
     size === 'small' ? '24px' : size === 'large' ? '38px' : '30px'};
   padding: ${({ size }) =>
-    size === 'small' ? '4px 8px' : size === 'large' ? '8px 12px' : '6px 10px'};
-  /*line-height: ${({ size }) =>
-    size === 'small' ? '16px' : size === 'large' ? '22px' : '6px 10px'};*/
+    size === 'small' ? '8px 16px' : size === 'large' ? '8px 16px' : '8px 16px'};
+  line-height: 1;
   height: ${(props) => props.height}px;
   background-color: ${({ backgroundColor, theme, primary, secondary }) =>
     backgroundColor
@@ -64,10 +64,14 @@ const B = styled.button`
       ? theme.colors.primaryYellow
       : secondary
       ? theme.colors.blue
-      : theme.colors.white};
-  color: ${({ color, primary, secondary, theme }) =>
-    primary ? theme.colors.black : secondary ? theme.colors.white : color};
-  border-radius: 10em;
+      : theme.colors.lightGray};
+  color: ${({ primary, secondary, theme }) =>
+    primary
+      ? theme.colors.black
+      : secondary
+      ? theme.colors.white
+      : theme.colors.blue};
+  border-radius: ${({ shape }) => (shape === 'rounded' ? '10px' : '10em')};
   font-size: 14px;
   display: flex;
   justify-content: center;

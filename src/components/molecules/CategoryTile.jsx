@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { Text } from 'components';
+import { useNavigate } from 'react-router-dom';
 
 const CategoryTile = (props) => {
+  const navigate = useNavigate();
   return (
     <Tile {...props}>
       <Text className="categoryLabel">{props.category}</Text>

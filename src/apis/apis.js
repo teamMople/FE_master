@@ -21,6 +21,15 @@ const authApi = axios.create({
   },
 });
 
+const authMediaApi = axios.create({
+  baseURL:
+    'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/',
+  headers: {
+    'content-type': 'application/json;charset=UTF-8',
+    accept: 'application/json',
+  },
+});
+
 /* eslint-disable no-param-reassign */
 authApi.interceptors.request.use(function (config) {
   const accessToken = getCookie('token');
@@ -30,12 +39,13 @@ authApi.interceptors.request.use(function (config) {
 /* eslint-disable no-param-reassign */
 
 const apis = {
+  // 회원
   signup: (email, profileImageUrl, nickname, password) =>
     api.post('/api/signup', { email, profileImageUrl, nickname, password }),
   login: (email, password) => api.post('/api/login', { email, password }),
   kakaoLogin: (kakaoAuthCode) =>
     api.post('/api/kakao/login', { kakaoAuthCode }),
-  logout: () => api.get('/api/logout'),
+  logout: () => api.post('/api/logout'),
   // to-dos
   editMyInfo: (email, profileImageUrl, nickname, password) =>
     api.put('/api/user/update', { email, profileImageUrl, nickname, password }),
@@ -44,11 +54,17 @@ const apis = {
   // 이메일 중복 확인
   // 닉네임 중복 확인
 
+  // 게시물
   createBoard: (title, content, imageUrl, category) =>
     authApi.post('/auth/api/board', { title, content, imageUrl, category }),
   getBoardList: () => authApi.get('/auth/api/board'),
   getBoardListByCategory: (categoryName) =>
-    authApi.get(`/auth/api/board/${categoryName}`, { categoryName }),
+    authApi.get(
+      `/auth/api/board/category/${encodeURIComponent(categoryName)}`,
+      {
+        categoryName,
+      },
+    ),
   getDetail: (boardId) =>
     authApi.get(`/auth/api/board/${boardId}`, { boardId }),
   deleteBoard: (boardId) =>
@@ -78,11 +94,20 @@ const apis = {
     authApi.get(`/auth/api/comment/recommend/${commentId}`),
   searchBoard: (search) => authApi.get(`/auth/api/comment/search/${search}`),
   pushAlarm: () => authApi.post('/auth/api/fcm/register'),
-  createReplyComment: (commentId) =>
+
+  // 대댓글
+  createReplyComment: (commentId, content) =>
     authApi.post(`/auth/api/comment/${commentId}/reply`),
-  getReplyCommentList: (commentId) =>
+  getReplyCommentListByComment: (commentId) =>
     authApi.get(`/auth/api/comment/${commentId}/reply`),
+  recommendReplyComment: (commentId, replyId) =>
+    authApi.get(`/auth/api/comment/${commentId}/reply/recommend/${replyId}`),
+
   // 실시간 토론방
+  getLiveRoomList: () => authApi.get('/api/chat/rooms/onair'),
+  getLiveRoomListByCategory: (categoryName) =>
+    authApi.get(`/api/chat/rooms/${categoryName}`),
+  searchLiveRoom: (keyword) => authApi.get(`/api/chat/rooms/${keyword}`),
 };
 
 export default apis;

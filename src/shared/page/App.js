@@ -15,9 +15,11 @@ import {
   Welcome,
   EditUserProfile,
   SearchBoard,
-  SearchResult,
+  BoardByCategoryList,
   CreateBoard,
+  BoardDetail,
   BoardList,
+  LiveBoardList,
   Settings,
   NotFound,
   Test,
@@ -88,9 +90,22 @@ function App() {
           <Route path={'/room/:roomId'} element={<LiveRoom />} />
           <Route path="/home" element={<Home />} />
           <Route path="/search" element={<SearchBoard />}>
-            <Route path="result" element={<BoardList />} />
+            <Route path="result/general" element={<BoardList />} />
+            <Route path="result/live" element={<BoardList />} />
           </Route>
-          <Route path="/list" element={<BoardList />} />
+          <Route path="/list" element={<BoardList />}>
+            <Route path=":categoryName" element={<BoardList />} />
+          </Route>
+          <Route path="/livelist" element={<LiveBoardList />}>
+            <Route path=":categoryName" element={<LiveBoardList />} />
+          </Route>
+          <Route path="/category">
+            <Route path=":categoryName" element={<BoardByCategoryList />}>
+              <Route path="live" element={<LiveBoardList />} />
+              <Route path="general" element={<BoardList />} />
+            </Route>
+          </Route>
+          <Route path="/board/:boardId" element={<BoardDetail />} />
           <Route path="/createboard" element={<CreateBoard />} />
           <Route path="/myaccount" element={<MyAccount />}>
             <Route path="boards" element={<BoardList />} />

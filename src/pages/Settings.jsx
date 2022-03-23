@@ -1,10 +1,14 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logoutAsync } from 'modules/users';
+
 import { ThemeContext } from 'styled-components';
 import { Wrapper, Grid, Text, RightArrow, Header } from 'components';
 
 function Settings(props) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
 
   return (
@@ -49,7 +53,12 @@ function Settings(props) {
       <Grid>
         <Grid isFlex height="40px">
           <Text>로그아웃</Text>
-          <RightArrow active rightArrowOnClick={() => {}} />
+          <RightArrow
+            active
+            rightArrowOnClick={() => {
+              dispatch(logoutAsync());
+            }}
+          />
         </Grid>
         <Grid isFlex height="40px">
           <Text>비활성화하기</Text>

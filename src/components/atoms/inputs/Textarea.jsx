@@ -16,6 +16,9 @@ const CustomTextarea = styled.textarea`
   resize: none;
   width: ${({ fluid }) => (fluid ? '100%' : 'auto')};
   height: ${(props) => props.height};
+  min-height: ${(props) => props.minHeight};
+  border-radius: ${(props) => props.borderRadius};
+  box-sizing: border-box;
 
   placeholder: ${(props) => props.placeholder};
   padding: ${(props) => props.padding};
@@ -23,6 +26,7 @@ const CustomTextarea = styled.textarea`
   &::placeholder {
     color: ${({ theme }) => theme.colors.gray};
     font-size: ${(props) => props.fontSize};
+    line-height: ${(props) => props.lineHeight};
     font-weight: ${(props) => (props.bold ? 600 : 500)};
   }
 

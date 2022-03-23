@@ -11,10 +11,13 @@ import {
 } from 'components';
 import { useDispatch } from 'react-redux';
 import { createBoardAsync } from 'modules/boards';
+import { useNavigate } from 'react-router-dom';
 
 function CreateBoard(props) {
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const options = [
     { value: '학교생활', label: '학교생활' },
     { value: '직장생활', label: '직장생활' },
@@ -38,7 +41,6 @@ function CreateBoard(props) {
 
   const changeContent = (e) => {
     setContent(e.target.value);
-    console.log(content);
   };
 
   const imageUrl =
@@ -54,8 +56,8 @@ function CreateBoard(props) {
           rightButton
           rightButtonChildren="완료"
           rightButtonOnClick={() => {
-            console.log(boardInfo);
             dispatch(createBoardAsync(boardInfo));
+            navigate('/home');
           }}
         />
       </Grid>
@@ -87,9 +89,11 @@ function CreateBoard(props) {
           fluid
           border="none"
           height="200px"
-          lineHeight="22px"
           placeholder="토론하고 싶은 내용을 작성해주세요"
           onChange={changeContent}
+          fontSize="12px"
+          lineHeight="18px"
+          padding="8px 0px 8px 0px"
         />
       </Grid>
       <Grid padding="16px 24px 89px 24px">

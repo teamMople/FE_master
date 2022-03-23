@@ -10,10 +10,11 @@ import Welcome from './users/Welcome';
 
 import BoardDetail from './boards/BoardDetail';
 import BoardList from './boards/BoardList';
+import LiveBoardList from './boards/LiveBoardList';
 import CreateBoard from './boards/CreateBoard';
 import AlarmList from './boards/AlarmList';
 import SearchBoard from './boards/SearchBoard';
-import SearchResult from './boards/SearchResult';
+import BoardByCategoryList from './boards/BoardByCategoryList';
 
 import Splash from './Splash';
 import Home from './Home';
@@ -34,10 +35,11 @@ export {
   Welcome,
   BoardDetail,
   BoardList,
+  LiveBoardList,
   CreateBoard,
   AlarmList,
   SearchBoard,
-  SearchResult,
+  BoardByCategoryList,
   Splash,
   Home,
   Nav,

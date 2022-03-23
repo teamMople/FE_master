@@ -1,11 +1,13 @@
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import { Wrapper, Grid, Input, CategoryTile } from 'components';
 
 function SearchBoard(props) {
   const themeContext = useContext(ThemeContext);
+  const navigate = useNavigate();
+
   return (
     <Wrapper
       backgroundColor={themeContext.colors.backgroundGray}
@@ -61,6 +63,9 @@ function SearchBoard(props) {
                 width="148px"
                 height="88px"
                 borderRadius="20px"
+                onClick={() => {
+                  navigate('/category/' + cat.category.replace('/', ''));
+                }}
               />
             );
           })}

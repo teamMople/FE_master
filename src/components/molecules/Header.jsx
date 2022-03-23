@@ -1,56 +1,71 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-
-import { useNavigate } from 'react-router-dom';
 import { Grid, Text, LeftArrow, RightArrow, Button } from '../atoms';
-import { ThemeContext } from 'styled-components';
+import { css, ThemeContext } from 'styled-components';
+import styled from 'styled-components';
 
-const Header = (props) => {
+const Header = ({
+  fixedTop,
+  rightButtonRender,
+  leftArrow,
+  leftArrowOnClick,
+  label,
+  rightArrow,
+  rightArrowOnClick,
+}) => {
   const themeContext = useContext(ThemeContext);
 
   return (
-    <div style={{ position: 'relative' }}>
-      <Grid isFlex height={42}>
-        <LeftArrow
-          active={props.leftArrow}
-          leftArrowOnClick={props.leftArrowOnClick}
-        />
-        <Text color={themeContext.colors.blue} size="14px">
-          {props.label}
+    <HeaderWrapper fixedTop={fixedTop}>
+      <Grid isFlex height={`${themeContext.style.header.height}`}>
+        <LeftArrow active={leftArrow} leftArrowOnClick={leftArrowOnClick} />
+        <Text center color={themeContext.colors.blue}>
+          {label}
         </Text>
-        <RightArrow
-          active={props.rightArrow}
-          rightArrowOnClick={props.rightArrowOnClick}
-        />
+        <RightArrow active={rightArrow} rightArrowOnClick={rightArrowOnClick} />
       </Grid>
-      <Button
-        width="57px"
-        height={30}
-        backgroundColor={themeContext.colors.lightGray}
-        color={themeContext.colors.blue}
-        style={{
-          display: props.rightButton ? 'flex' : 'none',
-          position: 'absolute',
-          top: '0px',
-          right: '-8px',
-        }}
-        onClick={props.rightButtonOnClick}
-      >
-        {props.rightButtonChildren}
-      </Button>
-    </div>
+      {rightButtonRender && (
+        <Button
+          shape={'rounded'}
+          size={'small'}
+          style={{
+            display: 'flex',
+            position: 'absolute',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            right: 0,
+            minWidth: 'auto',
+          }}
+          onClick={rightButtonRender.onClickButton}
+        >
+          {rightButtonRender.label}
+        </Button>
+      )}
+    </HeaderWrapper>
   );
 };
 
 Header.propTypes = {
+  fixedTop: PropTypes.bool,
   label: PropTypes.string,
   leftArrow: PropTypes.bool,
   leftArrowOnClick: PropTypes.func,
   rightArrow: PropTypes.bool,
   rightArrowOnClick: PropTypes.func,
-  rightButton: PropTypes.bool,
-  rightButtonOnClick: PropTypes.func,
-  rightButtonChildren: PropTypes.any,
+  rightButtonRender: { label: PropTypes.string, onClickButton: PropTypes.func },
 };
+
+const HeaderWrapper = styled.div`
+  position: relative;
+  ${({ fixedTop }) =>
+    fixedTop &&
+    css`
+      position: fixed;
+      width: 100%;
+      background-color: ${({ theme }) => theme.colors.white};
+      padding: 0 24px;
+      z-index: 10;
+    `};
+`;
 
 export default Header;

@@ -3,6 +3,7 @@ import userReducer from './users';
 import { boardListSlice, liveBoardListSlice, detailSlice } from './boards';
 import { commentListSlice, replyCommentListSlice } from './comments';
 import roomReducer from './voiceChat';
+import chatReducer from './chat';
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     comments: commentListSlice.reducer,
     replyComments: replyCommentListSlice.reducer,
     rooms: roomReducer,
+    chats: chatReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -1,9 +1,9 @@
 import { createGlobalStyle } from 'styled-components';
 import normalize from 'styled-normalize';
-import NotoRegular from '../assets/font/NotoSansKR-Regular.otf';
-import NotoBold from '../assets/font/NotoSansKR-Bold.otf';
-import NotoMedium from '../assets/font/NotoSansKR-Medium.otf';
-import NotoLight from '../assets/font/NotoSansKR-Light.otf';
+import SuitRegular from '../assets/font/SUIT-Regular.otf';
+import SuitBold from '../assets/font/SUIT-Bold.otf';
+import SuitMedium from '../assets/font/SUIT-Medium.otf';
+import SuitLight from '../assets/font/SUIT-Light.otf';
 
 // 위에서 받은 `normalize`로 기본 css가 초기화 합니다.
 const GlobalStyle = createGlobalStyle`
@@ -23,34 +23,34 @@ const GlobalStyle = createGlobalStyle`
   }
 
   * {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: 'Suit', sans-serif;
     box-sizing: border-box;
     //line-height: 1;
   }
   @font-face {
-    font-family: 'Noto Sans';
+    font-family: 'Suit';
     font-weight: 400;
-    src: url(${NotoRegular});
+    src: url(${SuitRegular});
   }
   
   @font-face {
-      font-family: 'Noto Sans';
+      font-family: 'Suit';
       font-weight: 500;
-    src: url(${NotoMedium});
+    src: url(${SuitMedium});
   }
   
   
   @font-face {
-      font-family: 'Noto Sans';
+      font-family: 'Suit';
       font-weight: 300;
-    src: url(${NotoLight});
+    src: url(${SuitLight});
   }
   
   
   @font-face {
-      font-family: 'Noto Sans';
+      font-family: 'Suit';
       font-weight: 700;
-    src: url(${NotoBold});
+    src: url(${SuitBold});
   }
 
   a {

@@ -72,14 +72,18 @@ const LiveRoom = () => {
     return () => window.removeEventListener('beforeunload', onbeforeunload);
   }, []);
 
-  const onbeforeunload = () => {
-    // event.preventDefault();
+  // 새로고침 혹은 브라우저 강제 종료할 경우 감지 함수
+  const onbeforeunload = async (event) => {
+    event.preventDefault();
     // eslint-disable-next-line no-param-reassign
-    // event.returnValue = '';
+    event.returnValue = '';
     if (joinRoomStatus.role !== 'MODERATOR') {
-      leaveRoom().then((r) => r);
+      // 흠.. 하나의 함수만 실행 가능한 것 같음. 두번째 함수부터는 실행이 안됨.
+      await leaveRoom();
+      // await navigate('/room', { replace: true });
     } else {
-      removeRoom().then((r) => r);
+      await sendForceLeave();
+      await leaveRoom();
     }
   };
 
@@ -87,19 +91,12 @@ const LiveRoom = () => {
     if (session !== null) {
       session.disconnect();
     }
-
-    // Empty all properties...
-    // setSubscribersState([]);
     setPublisher(undefined);
-    dispatch(removeAllRoomSubscribers());
-    // dispatch(removeRoomSubscriber());
-    // setMySessionId('SessionA');
-    // setMyUserName('Participant' + Math.floor(Math.random() * 100));
-    // setLocalUser(undefined);
+    // dispatch(removeAllRoomSubscribers);
   };
 
   // MODERATOR 만 사용 가능한 함수
-  const removeRoom = async () => {
+  const closeRoom = async () => {
     const data = {
       roomId: joinRoomStatus.roomId,
       memberName: joinRoomStatus.memberName,
@@ -116,17 +113,44 @@ const LiveRoom = () => {
         data,
         headers,
       )
-      .then((res) => {
-        console.log(res);
+      .then(() => {
+        alert('방장 방 종료하기 성공!');
         roomSubscribers.forEach((sub) =>
           session.forceDisconnect(sub.stream.connection.connectionId),
         );
-        // session.forceDisconnect();
-        leaveRoom();
       })
+      .catch(() => alert('방장 방 종료하기 실패!'));
+  };
+  useEffect(() => {
+    if (joinRoomStatus.role !== 'MODERATOR') {
+      receiveForceLeave();
+    }
+  }, []);
+  // 방 종료 시 참여자들에게 메세지 보내기
+  const sendForceLeave = async () => {
+    const options = {
+      data: JSON.stringify({ noModerator: true }),
+      type: 'forceLeave',
+    };
+    await session
+      .signal(options)
+      .then(() => console.log('(SEND) 방장이 존재하지 않습니다!'))
       .catch((error) => console.error(error));
   };
-
+  const receiveForceLeave = () => {
+    if (session !== null && joinRoomStatus.role !== 'MODERATOR') {
+      session.on('signal:forceLeave', (event) => {
+        leaveRoom().then((r) => r);
+        console.log('(RECEIVE) 방장이 존재하지 않습니다!');
+      });
+    }
+    if (session !== null && joinRoomStatus.role === 'MODERATOR') {
+      setTimeout(() => leaveRoom(), 3000);
+    }
+  };
+  useEffect(() => {
+    subscribeToStreamDestroyed();
+  }, []);
   const subscribeToStreamDestroyed = () => {
     if (session) {
       session.on('streamDestroyed', (event) => {
@@ -192,6 +216,7 @@ const LiveRoom = () => {
         connectVoice().then((r) => r);
       })
       .catch((error) => {
+        //!Todo 나중에 무조건 Alert 삭제해야함! 그래야 페이지 이동 바로됨!
         alert(`There was an error connecting to the session: ${error.message}`);
         console.log(
           'There was an error connecting to the session:',
@@ -214,8 +239,9 @@ const LiveRoom = () => {
     let initPublisher = OV.initPublisher(undefined, {
       audioSource:
         joinRoomStatus.role === 'PUBLISHER' ? true : audioDevices[0].deviceId, // The source of audio. If undefined default microphone
-      videoSource:
-        joinRoomStatus.role === 'PUBLISHER' ? false : videoDevices[1].deviceId, // The source of video. If undefined default webcam
+      // videoSource:
+      //   joinRoomStatus.role === 'PUBLISHER' ? false : videoDevices[1].deviceId, // The source of video. If undefined default webcam
+      videoSource: false,
       publishAudio: joinRoomStatus.role !== 'PUBLISHER', // Whether you want to start publishing with your audio unmuted or not
       publishVideo: joinRoomStatus.role !== 'PUBLISHER', // Whether you want to start publishing with your video enabled or not
       resolution: '640x480', // The resolution of your video
@@ -224,7 +250,7 @@ const LiveRoom = () => {
       mirror: false, // Whether to mirror your local video or not
     });
 
-    subscribeToStreamDestroyed();
+    // subscribeToStreamDestroyed();
 
     await session.publish(initPublisher);
     await setPublisher(initPublisher);
@@ -239,20 +265,11 @@ const LiveRoom = () => {
   const getToken = async () => {
     const data = {
       roomId: joinRoomStatus.roomId,
-      // memberName: 'Participant' + Math.floor(Math.random() * 100),
       memberName: joinRoomStatus.memberName,
       role: joinRoomStatus.role,
       participantCount: joinRoomStatus.maxParticipantCount,
     };
-    // console.log(data);
-    // console.log(joinRoomStatus.accessToken);
-    // const headers = {
-    //   headers: {
-    //     Authorization: `Bearer ${headerToken}`,
-    //   },
-    // };
     return await axios
-      //!Todo auth/api/openvidu/getToken 로 추후에 변경해야 함
       .post(
         `${process.env.REACT_APP_OPENVIDU_URL}/auth/api/openvidu/getToken`,
         data,
@@ -272,8 +289,6 @@ const LiveRoom = () => {
   //=====================
 
   const leaveRoom = async () => {
-    //!Todo api 요청 보내기 무조건!!
-    // console.log('leave data : ', memberVoteStatus.memberAgreed);
     const data = {
       roomId: joinRoomStatus.roomId,
       memberName: joinRoomStatus.memberName,
@@ -286,6 +301,7 @@ const LiveRoom = () => {
         Authorization: `Bearer ${joinRoomStatus.accessToken}`,
       },
     };
+
     await axios
       .post(
         `${process.env.REACT_APP_API_URL}/auth/api/chat/room/leave`,
@@ -293,9 +309,12 @@ const LiveRoom = () => {
         headers,
       )
       .then(() => {
-        console.log('방 떠나기 성공!');
+        deleteToken();
+        alert('방 떠나기 성공!');
       })
-      .catch((error) => console.log(error));
+      .catch(() => alert('방 떠나기 실패!'));
+  };
+  const deleteToken = async () => {
     const openviduData = {
       roomId: joinRoomStatus.roomId,
       memberName: joinRoomStatus.memberName,
@@ -307,15 +326,24 @@ const LiveRoom = () => {
         `${process.env.REACT_APP_OPENVIDU_URL}/auth/api/openvidu/deleteToken`,
         openviduData,
       )
-      .then(() => {
+      .then(async () => {
         alert('퇴장 토큰 삭제 성공!');
-        localStorage.removeItem('OVAccessToken');
+        if (joinRoomStatus.role === 'MODERATOR') {
+          // await sendForceLeave();
+          await closeRoom();
+        }
+        // 1. 소켓 연결을 끊는다.
+        await disconnectSocket();
+        // 2. 전역에서 관리하고 있는 Subscribers 목록을 초기화한다.
+        await dispatch(removeAllRoomSubscribers());
+        // 3. session 연결을 끊는다.
+        await leaveSession();
+        // 4. 로컬 저장소에 저장한 openvidu token 을 제거한다.
+        await localStorage.removeItem('OVAccessToken');
+        // 5. 페이지를 이동시킨다.
+        await navigate('/room', { replace: true });
       })
       .catch(() => alert('퇴장 토큰 삭제 실패!'));
-    disconnectSocket();
-    leaveSession();
-    dispatch(removeAllRoomSubscribers);
-    navigate('/room', { replace: true });
   };
 
   // 마이크 상태가 변할 때 메세지를 보낸다
@@ -569,6 +597,8 @@ const LiveRoom = () => {
     }
   };
 
+  console.log('💌 roomSubscribers :', roomSubscribers);
+
   return (
     <>
       <Wrapper padding={'16px'}>
@@ -611,7 +641,10 @@ const LiveRoom = () => {
                 <button onClick={() => sendHandsUp(publisher)}>손 들기</button>
               )}
               {isModerator(publisher) && (
-                <button onClick={removeRoom}>방 종료하기</button>
+                <>
+                  <button onClick={leaveRoom}>방 종료하기</button>
+                  <button onClick={sendForceLeave}>방 종료하기 메시지</button>
+                </>
               )}
             </div>
           )}

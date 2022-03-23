@@ -120,14 +120,14 @@ const RoomList = () => {
   // 임시 사용자 선택
   const user1 = () => {
     setAccessToken(
-      'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiQGIuY29tIiwic2NvcGVzIjpbIlVTRVIiXSwiaXNzIjoiMyIsImF1ZCI6ImIiLCJpYXQiOjE2NDc4ODYyOTgsImV4cCI6MTY0Nzk1ODI5OH0.ioTK8k64p0RxJnfaTXPyOw34vRfV9QNb2dx9SD2PMEddA1ojFZmB0iucjfItcTOt9CNN5Q4xBzZU6nwGNStdrw',
+      'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiQGIuY29tIiwic2NvcGVzIjpbIlVTRVIiXSwiaXNzIjoiMyIsImF1ZCI6ImIiLCJpYXQiOjE2NDc5NTk3OTIsImV4cCI6MTY0ODAzMTc5Mn0.lyx6Bc9KY8TPly01nUkH4gKfQUod19CcVjIy57tY41cfZZqJ_eqbMTYtyWhQyEYrXv0YuWp51g-b5XXAijfiXQ',
     );
     setMemberName('b');
   };
 
   const user2 = () => {
     setAccessToken(
-      'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjQGMuY29tIiwic2NvcGVzIjpbIlVTRVIiXSwiaXNzIjoiNCIsImF1ZCI6ImMiLCJpYXQiOjE2NDc4ODYzMTYsImV4cCI6MTY0Nzk1ODMxNn0.oAy84cgTCiefWo3v0-12XF5UIZF55RK4x27hagmycE78kb1t2kSbgCzxYnxwbhbfXW1GyvPiOVGAsUnAr_lDgQ',
+      'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjQGMuY29tIiwic2NvcGVzIjpbIlVTRVIiXSwiaXNzIjoiNCIsImF1ZCI6ImMiLCJpYXQiOjE2NDc5NTk4MDgsImV4cCI6MTY0ODAzMTgwOH0.kAlKs0JJkg4tHtWmmm2f5ASE6LWwlTlhc5hAPrcc5O1IBmC12cf4sEurNeS-MTpDcBt1GRKzz5c2RhLNVLlfZQ',
     );
     setMemberName('c');
   };

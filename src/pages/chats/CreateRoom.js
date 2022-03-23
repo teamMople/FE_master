@@ -27,7 +27,7 @@ const CreateRoom = () => {
   ];
 
   // 임시 방장 token
-  const token = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhQGEuY29tIiwic2NvcGVzIjpbIlVTRVIiXSwiaXNzIjoiMiIsImF1ZCI6ImEiLCJpYXQiOjE2NDc4ODYyNzYsImV4cCI6MTY0Nzk1ODI3Nn0.ZmSAY3KwJfSCJiy7zPcOqJyNLF5E0tL7zl2Y_rVlv3kA5HZ2tQiPt4hnDCfL0jSx7LggPrcOBu8UTibYjVDbYA`;
+  const token = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhQGEuY29tIiwic2NvcGVzIjpbIlVTRVIiXSwiaXNzIjoiMiIsImF1ZCI6ImEiLCJpYXQiOjE2NDc5NTk3NTYsImV4cCI6MTY0ODAzMTc1Nn0.TziOAxoy0iX8wZh3r8U__HQUic8WaUuBqE1GzsZdb27_aDMKo7wp9ETaKBDlXJsj2UeDO-2tBQPpfjWk-nmBcw`;
 
   const createRoom = async () => {
     const data = {

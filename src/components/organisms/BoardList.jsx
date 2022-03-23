@@ -3,9 +3,11 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { Grid, Image, Text } from 'components';
+import { useNavigate } from 'react-router-dom';
 
 const BoardList = (props) => {
   const { label, boards } = props;
+  const navigate = useNavigate();
 
   return (
     <Grid padding="0px 24px 0px 24px" margin="0px 0px 32px 0px">
@@ -19,8 +21,16 @@ const BoardList = (props) => {
           <BoardWrapper key={index}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Image shape="circle" size={32} />
-              <div style={{ marginLeft: '8px' }}>
-                {board.title} ({board.recommendCount})
+              <div
+                style={{ marginLeft: '8px' }}
+                onClick={() => {
+                  navigate('/board/' + board.id);
+                }}
+              >
+                {board.title.length > 15
+                  ? board.title.slice(0, 15) + '...'
+                  : board.title}
+                ({board.recommendCount})
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>

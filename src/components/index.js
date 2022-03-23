@@ -25,8 +25,17 @@ import {
   MenuTab,
   AlarmTile,
   ChatUserProfile,
+  ProfileBox,
+  VoteResultBar,
+  CommentBox,
 } from './molecules';
-import { BoardList, CardCarousel, CategoryCarousel } from './organisms';
+import {
+  BoardList,
+  CardCarousel,
+  CategoryCarousel,
+  CommentList,
+  CommentInputWindow,
+} from './organisms';
 
 export {
   Button,
@@ -50,10 +59,15 @@ export {
   SelectTab,
   Tile,
   Survey,
+  ProfileBox,
+  VoteResultBar,
   MenuTab,
   AlarmTile,
+  CommentBox,
   BoardList,
   CardCarousel,
   CategoryCarousel,
+  CommentList,
+  CommentInputWindow,
   ChatUserProfile,
 };

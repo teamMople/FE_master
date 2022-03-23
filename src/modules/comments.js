@@ -6,36 +6,75 @@ const commentListInitialState = {
   status: 'idle',
 };
 
+const replyCommentListInitialState = {
+  data: [],
+  status: 'idle',
+};
+
 export const getCommentListAsync = createAsyncThunk(
   'comments/getCommentList',
   async ({ boardId }, thunkAPI) => {
-    const response = await apis.getCommentsByBoard(boardId);
-    return response.data;
+    try {
+      const response = await apis.getCommentsByBoard(boardId);
+      console.log(response);
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(await e.response.data);
+    }
   },
 );
 
-// 생성자 정보 안 보내도 되는지 확인
+export const getReplyCommentListAsync = createAsyncThunk(
+  'comments/getReplyCommentList',
+  async ({ commentId }, thunkAPI) => {
+    try {
+      const response = await apis.getReplyCommentListByComment(commentId);
+      console.log(response);
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(await e.response.data);
+    }
+  },
+);
+
 export const createCommentAsync = createAsyncThunk(
   'comments/createComment',
-  async ({ boardId, content }, thunkAPI) => {
+  async (commentInfo, thunkAPI) => {
+    const { boardId, content } = commentInfo;
     await apis
       .createComment(boardId, content)
       .then((response) => {
-        if (response.data.status === 'ok') {
-          thunkAPI.dispatch();
-        }
+        console.log(response);
       })
       .catch((error) => {
         if (error) {
           window.alert('잘못된 생성 요청입니다.');
-          console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
+          console.log(error.response.message);
         }
         return thunkAPI.rejectWithValue();
       });
   },
 );
 
-// 생성자 정보 안 보내도 되는지 확인
+export const createReplyCommentAsync = createAsyncThunk(
+  'comments/createComment',
+  async (replyCommentInfo, thunkAPI) => {
+    const { commentId, content } = replyCommentInfo;
+    await apis
+      .createReplyComment(commentId, content)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        if (error) {
+          window.alert('잘못된 생성 요청입니다.');
+          console.log(error.response.message);
+        }
+        return thunkAPI.rejectWithValue();
+      });
+  },
+);
+
 export const deleteCommentAsync = createAsyncThunk(
   'comments/deleteComment',
   async ({ commentId }, thunkAPI) => {
@@ -56,7 +95,7 @@ export const deleteCommentAsync = createAsyncThunk(
   },
 );
 
-export const increaseRecommendCountAsync = createAsyncThunk(
+export const increaseCommentRecommendCountAsync = createAsyncThunk(
   'comments/increaseRecommendCount',
   async ({ commentId }, thunkAPI) => {
     if (commentId) {
@@ -80,12 +119,66 @@ export const increaseRecommendCountAsync = createAsyncThunk(
   },
 );
 
+export const increaseReplyCommentRecommendCountAsync = createAsyncThunk(
+  'comments/increaseRecommendCount',
+  async ({ replyId }, thunkAPI) => {
+    if (replyId) {
+      await apis
+        .recommendReplyComment(replyId)
+        .then((response) => {
+          if (response.data.status === 'ok') {
+            thunkAPI.dispatch();
+          }
+        })
+        .catch((error) => {
+          if (error) {
+            window.alert('잘못된 추천 요청입니다.');
+            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
+          }
+          return thunkAPI.rejectWithValue();
+        });
+    } else {
+      window.alert('잘못된 추천 요청입니다.');
+    }
+  },
+);
+
 export const commentListSlice = createSlice({
   name: 'commentList',
-  commentListInitialState,
+  initialState: commentListInitialState,
   reducers: {},
-  extraReducers: () => {},
+  extraReducers: {
+    [getCommentListAsync.fulfilled]: (state, action) => {
+      state.status = 'success';
+      state.data = action.payload;
+    },
+    [getCommentListAsync.pending]: (state) => {
+      state.status = 'loading';
+    },
+    [getCommentListAsync.rejected]: (state) => {
+      state.status = 'failed';
+    },
+  },
+});
+
+export const replyCommentListSlice = createSlice({
+  name: 'replyCommentList',
+  initialState: replyCommentListInitialState,
+  reducers: {},
+  extraReducers: {
+    [getReplyCommentListAsync.fulfilled]: (state, action) => {
+      state.status = 'success';
+      state.data = action.payload;
+    },
+    [getReplyCommentListAsync.pending]: (state) => {
+      state.status = 'loading';
+    },
+    [getReplyCommentListAsync.rejected]: (state) => {
+      state.status = 'failed';
+    },
+  },
 });
 
 export const {} = commentListSlice.actions;
-export const selectCommentListState = (state) => state.commentList;
+export const selectedCommentList = (state) => state.comments.data;
+export const selectedReplyCommentList = (state) => state.replyComments.data;

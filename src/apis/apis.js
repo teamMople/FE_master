@@ -74,17 +74,16 @@ const apis = {
   agreeBoard: (boardId) =>
     authApi.get(`/auth/api/board/agree/${boardId}`, { boardId }),
   disagreeBoard: (boardId) =>
-    authApi.get(`/api/board/disagree/${boardId}`, { boardId }),
+    authApi.get(`/auth/api/board/disagree/${boardId}`, { boardId }),
   recommentBoard: (boardId) =>
-    authApi.get(`/api/board/recommend/${boardId}`, { boardId }),
+    authApi.get(`/auth/api/board/recommend/${boardId}`, { boardId }),
   createComment: (boardId, content) =>
-    authApi.post(`/api/comment/${boardId}`, { boardId, content }),
-  getCommentsByBoard: (boardId) =>
-    authApi.get(`/api/comment/${boardId}`, { boardId }),
+    authApi.post(`/auth/api/comment/${boardId}`, { boardId, content }),
+  getCommentsByBoard: (boardId) => authApi.get(`/auth/api/comment/${boardId}`),
   deleteComment: (commentId) =>
-    authApi.delete(`/api/comment/${commentId}`, { commentId }),
+    authApi.delete(`/auth/api/comment/${commentId}`, { commentId }),
   recommendComment: (commentId) =>
-    authApi.get(`/api/comment/recommend/${commentId}`, { commentId }),
+    authApi.get(`/auth/api/comment/recommend/${commentId}`, { commentId }),
   createComment: (boardId, content) =>
     authApi.post('/auth/api/comment', { boardId, content }),
   getCommentListByBoard: () => authApi.get('/auth/api/comment'),

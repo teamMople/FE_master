@@ -13,7 +13,7 @@ const replyCommentListInitialState = {
 
 export const getCommentListAsync = createAsyncThunk(
   'comments/getCommentList',
-  async ({ boardId }, thunkAPI) => {
+  async (boardId, thunkAPI) => {
     try {
       const response = await apis.getCommentsByBoard(boardId);
       console.log(response);

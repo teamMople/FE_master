@@ -8,38 +8,33 @@ const ReplyCommentBox = (props) => {
   const themeContext = useContext(ThemeContext);
 
   return (
-    <Grid width="100%">
-      <Grid margin="0px 0px 8px 0px">
-        <ProfileBox
-          profileImageUrl={replyComment.profileImageUrl}
-          nickname={replyComment.nickname}
-          createdAt={replyComment.createdAt}
-        />
+    <Grid isFlex width="100%" backgroundColor={themeContext.colors.lightGray}>
+      <Grid>
+        <img src="/asset/icons/Reply.svg" />
       </Grid>
       <Grid>
-        <Text>{replyComment.content}</Text>
-      </Grid>
-      <Grid>
-        <Button
-          width="58px"
-          height={32}
-          backgroundColor={themeContext.colors.lightGray}
-        >
-          <Grid margin="0px 5px 0px 0px">
-            <img src="/asset/icons/Join.svg" />
-          </Grid>
-          <Text>{}</Text>
-        </Button>
-        <Button
-          width="58px"
-          height={32}
-          backgroundColor={themeContext.colors.lightGray}
-        >
-          <Grid margin="0px 5px 0px 0px">
-            <img src="/asset/icons/Agreed.svg" />
-          </Grid>
-          <Text>{replyComment.recommendCount}</Text>
-        </Button>
+        <Grid margin="0px 0px 8px 0px">
+          <ProfileBox
+            profileImageUrl={replyComment.profileImageUrl}
+            nickname={replyComment.nickname}
+            createdAt={replyComment.createdAt}
+          />
+        </Grid>
+        <Grid>
+          <Text>{replyComment.content}</Text>
+        </Grid>
+        <Grid>
+          <Button
+            width="58px"
+            height={32}
+            backgroundColor={themeContext.colors.white}
+          >
+            <Grid margin="0px 5px 0px 0px">
+              <img src="/asset/icons/Join.svg" />
+            </Grid>
+            <Text>{}</Text>
+          </Button>
+        </Grid>
       </Grid>
     </Grid>
   );

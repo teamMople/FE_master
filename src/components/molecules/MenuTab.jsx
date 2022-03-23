@@ -42,6 +42,7 @@ const MenuTab = (props) => {
           {...props}
           width={(currentTabIndex / labels.length) * 100 + '%'}
         />
+        <Line />
       </Grid>
     </Tab>
   );
@@ -73,6 +74,8 @@ const Hidden = styled.div`
   height: 100%;
   background-color: ${(props) => props.backgroundColor};
   transition: 1s width;
+  border: none;
+  border-bottom: 1px solid ${(props) => props.highlightColor};
 `;
 
 const Labels = styled.div`

@@ -6,27 +6,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCommentListAsync, selectedCommentList } from 'modules/comments';
 
 const CommentList = (props) => {
-  const { boardId } = props;
-  const dispatch = useDispatch();
-  const themeContext = useContext(ThemeContext);
-  const comments = useSelector(selectedCommentList);
+  const { comments } = props;
   console.log(comments);
-
-  useEffect(() => {
-    dispatch(getCommentListAsync(boardId));
-  }, [dispatch]);
+  const themeContext = useContext(ThemeContext);
 
   return (
-    <Grid width="100%">
-      {comments.map((comment, index) => {
-        <CommentBox key={index} comment={comment} />;
-      })}
-    </Grid>
+    <React.Fragment>
+      <Grid>
+        {comments.map((comment, index) => {
+          return <CommentBox key={index} comment={comment} />;
+        })}
+      </Grid>
+      <Grid width="100%" height="84px" />
+    </React.Fragment>
   );
 };
 
 CommentList.propTypes = {
-  boardId: PropTypes.number,
+  comments: PropTypes.array,
 };
 
 export default CommentList;

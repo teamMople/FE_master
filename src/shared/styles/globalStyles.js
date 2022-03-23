@@ -25,6 +25,9 @@ const GlobalStyle = createGlobalStyle`
   * {
     font-family: 'Suit', sans-serif;
     box-sizing: border-box;
+    font-weight: 500;
+    font-size: 14px;
+    //color: #282828;
     //line-height: 1;
   }
   @font-face {
@@ -34,22 +37,22 @@ const GlobalStyle = createGlobalStyle`
   }
   
   @font-face {
-      font-family: 'Suit';
-      font-weight: 500;
+    font-family: 'Suit';
+    font-weight: 500;
     src: url(${SuitMedium});
   }
   
   
   @font-face {
-      font-family: 'Suit';
-      font-weight: 300;
+    font-family: 'Suit';
+    font-weight: 300;
     src: url(${SuitLight});
   }
   
   
   @font-face {
-      font-family: 'Suit';
-      font-weight: 700;
+    font-family: 'Suit';
+    font-weight: 700;
     src: url(${SuitBold});
   }
 

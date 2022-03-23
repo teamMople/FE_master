@@ -1,8 +1,8 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const Grid = ({ ...props }) => {
+const Grid = ({ overflowY, overflowX, ...props }) => {
   return (
     <React.Fragment>
       <GridBox {...props}>{props.children}</GridBox>
@@ -14,6 +14,8 @@ Grid.propTypes = {
   children: PropTypes.any,
   padding: PropTypes.string,
   margin: PropTypes.string,
+  overflowY: PropTypes.bool,
+  overflowX: PropTypes.bool,
 };
 
 Grid.defaltProps = {
@@ -26,8 +28,8 @@ const GridBox = styled.div`
   width: ${(props) => props.width};
   height: ${(props) => props.height};
   box-sizing: border-box;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-x: ${({ overflowX }) => overflowX && 'hidden'};
+  overflow-y: ${({ overflowY }) => overflowY && 'hidden'};
 
   padding: ${(props) => props.padding};
   margin: ${(props) => props.margin};

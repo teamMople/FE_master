@@ -55,16 +55,23 @@ const device = {
   tabletL: `only screen and (max-width: ${deviceSizes.tabletL})`,
 };
 
+const style = {
+  header: {
+    height: '42px',
+  },
+};
+
 const lightThemeColors = {
-  black: '#282828',
-  lightGray: '#E5E5E5',
-  backgroundGray: '#F8F8F8',
-  gray: '#D5D8DB',
-  darkGray: '#718096',
-  gray2: '#718096',
   white: '#FFFFFF',
+  black: '#282828',
+  gray: '#D5D8DB',
+  gray2: '#718096',
+  lightGray: '#E5E5E5',
+  darkGray: '#718096',
+  backgroundGray: '#F8F8F8',
   primaryYellow: '#FADE86',
   blue: '#6E6BF0',
+  red: '#F06B6B',
   lightBlue: '#CCE5FC',
   lightPink: '#F6CAF2',
   orange: '#F29E3B',
@@ -72,13 +79,16 @@ const lightThemeColors = {
 };
 
 const darkThemeColors = {
+  white: '#282828',
   black: '#E0E0E0',
-  lightGray: '#222222',
   gray: '#1D1D1D',
+  gray2: '#718096',
+  lightGray: '#222222',
   darkGray: '#EAECF0',
-  white: '#000000',
+  backgroundGray: '#1c1c1c',
   primaryYellow: '#FADE86',
   blue: '#6E6BF0',
+  red: '#F06B6B',
   lightBlue: '#F2D9AE',
   lightPink: '#DAFCCC',
   orange: '#3BB7EB',
@@ -92,6 +102,7 @@ const defaultTheme = {
   paddings,
   margins,
   interval,
+  style,
   verticalInterval,
 };
 

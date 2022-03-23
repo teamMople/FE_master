@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { ThemeContext } from 'styled-components';
-import { Grid, Button } from 'components/atoms';
+import styled from 'styled-components';
+import { Button } from 'components/atoms';
 
 const KAKAO_LOGIN_URL = process.env.REACT_APP_KAKAO_LOGIN_URL;
 
@@ -10,24 +10,41 @@ const handleOAuthLoginClick = (url) => () => {
 };
 
 const OAuthLoginButtons = ({ ...props }) => {
-  const themeContext = useContext(ThemeContext);
   return (
     <>
       <Button
         onClick={handleOAuthLoginClick(KAKAO_LOGIN_URL)}
-        width="100%"
-        height={38}
+        fluid
+        primary
+        size={'large'}
         color="#392020"
-        backgroundColor={themeContext.colors.primaryYellow}
       >
-        <div style={{ marginRight: '10px' }}>
-          <img src="/asset/icons/Kakao.svg" />
-        </div>
-        <div style={{ marginRight: '10px' }}>|</div>
-        <div>카카오 계정으로 로그인</div>
+        <InnerWrapper>
+          <InnerIcon src="/asset/icons/Kakao.svg" />
+          <InnerText>카카오 계정으로 로그인</InnerText>
+        </InnerWrapper>
       </Button>
     </>
   );
 };
+
+const InnerWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const InnerIcon = styled.img`
+  margin-right: 21px;
+`;
+const InnerText = styled.div`
+  display: flex;
+  align-items: center;
+  &:before {
+    content: '';
+    width: 1px;
+    height: 12px;
+    background-color: #392020;
+    margin-right: 21px;
+  }
+`;
 
 export default OAuthLoginButtons;

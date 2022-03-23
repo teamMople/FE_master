@@ -24,6 +24,7 @@ import {
   Survey,
   MenuTab,
   AlarmTile,
+  ChatUserProfile,
   ProfileBox,
   VoteResultBar,
   CommentBox,
@@ -70,4 +71,5 @@ export {
   CategoryCarousel,
   CommentList,
   CommentInputWindow,
+  ChatUserProfile,
 };

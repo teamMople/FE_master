@@ -6,7 +6,6 @@ import {
   Input,
   Header,
   Textarea,
-  SelectTab,
   DropdownSelect,
 } from 'components';
 import { useDispatch } from 'react-redux';
@@ -53,11 +52,12 @@ function CreateBoard(props) {
         <Header
           label="게시글 작성"
           leftArrow
-          rightButton
-          rightButtonChildren="완료"
-          rightButtonOnClick={() => {
-            dispatch(createBoardAsync(boardInfo));
-            navigate('/home');
+          rightButtonRender={{
+            label: '완료',
+            onClickButton: () => {
+              dispatch(createBoardAsync(boardInfo));
+              navigate('/home');
+            },
           }}
         />
       </Grid>
@@ -74,26 +74,25 @@ function CreateBoard(props) {
           bold
           width="100%"
           placeholder="제목을 입력해주세요"
-          style={{ border: 'none', borderRadius: '0px' }}
+          style={{
+            border: 'none',
+            borderRadius: 0,
+            padding: 0,
+            fontSize: '16px',
+            borderBottom: `1px solid ${themeContext.colors.lightGray}`,
+          }}
           onChange={changeTitle}
-          padding="12px 0px 12px 0px"
+          margin="0"
         />
       </Grid>
-      <Grid
-        width="100%"
-        height="1px"
-        backgroundColor={themeContext.colors.gray}
-      />
-      <Grid padding="14px 24px 0px 24px">
+      <Grid padding="16px 24px 0px 24px">
         <Textarea
           fluid
           border="none"
           height="200px"
           placeholder="토론하고 싶은 내용을 작성해주세요"
           onChange={changeContent}
-          fontSize="12px"
           lineHeight="18px"
-          padding="8px 0px 8px 0px"
         />
       </Grid>
       <Grid padding="16px 24px 89px 24px">

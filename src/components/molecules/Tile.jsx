@@ -3,15 +3,9 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { ThemeContext } from 'styled-components';
-import {
-  Grid,
-  Text,
-  Image,
-  Button,
-  ProfileImageStack,
-  ProfileBox,
-} from 'components';
+import { Grid, Text, Button, ProfileImageStack, ProfileBox } from 'components';
 import { useNavigate } from 'react-router-dom';
+import StatusBox from './StatusBox';
 
 const Tile = (props) => {
   const { type, board } = props;
@@ -51,41 +45,23 @@ const Tile = (props) => {
           </Grid>
           <Grid isFlex width="252px" className="buttonGroup">
             <Grid isFlex>
-              <Button
-                width="58px"
-                height={32}
-                backgroundColor={themeContext.colors.lightGray}
-              >
-                <Grid margin="0px 5px 0px 0px">
-                  <img src="/asset/icons/Join.svg" />
-                </Grid>
-                <Text>{board.participantsNicknames.length}</Text>
-              </Button>
+              <StatusBox
+                icon={'/asset/icons/Join.svg'}
+                count={board.participantsNicknames.length}
+              />
             </Grid>
             <Grid isFlex>
               <Grid margin="0px 8px 0px 0px">
-                <Button
-                  width="58px"
-                  height={32}
-                  backgroundColor={themeContext.colors.lightGray}
-                >
-                  <Grid margin="0px 5px 0px 0px">
-                    <img src="/asset/icons/Agreed.svg" />
-                  </Grid>
-                  <Text>{board.agreeCount}</Text>
-                </Button>
+                <StatusBox
+                  icon={'/asset/icons/Agreed.svg'}
+                  count={board.agreeCount}
+                />
               </Grid>
               <Grid>
-                <Button
-                  width="58px"
-                  height={32}
-                  backgroundColor={themeContext.colors.lightGray}
-                >
-                  <Grid margin="0px 5px 0px 0px">
-                    <img src="/asset/icons/Disagreed.svg" />
-                  </Grid>
-                  <Text>{board.disagreeCount}</Text>
-                </Button>
+                <StatusBox
+                  icon={'/asset/icons/Disagreed.svg'}
+                  count={board.disagreeCount}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -132,7 +108,7 @@ const Tile = (props) => {
                 onClick={() => {}}
               >
                 <Grid margin="0px 5px 0px 0px">
-                  <img src="/asset/icons/Vote.svg" />
+                  <img src="/asset/icons/Vote.svg" alt="vote icon" />
                 </Grid>
                 <Text>{board.recommendCount}</Text>
               </Button>
@@ -145,7 +121,7 @@ const Tile = (props) => {
                   backgroundColor={themeContext.colors.lightGray}
                 >
                   <Grid margin="0px 5px 0px 0px">
-                    <img src="/asset/icons/Agreed.svg" />
+                    <img src="/asset/icons/Agreed.svg" alt="agree icon" />
                   </Grid>
                   <Text>{board.agreeCount}</Text>
                 </Button>
@@ -157,7 +133,7 @@ const Tile = (props) => {
                   backgroundColor={themeContext.colors.lightGray}
                 >
                   <Grid margin="0px 5px 0px 0px">
-                    <img src="/asset/icons/Disagreed.svg" />
+                    <img src="/asset/icons/Disagreed.svg" alt="disagree icon" />
                   </Grid>
                   <Text>{board.disagreeCount}</Text>
                 </Button>

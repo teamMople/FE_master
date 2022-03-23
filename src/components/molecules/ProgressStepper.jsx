@@ -2,8 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { Grid, Text } from 'components';
-
 const ProgressStepper = (props) => {
   const { steps, currentStep, backgroundColor, highlightColor } = props;
 
@@ -45,7 +43,7 @@ const Highlight = styled.div`
   height: 100%;
   background-color: ${(props) => props.highlightColor};
   border: none;
-  transition: 1s width;
+  transition: 0.3s ease;
 `;
 
 const Hidden = styled.div`
@@ -54,7 +52,7 @@ const Hidden = styled.div`
   height: 100%;
   background-color: ${(props) => props.backgroundColor};
   border: none;
-  transition: 1s width;
+  transition: 0.3s ease;
 `;
 
 export default ProgressStepper;

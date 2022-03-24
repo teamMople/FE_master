@@ -3,8 +3,16 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { Textarea, SelectTab, DropdownSelect } from 'components';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setJoinRoomStatus } from '../../modules/chat';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  createRoom,
+  createRoomAsync,
+  joinRoomAsync,
+  postJoinRoom,
+  selectRoomState,
+  setJoinRoomStatus,
+} from '../../modules/chat';
+import apis from '../../apis/apis';
 
 const CreateRoom = () => {
   const [roomName, setRoomName] = useState('');
@@ -16,6 +24,7 @@ const CreateRoom = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const roomState = useSelector(selectRoomState);
   const selectMenu = [{ value: '공개토론' }, { value: '비공개토론' }];
   const options = [
     { value: '일상생활', label: '일생생활' },
@@ -38,70 +47,82 @@ const CreateRoom = () => {
       content: content,
       isPrivate: false,
     };
+    const nickName = localStorage.getItem('nickname');
+    await dispatch(
+      createRoomAsync({ data, memberName: nickName, role: 'MODERATOR' }),
+    );
+    await navigateVoiceRoom();
 
     // 임시 : header 에 토큰값 넘길 것
-    const headers = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    await axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/auth/api/chat/room`,
-        data,
-        headers,
-      )
-
-      // 이거는 방을 만들 때!!!!!!
-      .then(async (res) => {
-        console.log(res.data.roomId);
-        await setRoomName(res.data.roomName);
-        // navigateVoiceRoom(roomId, roomName);
-        const status = {
-          role: 'MODERATOR',
-          roomId: res.data.roomId,
-          roomName: res.data.roomName,
-          category: res.data.category,
-          moderatorId: res.data.moderatorId,
-          moderatorNickname: res.data.moderatorNickname,
-          maxParticipantCount: res.data.maxParticipantCount,
-          content: res.data.content,
-          isPrivate: res.data.isPrivate,
-          agreeCount: res.data.agreeCount,
-          disagreeCount: res.data.disagreeCount,
-          onAir: res.data.onAir,
-          createdAt: res.data.createdAt,
-          memberAgreed: res.data.memberAgreed,
-          memberDisagreed: res.data.memberDisagreed,
-          memberName: 'a',
-          accessToken: token,
-        };
-        dispatch(setJoinRoomStatus(status));
-        await navigateVoiceRoom(
-          res.data.roomId,
-          res.data.roomName,
-          res.data.maxParticipantCount,
-        );
-        //
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // const headers = {
+    //   headers: {
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // };
+    // await axios
+    //   .post(
+    //     `${process.env.REACT_APP_API_URL}/auth/api/chat/room`,
+    //     data,
+    //     headers,
+    //   )
+    //
+    //   // 이거는 방을 만들 때!!!!!!
+    //   .then(async (res) => {
+    //     console.log(res.data.roomId);
+    //     await setRoomName(res.data.roomName);
+    //     // navigateVoiceRoom(roomId, roomName);
+    //     const status = {
+    //       role: 'MODERATOR',
+    //       roomId: res.data.roomId,
+    //       roomName: res.data.roomName,
+    //       category: res.data.category,
+    //       moderatorId: res.data.moderatorId,
+    //       moderatorNickname: res.data.moderatorNickname,
+    //       maxParticipantCount: res.data.maxParticipantCount,
+    //       content: res.data.content,
+    //       isPrivate: res.data.isPrivate,
+    //       agreeCount: res.data.agreeCount,
+    //       disagreeCount: res.data.disagreeCount,
+    //       onAir: res.data.onAir,
+    //       createdAt: res.data.createdAt,
+    //       memberAgreed: res.data.memberAgreed,
+    //       memberDisagreed: res.data.memberDisagreed,
+    //       memberName: 'a',
+    //       accessToken: token,
+    //     };
+    //     dispatch(setJoinRoomStatus(status));
+    //     await navigateVoiceRoom(
+    //       res.data.roomId,
+    //       res.data.roomName,
+    //       res.data.maxParticipantCount,
+    //     );
+    //     //
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
-  const navigateVoiceRoom = async (roomId, roomName, maxParticipantCount) => {
+  const navigateVoiceRoom = async () => {
     const data = {
-      roomId: roomId,
-      memberName: 'a',
-      role: 'MODERATOR',
-      participantCount: maxParticipantCount,
+      roomId: roomState.roomId,
+      memberName: roomState.memberName,
+      role: roomState.role,
+      participantCount: roomState.maxParticipantCount,
     };
-    const headers = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    await axios
+    // const headers = {
+    //   headers: {
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // };
+    await dispatch(
+      joinRoomAsync({
+        data,
+        memberName: roomState.MemberName,
+        role: roomState.role,
+      }),
+    );
+    /* await axios
       .post(
         `${process.env.REACT_APP_API_URL}/auth/api/chat/room/join`,
         data,
@@ -110,9 +131,9 @@ const CreateRoom = () => {
       .then((res) => {
         console.log('🚦 join response(create room) =====> ', res.data);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => console.error(error));*/
     //navigate 로 state 넘기지 말자... publisher 객체가 너무 커서 안넘어간다... 하...
-    navigate(`/room/${roomId}`, { replace: true });
+    await navigate(`/room/${roomState.roomId}`, { replace: true });
   };
   const handleChangeValue = (e) => {
     const value = e.target.value;

@@ -1,33 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setJoinRoomStatus } from '../../modules/chat';
+import {
+  getLiveBoardListAsync,
+  selectedLiveBoardList,
+} from '../../modules/boards';
 
 // openvidu Info
 const RoomList = () => {
-  const [roomList, setRoomList] = useState(null);
-
   // 임시
   const [accessToken, setAccessToken] = useState(undefined);
   const [memberName, setMemberName] = useState(undefined);
+
+  const roomList = useSelector(selectedLiveBoardList);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getChatRoomList().then((r) => r);
+    getChatRoomList();
   }, []);
 
   // 방 목록 가져오기
-  const getChatRoomList = async () => {
-    await axios
-      .get(`${process.env.REACT_APP_API_URL}/api/chat/rooms/onair`)
-      .then((res) => {
-        const rooms = res.data;
-        console.log(rooms);
-        setRoomList(rooms);
-      });
+  const getChatRoomList = () => {
+    dispatch(getLiveBoardListAsync());
   };
 
   // 방 입장

@@ -8,6 +8,7 @@ import axios from 'axios';
 import {
   removeAllRoomSubscribers,
   removeRoomSubscriber,
+  selectRoomState,
   setRemoteForceMuteStatus,
   setRemoteHandsUpStatus,
   setRemotePermissionStatus,
@@ -19,6 +20,7 @@ import SockJS from 'sockjs-client';
 import { over } from 'stompjs';
 import ChatUserProfile from '../../components/molecules/ChatUserProfile';
 import { Button } from '../../components';
+import { getCookie } from '../../shared/utils/Cookie';
 
 //!Todo 마이크 선택 가능하도록!!
 
@@ -47,9 +49,7 @@ const LiveRoom = () => {
   const [session, setSession] = useState(OV.initSession());
 
   const roomSubscribers = useSelector((state) => state.chats.room.subscribers);
-  const joinRoomStatus = useSelector(
-    (state) => state.chats.room.joinRoomStatus,
-  );
+  const joinRoomStatus = useSelector(selectRoomState);
   const memberVoteStatus = useSelector((state) => state.chats.vote.voteStatus);
 
   // Socket 초기화 - 여기서 초기화 해주고...
@@ -270,13 +270,14 @@ const LiveRoom = () => {
       role: joinRoomStatus.role,
       participantCount: joinRoomStatus.maxParticipantCount,
     };
+    const accessToken = getCookie('token');
     return await axios
       .post(
         `${process.env.REACT_APP_OPENVIDU_URL}/auth/api/openvidu/getToken`,
         data,
         {
           headers: {
-            Authorization: `Bearer ${joinRoomStatus.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         },
       )

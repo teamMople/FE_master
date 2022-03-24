@@ -4,8 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { Wrapper } from 'components/atoms';
 import { useDispatch, useSelector } from 'react-redux';
 import { OpenVidu } from 'openvidu-browser';
-import axios from 'axios';
 import {
+  closeRoomAsync,
+  leaveRoomAsync,
+  ovDeleteTokenAsync,
+  ovGetTokenAsync,
   removeAllRoomSubscribers,
   removeRoomSubscriber,
   selectRoomState,
@@ -20,7 +23,6 @@ import SockJS from 'sockjs-client';
 import { over } from 'stompjs';
 import ChatUserProfile from '../../components/molecules/ChatUserProfile';
 import { Button } from '../../components';
-import { getCookie } from '../../shared/utils/Cookie';
 
 //!Todo 마이크 선택 가능하도록!!
 
@@ -52,6 +54,7 @@ const LiveRoom = () => {
   const joinRoomStatus = useSelector(selectRoomState);
   const memberVoteStatus = useSelector((state) => state.chats.vote.voteStatus);
 
+  console.log('joinRoomStatus :: ', joinRoomStatus);
   // Socket 초기화 - 여기서 초기화 해주고...
   let sock = new SockJS(process.env.REACT_APP_SOCKET_URL);
   let stompClient = over(sock);
@@ -103,17 +106,7 @@ const LiveRoom = () => {
       memberName: joinRoomStatus.memberName,
       role: joinRoomStatus.role,
     };
-    const headers = {
-      headers: {
-        Authorization: `Bearer ${joinRoomStatus.accessToken}`,
-      },
-    };
-    await axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/auth/api/chat/room/close`,
-        data,
-        headers,
-      )
+    await dispatch(closeRoomAsync(data))
       .then(() => {
         alert('방장 방 종료하기 성공!');
         roomSubscribers.forEach((sub) =>
@@ -255,12 +248,6 @@ const LiveRoom = () => {
 
     await session.publish(initPublisher);
     await setPublisher(initPublisher);
-
-    // dispatch(
-    //   setRoomInfo({
-    //     publisher: initPublisher,
-    //   }),
-    // );
   };
 
   const getToken = async () => {
@@ -270,23 +257,14 @@ const LiveRoom = () => {
       role: joinRoomStatus.role,
       participantCount: joinRoomStatus.maxParticipantCount,
     };
-    const accessToken = getCookie('token');
-    return await axios
-      .post(
-        `${process.env.REACT_APP_OPENVIDU_URL}/auth/api/openvidu/getToken`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      )
+    console.log('data', data);
+    return await dispatch(ovGetTokenAsync(data))
       .then((res) => {
-        // console.log('😽', res.data);
-        localStorage.setItem('OVAccessToken', res.data.token);
-        return res.data.token;
+        localStorage.setItem('OVAccessToken', res.payload.data.token);
+        console.log('res :::=======> ', res);
+        return res.payload.data.token;
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   };
 
   const leaveRoom = async () => {
@@ -297,23 +275,8 @@ const LiveRoom = () => {
       agreed: memberVoteStatus.memberAgreed,
       disagreed: memberVoteStatus.memberDisagreed,
     };
-    const headers = {
-      headers: {
-        Authorization: `Bearer ${joinRoomStatus.accessToken}`,
-      },
-    };
 
-    await axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/auth/api/chat/room/leave`,
-        data,
-        headers,
-      )
-      .then(() => {
-        deleteToken();
-        alert('방 떠나기 성공!');
-      })
-      .catch(() => alert('방 떠나기 실패!'));
+    await dispatch(leaveRoomAsync(data)).then(() => deleteToken());
   };
   const deleteToken = async () => {
     const openviduData = {
@@ -322,11 +285,7 @@ const LiveRoom = () => {
       role: joinRoomStatus.role,
       token: localStorage.getItem('OVAccessToken'),
     };
-    await axios
-      .post(
-        `${process.env.REACT_APP_OPENVIDU_URL}/auth/api/openvidu/deleteToken`,
-        openviduData,
-      )
+    await dispatch(ovDeleteTokenAsync(openviduData))
       .then(async () => {
         alert('퇴장 토큰 삭제 성공!');
         if (joinRoomStatus.role === 'MODERATOR') {
@@ -632,10 +591,12 @@ const LiveRoom = () => {
               )}
               {isModerator(publisher) && (
                 <>
-                  <Button backgroundColor={'blue'} fluid onClick={leaveRoom}>
+                  <Button primary fluid onClick={leaveRoom}>
                     방 종료하기
                   </Button>
-                  <Button onClick={sendForceLeave}>방 종료하기 메시지</Button>
+                  <Button secondary onClick={sendForceLeave}>
+                    방 종료하기 메시지
+                  </Button>
                 </>
               )}
             </div>

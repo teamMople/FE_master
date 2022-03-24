@@ -39,11 +39,20 @@ const CreateRoom = () => {
       content: content,
       isPrivate: false,
     };
-    const nickName = localStorage.getItem('nickname');
+    const nickname = localStorage.getItem('nickname');
     await dispatch(
-      createRoomAsync({ data, memberName: nickName, role: 'MODERATOR' }),
-    );
-    await navigateVoiceRoom();
+      createRoomAsync({ data, memberName: nickname, role: 'MODERATOR' }),
+    )
+      .then((res) => {
+        const response = res.payload;
+        navigateVoiceRoom(
+          response.roomId,
+          response.memberName,
+          response.role,
+          response.maxParticipantCount,
+        );
+      })
+      .catch((err) => console.error(err));
 
     // 임시 : header 에 토큰값 넘길 것
     // const headers = {
@@ -95,23 +104,29 @@ const CreateRoom = () => {
     //   });
   };
 
-  const navigateVoiceRoom = async () => {
+  const navigateVoiceRoom = async (
+    roomId,
+    memberName,
+    role,
+    maxParticipantCount,
+  ) => {
     const data = {
-      roomId: roomState.roomId,
-      memberName: roomState.memberName,
-      role: roomState.role,
-      participantCount: roomState.maxParticipantCount,
+      roomId: roomId,
+      memberName: memberName,
+      role: role,
+      participantCount: maxParticipantCount,
     };
     // const headers = {
     //   headers: {
     //     Authorization: `Bearer ${token}`,
     //   },
     // };
+    console.log('navigateVoiceRoom :: ', data);
     await dispatch(
       joinRoomAsync({
         data,
-        memberName: roomState.MemberName,
-        role: roomState.role,
+        memberName: memberName,
+        role: role,
       }),
     );
     /* await axios
@@ -125,7 +140,7 @@ const CreateRoom = () => {
       })
       .catch((error) => console.error(error));*/
     //navigate 로 state 넘기지 말자... publisher 객체가 너무 커서 안넘어간다... 하...
-    await navigate(`/room/${roomState.roomId}`, { replace: true });
+    await navigate(`/room/${roomId}`, { replace: true });
   };
   const handleChangeValue = (e) => {
     const value = e.target.value;

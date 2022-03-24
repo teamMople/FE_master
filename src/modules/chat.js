@@ -49,14 +49,26 @@ const voteInitialState = {
   },
 };
 
-export const getToken = createAsyncThunk('get/token', async (data) => {
-  return await axios
-    .post(`http://localhost:8080/api/audio/join`, data)
-    .then((res) => {
-      return res.data.token;
-    })
-    .catch((err) => console.log(err));
-});
+export const ovGetTokenAsync = createAsyncThunk(
+  'chat/ovGetToken',
+  async (data) => {
+    return await apis.ovGetToken(data);
+  },
+);
+
+export const ovDeleteTokenAsync = createAsyncThunk(
+  'chat/ovDeleteToken',
+  async (data) => {
+    return await apis.ovDeleteToken(data);
+  },
+);
+
+export const closeRoomAsync = createAsyncThunk(
+  'chat/closeRoom',
+  async (data) => {
+    return await apis.closeRoom(data);
+  },
+);
 
 export const sessionSlice = createSlice({
   name: 'session',
@@ -94,10 +106,7 @@ export const createRoomAsync = createAsyncThunk(
           accessToken: undefined,
         };
 
-        console.log(status);
-
-        const createRoomStatus = true;
-        return { status, createRoomStatus };
+        return status;
       })
       .catch((err) => console.log(err));
   },
@@ -107,7 +116,7 @@ export const joinRoomAsync = createAsyncThunk(
   'chat/joinRoom',
   async ({ data, memberName, role }) => {
     return await apis
-      .createRoom(data)
+      .joinRoom(data)
       .then((res) => {
         const status = {
           role: role,
@@ -128,9 +137,22 @@ export const joinRoomAsync = createAsyncThunk(
           memberName: memberName,
           // accessToken: undefined,
         };
+        console.log('joinRoom : ', status);
         return status;
       })
       .catch((err) => console.log(err));
+  },
+);
+
+export const leaveRoomAsync = createAsyncThunk(
+  'chat/leaveRoom',
+  async (data) => {
+    return await apis
+      .leaveRoom(data)
+      .then(() => {
+        return alert('방 떠나기 성공!');
+      })
+      .catch(() => alert('방 떠나기 실패!'));
   },
 );
 
@@ -169,11 +191,11 @@ export const roomSlice = createSlice({
   },
   extraReducers: {
     [createRoomAsync.fulfilled]: (state, action) => {
-      state.joinRoomStatus = action.payload.status;
-      state.createRoomStatus = action.payload.createRoomStatus;
+      state.roomState = action.payload;
+      // state.createRoomStatus = action.payload.createRoomStatus;
     },
     [joinRoomAsync.fulfilled]: (state, action) => {
-      state.joinRoomStatus = action.payload;
+      state.roomState = action.payload;
     },
   },
 });

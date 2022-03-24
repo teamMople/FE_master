@@ -116,7 +116,12 @@ const apis = {
 
   createRoom: (data) => authApi.post('/auth/api/chat/room', data),
   joinRoom: (data) => authApi.post('/auth/api/chat/room/join', data),
+  leaveRoom: (data) => authApi.post('/auth/api/chat/room/leave', data),
+  closeRoom: (data) => authApi.post('/auth/api/chat/room/close', data),
+
   ovGetToken: (data) => openviduApi.post('/auth/api/openvidu/getToken', data),
+  ovDeleteToken: (data) =>
+    openviduApi.post('/auth/api/openvidu/deleteToken', data),
 };
 
 export default apis;

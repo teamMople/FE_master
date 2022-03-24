@@ -85,6 +85,7 @@ function App() {
           <Route path={'/room/:roomId'} element={<LiveRoom />} />
           <Route path="/home" element={<Home />} />
           <Route path="/search" element={<SearchBoard />}>
+            <Route path="result" element={<BoardList />} />
             <Route path="result/general" element={<BoardList />} />
             <Route path="result/live" element={<BoardList />} />
           </Route>

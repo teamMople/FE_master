@@ -16,8 +16,7 @@ import {
   selectedLiveBoardList,
 } from 'modules/boards';
 import { useDispatch, useSelector } from 'react-redux';
-import ReactPlaceholder from 'react-placeholder';
-import 'react-placeholder/lib/reactPlaceholder.css';
+// import 'react-placeholder/lib/reactPlaceholder.css';
 
 const Home = (props) => {
   const themeContext = useContext(ThemeContext);

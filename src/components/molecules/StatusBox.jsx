@@ -1,21 +1,35 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Text } from '../atoms';
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
 
-const StatusBox = ({ count, icon, active }) => {
+const StatusBox = ({ count, label, icon, gap, active, text }) => {
+  const tnemeContext = useContext(ThemeContext);
   return (
     <Box active={active}>
-      <img src={icon} alt={'icon'} />
-      <Text style={{ marginLeft: '14px' }}>{count}</Text>
+      {icon && <img src={icon} alt={'icon'} />}
+      {label && (
+        <Text tiny color={tnemeContext.colors.darkGray}>
+          {label}
+        </Text>
+      )}
+      {count && <Text style={{ marginLeft: gap }}>{count}</Text>}
+      {text && <Text style={{ marginLeft: gap }}>{text}</Text>}
     </Box>
   );
 };
 
 StatusBox.propTypes = {
-  count: PropTypes.number,
+  count: PropTypes.number | PropTypes.string,
   icon: PropTypes.string,
+  label: PropTypes.string,
+  gap: PropTypes.string,
+  text: PropTypes.string,
   active: PropTypes.bool,
+};
+
+StatusBox.defaultProps = {
+  gap: '14px',
 };
 
 const Box = styled.div`

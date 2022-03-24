@@ -48,27 +48,27 @@ const CategoryWrapper = styled.div`
 const categories = [
   {
     category: '직장생활',
-    categoryImageUrl: '/asset/image/category/office.svg',
+    categoryImageUrl: '/asset/image/category/office.png',
   },
   {
     category: '학교생활',
-    categoryImageUrl: '/asset/image/category/school.svg',
+    categoryImageUrl: '/asset/image/category/school.png',
   },
   {
     category: '관계/심리',
-    categoryImageUrl: '/asset/image/category/relation.svg',
+    categoryImageUrl: '/asset/image/category/relation.png',
   },
   {
     category: '일상생활',
-    categoryImageUrl: '/asset/image/category/life.svg',
+    categoryImageUrl: '/asset/image/category/office.png',
   },
   {
     category: '시사/이슈',
-    categoryImageUrl: '/asset/image/category/trends.svg',
+    categoryImageUrl: '/asset/image/category/trends.png',
   },
   {
     category: '기타',
-    categoryImageUrl: '/asset/image/category/etc.svg',
+    categoryImageUrl: '/asset/image/category/etc.png',
   },
 ];
 

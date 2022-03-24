@@ -1,14 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import App from './shared/page/App';
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux';
 import store from './modules/configStore';
-import App from './shared/page/App';
+import GlobalStyle from './shared/styles/globalStyles';
 
 ReactDOM.render(
   <Provider store={store}>
+    <GlobalStyle />
     <App />
   </Provider>,
   document.getElementById('root'),

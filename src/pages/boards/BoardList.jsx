@@ -1,22 +1,67 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { ThemeContext } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import BoardItem from '../../components/organisms/BoardItem';
-import { getBoardListAsync, selectBoardListState } from '../../modules/boards';
+import {
+  getBoardListAsync,
+  getBoardListByCategoryAsync,
+  selectedBoardList,
+} from '../../modules/boards';
+
+import { Wrapper, Grid, Tile, Text } from 'components';
+import { useParams } from 'react-router-dom';
 
 function BoardList(props) {
-  const { data, status } = useSelector(selectBoardListState);
+  const params = useParams();
+  console.log(params.categoryName);
+  const data = useSelector(selectedBoardList);
   const dispatch = useDispatch();
+  const themeContext = useContext(ThemeContext);
+  console.log(data);
 
   useEffect(() => {
-    dispatch(getBoardListAsync());
-  }, []);
+    if (typeof params.categoryName === 'undefined') {
+      dispatch(getBoardListAsync());
+    } else {
+      dispatch(getBoardListByCategoryAsync(params.categoryName));
+    }
+    return dispatch;
+  }, [dispatch]);
 
   return (
-    <>
-      {data.map((b, idx) => {
-        return <BoardItem item={b} key={idx} />;
-      })}
-    </>
+    <Wrapper>
+      {data.length !== 0 ? (
+        <Grid
+          center
+          backgroundColor={themeContext.colors.backgroundGray}
+          padding="32px 24px 0px 24px"
+        >
+          {data.map((board, index) => {
+            return (
+              <Grid key={index} padding="0px 0px 16px 0px">
+                <Tile type="basic" board={board} />
+              </Grid>
+            );
+          })}
+        </Grid>
+      ) : (
+        <Grid
+          backgroundColor={themeContext.colors.backgroundGray}
+          style={{
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text color={themeContext.colors.blue}>검색 결과가 없습니다</Text>
+        </Grid>
+      )}
+
+      <Grid
+        height="89px"
+        backgroundColor={themeContext.colors.backgroundGray}
+      ></Grid>
+    </Wrapper>
   );
 }
 

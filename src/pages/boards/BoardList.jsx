@@ -47,7 +47,7 @@ function BoardList(props) {
         <Grid
           backgroundColor={themeContext.colors.backgroundGray}
           style={{
-            height: 'auto',
+            height: '100%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

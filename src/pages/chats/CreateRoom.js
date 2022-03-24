@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import { Textarea, SelectTab, DropdownSelect } from 'components';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  createRoom,
   createRoomAsync,
   joinRoomAsync,
-  postJoinRoom,
   selectRoomState,
-  setJoinRoomStatus,
 } from '../../modules/chat';
-import apis from '../../apis/apis';
 
 const CreateRoom = () => {
   const [roomName, setRoomName] = useState('');
@@ -34,9 +29,6 @@ const CreateRoom = () => {
     { value: '관계/심리', label: '관계/심리' },
     { value: '기타', label: '기타' },
   ];
-
-  // 임시 방장 token
-  const token = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhQGEuY29tIiwic2NvcGVzIjpbIlVTRVIiXSwiaXNzIjoiMiIsImF1ZCI6ImEiLCJpYXQiOjE2NDgwNTY1MTcsImV4cCI6MTY0ODEyODUxN30.mAU6nlGWXQhAyoVo34PE7TJFkzn7H7ZJ2DdoMdZjFHZ4bZTS0hfvdLPO6pq4_1Pm24KcBh_ZcmdlmfLB3ESyig`;
 
   const createRoom = async () => {
     const data = {

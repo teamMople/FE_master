@@ -27,7 +27,6 @@ const RoomList = () => {
   const getChatRoomList = () => {
     dispatch(getLiveBoardListAsync());
   };
-
   // 방 입장
   const handleEnterRoom = async (
     roomId,

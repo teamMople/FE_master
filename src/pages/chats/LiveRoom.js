@@ -288,7 +288,6 @@ const LiveRoom = () => {
       })
       .catch((err) => console.log(err));
   };
-  //=====================
 
   const leaveRoom = async () => {
     const data = {

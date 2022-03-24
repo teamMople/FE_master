@@ -25,8 +25,6 @@ const TextChatView = ({ stompClient, sock, roomId, userId }) => {
   }, []);
 
   const connect = () => {
-    // let sock = new SockJS(process.env.REACT_APP_SOCKET_URL);
-    // stompClient = over(sock);
     stompClient.connect({}, onConnected, onError);
 
     sock.addEventListener('open', () => {
@@ -39,12 +37,6 @@ const TextChatView = ({ stompClient, sock, roomId, userId }) => {
       console.log('Disconnected to Server😀');
     });
   };
-  // const leaveRoom = () => {
-  //   // stompClient.disconnect(() => {
-  //   //   navigate('/', { replace: true });
-  //   // });
-  //   stompClient.disconnect();
-  // };
 
   const onConnected = () => {
     setUserData({ ...userData, connected: true });
@@ -68,7 +60,7 @@ const TextChatView = ({ stompClient, sock, roomId, userId }) => {
 
   const onMessageReceived = (payload) => {
     let payloadData = JSON.parse(payload.body);
-    console.log('👺👺payloadData ====>', payloadData);
+    console.log('👺👺payloadData ====>', payloadData.agreeCount);
     setPublicChats((prevPublicChats) => [...prevPublicChats, payloadData]);
   };
 

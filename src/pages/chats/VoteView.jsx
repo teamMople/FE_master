@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { setMemberVoteStatus } from '../../modules/chat';
-
-// let stompClient = null;
+import { VoteResultBar } from '../../components';
 
 const VoteView = ({
   roomId,
@@ -14,13 +13,24 @@ const VoteView = ({
   sock,
 }) => {
   const dispatch = useDispatch();
+  const [agree, setAgree] = useState(memberAgreed);
+  const [disagree, setDisagree] = useState(memberDisagreed);
+  const [agreeCount, setAgreeCount] = useState(0);
+  const [disagreeCount, setDisagreeCount] = useState(0);
+
   useEffect(() => {
     connect();
   }, []);
 
+  useEffect(() => {
+    const data = {
+      memberAgreed: agree,
+      memberDisagreed: disagree,
+    };
+    dispatch(setMemberVoteStatus(data));
+  }, [agree, disagree]);
+
   const connect = () => {
-    // let sock = new SockJS(process.env.REACT_APP_SOCKET_URL);
-    // stompClient = over(sock);
     stompClient.connect({}, onConnected, onError);
 
     sock.addEventListener('open', () => {
@@ -33,42 +43,26 @@ const VoteView = ({
       // console.log('Disconnected to Server😀');
     });
   };
-  // const leaveRoom = () => {
-  //   // stompClient.disconnect(() => {
-  //   //   navigate('/', { replace: true });
-  //   // });
-  //   stompClient.disconnect();
-  // };
 
   const onConnected = () => {
     stompClient.subscribe(
       `/sub/chat/room/${roomId}`,
-      // onMessageReceived,
+      onMessageReceived,
       onError,
     );
     // userJoin();
   };
 
   const onMessageReceived = (payload) => {
-    // let payloadData = JSON.parse(payload.body);
-    JSON.parse(payload.body);
-    // console.log('👺👺payloadData ====>', payloadData);
+    let payloadData = JSON.parse(payload.body);
+    setAgreeCount(payloadData.agreeCount);
+    setDisagreeCount(payloadData.disagreeCount);
+    console.log('👺👺payloadData ====>', payloadData.agreeCount);
   };
 
   const onError = (err) => {
     console.error(err);
   };
-
-  const [agree, setAgree] = useState(memberAgreed);
-  const [disagree, setDisagree] = useState(memberDisagreed);
-
-  useEffect(() => {
-    const data = {
-      memberAgreed: agree,
-      memberDisagreed: disagree,
-    };
-    dispatch(setMemberVoteStatus(data));
-  }, [agree, disagree]);
 
   // 찬성 메시지 보내기
   const sendAddAgree = () => {
@@ -145,6 +139,7 @@ const VoteView = ({
   // }
   return (
     <div className="container">
+      <VoteResultBar agreeCount={agreeCount} disagreeCount={disagreeCount} />
       {agree ? (
         <button onClick={sendCancelAgree}>찬성취소</button>
       ) : (

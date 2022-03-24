@@ -92,6 +92,21 @@ export const createBoardAsync = createAsyncThunk(
   },
 );
 
+export const searchBoardAsync = createAsyncThunk(
+  'boards/searchBoard',
+  async ({ search }, thunkAPI) => {
+    const response = await apis
+      .searchBoard(search)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((e) => {
+        return null;
+      });
+    return response.data;
+  },
+);
+
 export const increaseAgreeCountAsync = createAsyncThunk(
   'boards/increaseAgreeCount',
   async ({ boardId }, thunkAPI) => {

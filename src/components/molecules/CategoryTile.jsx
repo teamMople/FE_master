@@ -33,10 +33,14 @@ const Tile = styled.div`
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+  position: relative;
 
   > .categoryLabel {
-    padding: 57px 20px 80px 20px;
-    line-height: 16.65px;
+    //padding: 57px 20px 80px 20px;
+    //line-height: 16.65px;
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
     font-size: 14px;
     color: #fff;
     font-weight: 600;

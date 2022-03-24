@@ -9,6 +9,7 @@ const alarms = [
 
 function AlarmList(props) {
   const themeContext = useContext(ThemeContext);
+
   console.log(alarms);
   return (
     <Wrapper

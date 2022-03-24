@@ -103,7 +103,7 @@ const Tile = (props) => {
             <Grid isFlex>
               <Button
                 width="58px"
-                height={32}
+                height="32px"
                 backgroundColor={themeContext.colors.lightGray}
                 onClick={() => {}}
               >
@@ -116,8 +116,8 @@ const Tile = (props) => {
             <Grid isFlex>
               <Grid margin="0px 8px 0px 0px">
                 <Button
-                  width="58px"
-                  height={32}
+                  width="54px"
+                  height="32px"
                   backgroundColor={themeContext.colors.lightGray}
                 >
                   <Grid margin="0px 5px 0px 0px">
@@ -128,8 +128,8 @@ const Tile = (props) => {
               </Grid>
               <Grid>
                 <Button
-                  width="58px"
-                  height={32}
+                  width="54px"
+                  height="32px"
                   backgroundColor={themeContext.colors.lightGray}
                 >
                   <Grid margin="0px 5px 0px 0px">

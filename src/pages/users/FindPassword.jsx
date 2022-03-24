@@ -20,7 +20,7 @@ function FindPassword(props) {
   return (
     <Wrapper
       backgroundColor={themeContext.colors.white}
-      padding="70px 24px 0px 24px"
+      padding="0px 24px 0px 24px"
     >
       <Header label="비밀번호 찾기" leftArrow />
       <Grid padding="18px 0px 189px 0px">

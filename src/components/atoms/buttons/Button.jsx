@@ -56,7 +56,7 @@ const B = styled.button`
   padding: ${({ size }) =>
     size === 'small' ? '8px 16px' : size === 'large' ? '8px 16px' : '8px 16px'};
   line-height: 1;
-  height: ${(props) => props.height}px;
+  height: ${(props) => props.height};
   background-color: ${({ backgroundColor, theme, primary, secondary }) =>
     backgroundColor
       ? backgroundColor

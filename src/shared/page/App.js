@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { getCookie } from '../utils/Cookie';
 import {
   Splash,
   Home,
@@ -36,11 +35,8 @@ import RoomList from '../../pages/chats/RoomList';
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
-  const [isLogin, setIsLogin] = useState(false);
   const [showNav, setShowNav] = useState(false);
 
-  // 임시 (액세스 토큰 받으면 setIsLogin(true) 처리 예정)
-  console.log(window.location.pathname);
   const locationArray = [
     '/',
     '/login',
@@ -60,14 +56,14 @@ function App() {
   };
 
   useEffect(() => {
-    // 임시
-    console.log(isLogin);
+    console.log(window.location.pathname);
     if (locationArray.indexOf(window.location.pathname) !== -1) {
       setShowNav(false);
     } else {
       setShowNav(true);
     }
-  }, [window.location.pathname]);
+    return;
+  }, [window.location]);
 
   return (
     <ThemeProvider theme={theme}>

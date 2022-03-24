@@ -3,8 +3,7 @@ import { getCookie } from '../shared/utils/Cookie';
 
 // 액세스 토큰 없이 접근 가능한 API
 const api = axios.create({
-  baseURL:
-    'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/',
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
     'content-type': 'application/json;charset=UTF-8',
     accept: 'application/json',
@@ -13,8 +12,7 @@ const api = axios.create({
 
 // 토큰이 있어야 접근 가능한 API
 const authApi = axios.create({
-  baseURL:
-    'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/',
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
     'content-type': 'application/json;charset=UTF-8',
     accept: 'application/json',
@@ -22,8 +20,7 @@ const authApi = axios.create({
 });
 
 const authMediaApi = axios.create({
-  baseURL:
-    'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/',
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
     'content-type': 'application/json;charset=UTF-8',
     accept: 'application/json',
@@ -92,7 +89,10 @@ const apis = {
   recommendComment: (commentId) =>
     authApi.get(`/auth/api/comment/recommend/${commentId}`),
   searchBoard: (search) => authApi.get(`/auth/api/comment/search/${search}`),
-  pushAlarm: () => authApi.post('/auth/api/fcm/register'),
+
+  // 알람
+  pushAlarm: (targetToken) =>
+    authApi.post('/auth/api/fcm/register', { targetToken }),
 
   // 대댓글
   createReplyComment: (commentId, content) =>

@@ -2,12 +2,13 @@ import { initializeApp } from 'firebase/app';
 import firebase from 'firebase';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDWCUM0tYnV_CIUSNxsDjFMQQ3-13KBJ78',
-  authDomain: 'boilerplate-939c9.firebaseapp.com',
-  projectId: 'boilerplate-939c9',
-  storageBucket: 'boilerplate-939c9.appspot.com',
-  messagingSenderId: '2750121616',
-  appId: '1:2750121616:web:0a6a5b20d0f39827827a15',
+  apiKey: 'AIzaSyD0u9HX41rjh3MnO93isinkSuxzLEH22GI',
+  authDomain: 'boiler-e3497.firebaseapp.com',
+  projectId: 'boiler-e3497',
+  storageBucket: 'boiler-e3497.appspot.com',
+  messagingSenderId: '128639882477',
+  appId: '1:128639882477:web:4e0c086f572ce6b9a468e4',
+  measurementId: 'G-V83CYYD10V',
 };
 
 firebase.initializeApp(firebaseConfig);

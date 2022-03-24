@@ -36,9 +36,13 @@ const MyAccount = (props) => {
               justifyContent: 'flex-end',
             }}
           >
-            <Link to="/settings">
+            <Grid
+              onClick={() => {
+                window.location.assign('/settings');
+              }}
+            >
               <img src="/asset/icons/Settings.svg" />
-            </Link>
+            </Grid>
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Image shape="circle" size={108} src={profileImageUrl} />

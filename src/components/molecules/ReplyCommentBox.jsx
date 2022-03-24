@@ -26,7 +26,7 @@ const ReplyCommentBox = (props) => {
         <Grid>
           <Button
             width="58px"
-            height={32}
+            height="32px"
             backgroundColor={themeContext.colors.white}
           >
             <Grid margin="0px 5px 0px 0px">

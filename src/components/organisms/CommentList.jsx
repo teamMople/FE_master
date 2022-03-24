@@ -7,7 +7,6 @@ import { getCommentListAsync, selectedCommentList } from 'modules/comments';
 
 const CommentList = (props) => {
   const { comments } = props;
-  console.log(comments);
   const themeContext = useContext(ThemeContext);
 
   return (

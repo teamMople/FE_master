@@ -7,7 +7,6 @@ import { Grid } from 'components';
 const VoteResultBar = (props) => {
   const { agreeCount, disagreeCount } = props;
   const totalCount = agreeCount + disagreeCount;
-  console.log(agreeCount);
   const agreePercentageWidth =
     totalCount === 0 ? '50%' : (agreeCount / totalCount) * 100 + '%';
 

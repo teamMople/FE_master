@@ -55,6 +55,22 @@ const GridBox = styled.div`
           flex-wrap: nowrap;
         `
       : ``};
+
+  ${(props) =>
+    props.left
+      ? `
+          display: flex;
+          justify-content: flex-start;
+        `
+      : ``};
+
+  ${(props) =>
+    props.right
+      ? `
+          display: flex;
+          justify-content: flex-end;
+        `
+      : ``};
 `;
 
 export default Grid;

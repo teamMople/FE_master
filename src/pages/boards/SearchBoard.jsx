@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import { ThemeContext } from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-import { Wrapper, Grid, Input, CategoryTile } from 'components';
+import { Wrapper, Grid, CategoryTile, SearchInput } from 'components';
 
 function SearchBoard(props) {
   const themeContext = useContext(ThemeContext);
@@ -45,15 +45,9 @@ function SearchBoard(props) {
           </svg>
         </Grid>
       </Grid>
+      <SearchInput />
       <Grid margin="32px 0px 89px 0px">
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            rowGap: '18px',
-            columnGap: '16px',
-          }}
-        >
+        <CategoryWrapper>
           {categories.map((cat, index) => {
             return (
               <CategoryTile
@@ -70,10 +64,18 @@ function SearchBoard(props) {
             );
           })}
         </div>
+        </CategoryWrapper>
       </Grid>
     </Wrapper>
   );
 }
+
+const CategoryWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 18px;
+  column-gap: 18px;
+`;
 
 const categories = [
   {

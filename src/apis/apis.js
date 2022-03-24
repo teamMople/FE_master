@@ -19,8 +19,8 @@ const authApi = axios.create({
   },
 });
 
-const authMediaApi = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+const openviduApi = axios.create({
+  baseURL: process.env.REACT_APP_OPENVIDU_URL,
   headers: {
     'content-type': 'application/json;charset=UTF-8',
     accept: 'application/json',
@@ -29,6 +29,12 @@ const authMediaApi = axios.create({
 
 /* eslint-disable no-param-reassign */
 authApi.interceptors.request.use(function (config) {
+  const accessToken = getCookie('token');
+  config.headers.common.Authorization = `Bearer ${accessToken}`;
+  return config;
+});
+
+openviduApi.interceptors.request.use(function (config) {
   const accessToken = getCookie('token');
   config.headers.common.Authorization = `Bearer ${accessToken}`;
   return config;
@@ -109,6 +115,15 @@ const apis = {
   getLiveRoomListByCategory: (categoryName) =>
     authApi.get(`/api/chat/rooms/${categoryName}`),
   searchLiveRoom: (keyword) => authApi.get(`/api/chat/rooms/${keyword}`),
+
+  createRoom: (data) => authApi.post('/auth/api/chat/room', data),
+  joinRoom: (data) => authApi.post('/auth/api/chat/room/join', data),
+  leaveRoom: (data) => authApi.post('/auth/api/chat/room/leave', data),
+  closeRoom: (data) => authApi.post('/auth/api/chat/room/close', data),
+
+  ovGetToken: (data) => openviduApi.post('/auth/api/openvidu/getToken', data),
+  ovDeleteToken: (data) =>
+    openviduApi.post('/auth/api/openvidu/deleteToken', data),
 };
 
 export default apis;

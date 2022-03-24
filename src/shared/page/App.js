@@ -68,9 +68,9 @@ function App() {
     <ThemeProvider theme={theme}>
       <BrowserRouter history={history}>
         {/* 잠시 임시로 넣어놓았습니다. */}
-        <button style={{ position: 'fixed', right: 0 }} onClick={changeTheme}>
-          테마변경
-        </button>
+        {/*<button style={{ position: 'fixed', right: 0 }} onClick={changeTheme}>*/}
+        {/*  테마변경*/}
+        {/*</button>*/}
         <Routes>
           <Route path="/" element={<Splash />} />
           <Route path="/login" element={<Login />} />

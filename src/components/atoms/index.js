@@ -13,6 +13,7 @@ export { default as Text } from './text/Text';
 // layout
 export { default as Wrapper } from './layout/Wrapper';
 export { default as Grid } from './layout/Grid';
+export { default as Divider } from './layout/Divider';
 
 // inputs
 export { default as Input } from './inputs/Input';

@@ -46,31 +46,4 @@ function BoardByCategoryList(props) {
   );
 }
 
-const categories = [
-  {
-    category: '직장생활',
-    categoryImageUrl: '/asset/image/category/office.svg',
-  },
-  {
-    category: '학교생활',
-    categoryImageUrl: '/asset/image/category/school.svg',
-  },
-  {
-    category: '관계/심리',
-    categoryImageUrl: '/asset/image/category/relation.svg',
-  },
-  {
-    category: '일상생활',
-    categoryImageUrl: '/asset/image/category/life.svg',
-  },
-  {
-    category: '시사/이슈',
-    categoryImageUrl: '/asset/image/category/trends.svg',
-  },
-  {
-    category: '기타',
-    categoryImageUrl: '/asset/image/category/etc.svg',
-  },
-];
-
 export default BoardByCategoryList;

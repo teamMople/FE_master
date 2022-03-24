@@ -58,6 +58,7 @@ const I = styled.input`
 
   &:focus {
     outline: none;
+    border: 1px solid ${({ theme }) => theme.colors.blue};
   }
 
   &::placeholder {

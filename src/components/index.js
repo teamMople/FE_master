@@ -30,6 +30,7 @@ import {
   CommentBox,
   ReplyCommentBox,
   StatusBox,
+  SearchInput,
 } from './molecules';
 import {
   BoardList,
@@ -74,4 +75,5 @@ export {
   CommentInputWindow,
   ChatUserProfile,
   StatusBox,
+  SearchInput,
 };

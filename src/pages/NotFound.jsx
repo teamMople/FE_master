@@ -27,14 +27,7 @@ const NotFound = (props) => {
             justifyContent: 'center',
           }}
         >
-          <Button
-            onClick={() => navigate('/')}
-            width="148px"
-            height={38}
-            color={themeContext.colors.white}
-            backgroundColor={themeContext.colors.blue}
-            margin="0px 0px 0px 0px"
-          >
+          <Button secondary onClick={() => navigate('/')}>
             홈으로 돌아가기
           </Button>
         </div>

@@ -23,20 +23,22 @@ const CommentInputWindow = (props) => {
       <Grid isFlex width="100%" padding="8px 24px 24px 24px">
         <Textarea
           fluid
+          height="34px"
           backgroundColor={themeContext.colors.backgroundGray}
           border="none"
           borderRadius="10px"
           placeholder="댓글을 입력하세요"
           padding="8px 12px 8px 12px"
           onChange={changeContent}
-          margin="0px 20px 0px 0px"
         />
         <Button
-          width="57px"
+          size={'small'}
           height={30}
           backgroundColor={themeContext.colors.lightGray}
           color={themeContext.colors.blue}
-          onClick={() => {
+          margin="0px 0px 0px 16px"
+          onClick={(e) => {
+            e.preventDefault();
             dispatch(createCommentAsync(commentInfo));
           }}
         >
@@ -48,7 +50,7 @@ const CommentInputWindow = (props) => {
 };
 
 CommentInputWindow.propTypes = {
-  boardId: PropTypes.number,
+  boardId: PropTypes.string,
 };
 
 const Window = styled.div`
@@ -57,7 +59,7 @@ const Window = styled.div`
   position: fixed;
   bottom: 0;
   width: 100%;
-  height: 138px;
+  height: 120px; // 66+54
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 20px 20px 0px 0px;
   filter: drop-shadow(0px -2px 4px rgba(0, 0, 0, 0.05));

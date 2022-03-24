@@ -141,7 +141,7 @@ function Signup(props) {
   return (
     <Wrapper
       backgroundColor={themeContext.colors.white}
-      style={{ overflow: 'hidden' }}
+      style={{ overflow: 'hidden', height: '100%' }}
     >
       <FixedHeader>
         <Grid padding="0px 24px 0px 24px">

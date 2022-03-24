@@ -28,7 +28,7 @@ const MenuTab = (props) => {
                 navigate(urls[index]);
               }}
             >
-              <Text>{label}</Text>
+              <Text color={props.highlightColor}>{label}</Text>
             </Grid>
           );
         })}
@@ -74,8 +74,6 @@ const Hidden = styled.div`
   height: 100%;
   background-color: ${(props) => props.backgroundColor};
   transition: 1s width;
-  border: none;
-  border-bottom: 1px solid ${(props) => props.highlightColor};
 `;
 
 const Labels = styled.div`
@@ -85,7 +83,6 @@ const Labels = styled.div`
   justify-content: center;
   --size: ${(props) => props.size};
   grid-template-columns: repeat(var(--size), 1fr);
-  color: ${(props) => props.highlightColor};
   background-color: ${(props) => props.backgroundColor};
 `;
 

@@ -1,35 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setJoinRoomStatus } from '../../modules/chat';
+import { useDispatch, useSelector } from 'react-redux';
+import { joinRoomAsync, setJoinRoomStatus } from '../../modules/chat';
+import {
+  getLiveBoardListAsync,
+  selectedLiveBoardList,
+} from '../../modules/boards';
 
 // openvidu Info
 const RoomList = () => {
-  const [roomList, setRoomList] = useState(null);
-
   // 임시
   const [accessToken, setAccessToken] = useState(undefined);
   const [memberName, setMemberName] = useState(undefined);
+
+  const roomList = useSelector(selectedLiveBoardList);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getChatRoomList().then((r) => r);
+    getChatRoomList();
   }, []);
 
   // 방 목록 가져오기
-  const getChatRoomList = async () => {
-    await axios
-      .get(`${process.env.REACT_APP_API_URL}/api/chat/rooms/onair`)
-      .then((res) => {
-        const rooms = res.data;
-        console.log(rooms);
-        setRoomList(rooms);
-      });
+  const getChatRoomList = () => {
+    dispatch(getLiveBoardListAsync());
   };
-
   // 방 입장
   const handleEnterRoom = async (
     roomId,
@@ -38,19 +35,23 @@ const RoomList = () => {
     participantCount,
     role,
   ) => {
-    //!Todo api 요청 보내기 무조건!!
+    const nickname = localStorage.getItem('nickname');
     const data = {
       roomId: roomId,
-      memberName: memberName,
+      memberName: nickname,
       role: role,
       participantCount: participantCount,
     };
-    const headers = {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
-    await axios
+    await dispatch(
+      joinRoomAsync({
+        data,
+        memberName: nickname,
+        role: role,
+      }),
+    )
+      .then((res) => navigate(`/room/${res.payload.roomId}`))
+      .catch((error) => console.error(error));
+    /*await axios
       .post(
         `${process.env.REACT_APP_API_URL}/auth/api/chat/room/join`,
         data,
@@ -81,7 +82,7 @@ const RoomList = () => {
         dispatch(setJoinRoomStatus(status));
         navigate(`/room/${roomId}`);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => console.error(error));*/
   };
   // const navigateRoom = (
   //   roomId,

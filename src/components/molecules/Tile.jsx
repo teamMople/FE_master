@@ -99,10 +99,10 @@ const Tile = (props) => {
               {board.content}
             </Text>
           </Grid>
-          <Grid isFlex width="252px" className="buttonGroup">
+          <Grid isFlex width="100%" className="buttonGroup">
             <Grid isFlex>
               <Button
-                width="58px"
+                size={'small'}
                 height="32px"
                 backgroundColor={themeContext.colors.lightGray}
                 onClick={() => {}}
@@ -116,7 +116,7 @@ const Tile = (props) => {
             <Grid isFlex>
               <Grid margin="0px 8px 0px 0px">
                 <Button
-                  width="54px"
+                  size={'small'}
                   height="32px"
                   backgroundColor={themeContext.colors.lightGray}
                 >
@@ -128,7 +128,7 @@ const Tile = (props) => {
               </Grid>
               <Grid>
                 <Button
-                  width="54px"
+                  size={'small'}
                   height="32px"
                   backgroundColor={themeContext.colors.lightGray}
                 >
@@ -211,6 +211,7 @@ const BasicTileWrapper = styled.div`
   padding: 20px 24px 20px 24px;
   width: 300px;
   height: 218px;
+  box-sizing: border-box;
 
   > .buttonGroup {
     position: absolute;

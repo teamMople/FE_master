@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import { Textarea, SelectTab, DropdownSelect } from 'components';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setJoinRoomStatus } from '../../modules/chat';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  createRoomAsync,
+  joinRoomAsync,
+  selectRoomState,
+} from '../../modules/chat';
 
 const CreateRoom = () => {
   const [roomName, setRoomName] = useState('');
@@ -21,87 +24,56 @@ const CreateRoom = () => {
     { value: '일상생활', label: '일생생활' },
     { value: '직장생활', label: '직장생활' },
     { value: '학교생활', label: '학교생활' },
-    { value: '시사/이슈', label: '시사/이슈' },
-    { value: '관계/심리', label: '관계/심리' },
+    { value: '시사이슈', label: '시사/이슈' },
+    { value: '관계심리', label: '관계/심리' },
     { value: '기타', label: '기타' },
   ];
-
-  // 임시 방장 token
-  const token = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhQGEuY29tIiwic2NvcGVzIjpbIlVTRVIiXSwiaXNzIjoiMiIsImF1ZCI6ImEiLCJpYXQiOjE2NDgwNTY1MTcsImV4cCI6MTY0ODEyODUxN30.mAU6nlGWXQhAyoVo34PE7TJFkzn7H7ZJ2DdoMdZjFHZ4bZTS0hfvdLPO6pq4_1Pm24KcBh_ZcmdlmfLB3ESyig`;
 
   const createRoom = async () => {
     const data = {
       roomName: roomName,
-      category: selectedOption,
+      category: selectedOption.value,
       moderator: moderator,
       maxParticipantCount: memberCount,
       content: content,
       isPrivate: false,
     };
-
-    // 임시 : header 에 토큰값 넘길 것
-    const headers = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    await axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/auth/api/chat/room`,
-        data,
-        headers,
-      )
-
-      // 이거는 방을 만들 때!!!!!!
-      .then(async (res) => {
-        console.log(res.data.roomId);
-        await setRoomName(res.data.roomName);
-        // navigateVoiceRoom(roomId, roomName);
-        const status = {
-          role: 'MODERATOR',
-          roomId: res.data.roomId,
-          roomName: res.data.roomName,
-          category: res.data.category,
-          moderatorId: res.data.moderatorId,
-          moderatorNickname: res.data.moderatorNickname,
-          maxParticipantCount: res.data.maxParticipantCount,
-          content: res.data.content,
-          isPrivate: res.data.isPrivate,
-          agreeCount: res.data.agreeCount,
-          disagreeCount: res.data.disagreeCount,
-          onAir: res.data.onAir,
-          createdAt: res.data.createdAt,
-          memberAgreed: res.data.memberAgreed,
-          memberDisagreed: res.data.memberDisagreed,
-          memberName: 'a',
-          accessToken: token,
-        };
-        dispatch(setJoinRoomStatus(status));
-        await navigateVoiceRoom(
-          res.data.roomId,
-          res.data.roomName,
-          res.data.maxParticipantCount,
+    const nickname = localStorage.getItem('nickname');
+    await dispatch(
+      createRoomAsync({ data, memberName: nickname, role: 'MODERATOR' }),
+    )
+      .then((res) => {
+        const response = res.payload;
+        navigateVoiceRoom(
+          response.roomId,
+          response.memberName,
+          response.role,
+          response.maxParticipantCount,
         );
-        //
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => console.error(err));
   };
 
-  const navigateVoiceRoom = async (roomId, roomName, maxParticipantCount) => {
+  const navigateVoiceRoom = async (
+    roomId,
+    memberName,
+    role,
+    maxParticipantCount,
+  ) => {
     const data = {
       roomId: roomId,
-      memberName: 'a',
-      role: 'MODERATOR',
+      memberName: memberName,
+      role: role,
       participantCount: maxParticipantCount,
     };
-    const headers = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    await axios
+    await dispatch(
+      joinRoomAsync({
+        data,
+        memberName: memberName,
+        role: role,
+      }),
+    );
+    /* await axios
       .post(
         `${process.env.REACT_APP_API_URL}/auth/api/chat/room/join`,
         data,
@@ -110,9 +82,9 @@ const CreateRoom = () => {
       .then((res) => {
         console.log('🚦 join response(create room) =====> ', res.data);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => console.error(error));*/
     //navigate 로 state 넘기지 말자... publisher 객체가 너무 커서 안넘어간다... 하...
-    navigate(`/room/${roomId}`, { replace: true });
+    await navigate(`/room/${roomId}`, { replace: true });
   };
   const handleChangeValue = (e) => {
     const value = e.target.value;

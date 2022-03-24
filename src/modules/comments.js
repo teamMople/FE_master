@@ -16,7 +16,6 @@ export const getCommentListAsync = createAsyncThunk(
   async (boardId, thunkAPI) => {
     try {
       const response = await apis.getCommentsByBoard(boardId);
-      console.log(response);
       return response.data;
     } catch (e) {
       return thunkAPI.rejectWithValue(await e.response.data);
@@ -28,8 +27,8 @@ export const getReplyCommentListAsync = createAsyncThunk(
   'comments/getReplyCommentList',
   async ({ commentId }, thunkAPI) => {
     try {
+      console.log(commentId);
       const response = await apis.getReplyCommentListByComment(commentId);
-      console.log(response);
       return response.data;
     } catch (e) {
       return thunkAPI.rejectWithValue(await e.response.data);
@@ -45,6 +44,9 @@ export const createCommentAsync = createAsyncThunk(
       .createComment(boardId, content)
       .then((response) => {
         console.log(response);
+        if (response.status === 200) {
+          return content;
+        }
       })
       .catch((error) => {
         if (error) {
@@ -59,11 +61,14 @@ export const createCommentAsync = createAsyncThunk(
 export const createReplyCommentAsync = createAsyncThunk(
   'comments/createComment',
   async (replyCommentInfo, thunkAPI) => {
-    const { commentId, content } = replyCommentInfo;
+    const { id, replyContent } = replyCommentInfo;
+    console.log(replyCommentInfo);
+    console.log(id);
     await apis
-      .createReplyComment(commentId, content)
+      .createReplyComment(id, replyContent)
       .then((response) => {
         console.log(response);
+        return response.data;
       })
       .catch((error) => {
         if (error) {
@@ -146,7 +151,15 @@ export const increaseReplyCommentRecommendCountAsync = createAsyncThunk(
 export const commentListSlice = createSlice({
   name: 'commentList',
   initialState: commentListInitialState,
-  reducers: {},
+  reducers: {
+    clearCommentList: (state) => {
+      state.status = 'idle';
+      state.data = [];
+    },
+    increaseRecommendCount: (state, action) => {
+      state.data.recommendCount += 1;
+    },
+  },
   extraReducers: {
     [getCommentListAsync.fulfilled]: (state, action) => {
       state.status = 'success';
@@ -179,6 +192,6 @@ export const replyCommentListSlice = createSlice({
   },
 });
 
-export const {} = commentListSlice.actions;
+export const { clearCommentList } = commentListSlice.actions;
 export const selectedCommentList = (state) => state.comments.data;
 export const selectedReplyCommentList = (state) => state.replyComments.data;

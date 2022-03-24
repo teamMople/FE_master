@@ -1,7 +1,8 @@
 import React, { useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getDetailAsync, selectedDetail } from 'modules/boards';
+import { clearDetail, getDetailAsync, selectedDetail } from 'modules/boards';
+import { clearCommentList } from 'modules/comments';
 
 import { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
@@ -20,15 +21,19 @@ import { getCommentListAsync, selectedCommentList } from 'modules/comments';
 
 function BoardDetail(props) {
   const params = useParams();
+  const boardId = parseInt(params.boardId);
+
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
   const detail = useSelector(selectedDetail);
   const comments = useSelector(selectedCommentList);
-  console.log(comments);
 
   useEffect(() => {
     dispatch(getDetailAsync(params.boardId));
     dispatch(getCommentListAsync(params.boardId));
+    return () => {
+      dispatch(clearCommentList());
+    };
   }, []);
 
   return (
@@ -67,19 +72,14 @@ function BoardDetail(props) {
             disagreeCount={detail.disagreeCount}
           />
         </Grid>
-        <Grid margin="0px 0px 30px 0px" style={{ float: 'right' }}>
+        <Grid right margin="0px 0px 30px 0px">
           <Text size="14px" lineHeight="22px">
             댓글 수 ({comments.length})
           </Text>
         </Grid>
       </Grid>
-      <Grid
-        width="100%"
-        height="8px"
-        backgroundColor={themeContext.colors.lightGray}
-      />
       <CommentList comments={comments} />
-      <CommentInputWindow boardId={detail.id} />
+      <CommentInputWindow boardId={boardId} />
     </Wrapper>
   );
 }

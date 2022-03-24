@@ -96,7 +96,9 @@ const apis = {
 
   // 대댓글
   createReplyComment: (commentId, content) =>
-    authApi.post(`/auth/api/comment/${commentId}/reply`),
+    authApi.post(`/auth/api/comment/${commentId}/reply`, {
+      content,
+    }),
   getReplyCommentListByComment: (commentId) =>
     authApi.get(`/auth/api/comment/${commentId}/reply`),
   recommendReplyComment: (commentId, replyId) =>

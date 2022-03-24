@@ -16,7 +16,13 @@ function Input({
   return (
     <InputWrapper margin={margin} backgroundColor={backgroundColor}>
       {label && <Text bold>{label}</Text>}
-      <I width={width} height={height} fluid={fluid} {...props}>
+      <I
+        width={width}
+        height={height}
+        fluid={fluid}
+        backgroundColor={backgroundColor}
+        {...props}
+      >
         {props.children}
       </I>
     </InputWrapper>

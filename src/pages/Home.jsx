@@ -9,23 +9,35 @@ import {
   BoardList,
 } from '../components/organisms';
 import {
+  clearBoardList,
   getBoardListAsync,
   getLiveBoardListAsync,
   selectedBoardList,
   selectedLiveBoardList,
 } from 'modules/boards';
 import { useDispatch, useSelector } from 'react-redux';
+import ReactPlaceholder from 'react-placeholder';
+import 'react-placeholder/lib/reactPlaceholder.css';
 
 const Home = (props) => {
-  const basicBoards = useSelector(selectedBoardList);
-  const liveBoards = useSelector(selectedLiveBoardList);
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
+
+  const { data: basicBoards, status: basicBoardsStatus } =
+    useSelector(selectedBoardList);
+  const { data: liveBoards, status: liveBoardsStatus } = useSelector(
+    selectedLiveBoardList,
+  );
 
   React.useEffect(() => {
     dispatch(getBoardListAsync());
     dispatch(getLiveBoardListAsync());
   }, [dispatch]);
+
+  console.log(basicBoards);
+  console.log(basicBoardsStatus);
+  console.log(liveBoards);
+  console.log(liveBoardsStatus);
 
   return (
     <Wrapper>
@@ -50,7 +62,10 @@ const Home = (props) => {
           boards={basicBoards}
         />
         <CategoryCarousel label="카테고리 둘러보기" />
-        <div style={{ height: '89px' }}></div>
+        <Grid
+          height="89px"
+          backgroundColor={themeContext.colors.backgroundGray}
+        ></Grid>
       </Grid>
     </Wrapper>
   );

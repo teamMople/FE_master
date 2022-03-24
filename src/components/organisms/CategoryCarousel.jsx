@@ -12,7 +12,7 @@ const CategoryCarousel = (props) => {
 
   return (
     <Grid padding="0px 5px 0px 5px">
-      <Grid padding="0px 24px 16px 24px">
+      <Grid padding="0px 19px 0px 19px" margin="0px 0px 16px 0px">
         <Text bold size="20px">
           {label}
         </Text>

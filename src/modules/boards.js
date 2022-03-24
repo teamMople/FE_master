@@ -34,7 +34,6 @@ export const getBoardListAsync = createAsyncThunk(
   async (thunkAPI) => {
     try {
       const response = await apis.getBoardList();
-      console.log(response.data);
       return response.data;
     } catch (e) {
       return thunkAPI.rejectWithValue(await e.response.data);
@@ -75,7 +74,6 @@ export const getDetailAsync = createAsyncThunk(
   'boards/getDetail',
   async (boardId) => {
     const response = await apis.getDetail(boardId);
-    console.log(response.data);
     return response.data;
   },
 );
@@ -169,11 +167,15 @@ export const increaseRecommendCountAsync = createAsyncThunk(
 export const boardListSlice = createSlice({
   name: 'boardList',
   initialState: boardListInitialState,
-  reducers: {},
+  reducers: {
+    clearBoardList: (state) => {
+      state.status = 'idle';
+      state.data = [];
+    },
+  },
   extraReducers: {
     [getBoardListAsync.fulfilled]: (state, action) => {
       state.status = 'success';
-      console.log(action.payload);
       state.data = action.payload;
     },
     [getBoardListAsync.pending]: (state) => {
@@ -198,7 +200,12 @@ export const boardListSlice = createSlice({
 export const liveBoardListSlice = createSlice({
   name: 'liveBoardList',
   initialState: liveBoardListInitialState,
-  reducers: {},
+  reducers: {
+    clearLiveBoardList: (state) => {
+      state.status = 'idle';
+      state.data = [];
+    },
+  },
   extraReducers: {
     [getLiveBoardListAsync.fulfilled]: (state, action) => {
       state.status = 'success';
@@ -227,6 +234,10 @@ export const detailSlice = createSlice({
   name: 'detail',
   initialState: detailInitialState,
   reducers: {
+    clearDetail: (state) => {
+      state.status = 'idle';
+      state.data = {};
+    },
     increaseAgreeCount: (state) => {
       state.data.agreeCount += 1;
     },
@@ -253,11 +264,14 @@ export const detailSlice = createSlice({
 });
 
 export const { loadBoardList } = boardListSlice.actions;
+export const { clearBoardList } = boardListSlice.actions;
+export const { clearLiveBoardList } = liveBoardListSlice.actions;
 export const {
+  clearDetail,
   increaseAgreeCount,
   increaseDisagreeCount,
   increaseRecommendCount,
 } = detailSlice.actions;
-export const selectedBoardList = (state) => state.boards.data;
-export const selectedLiveBoardList = (state) => state.liveBoards.data;
+export const selectedBoardList = (state) => state.boards;
+export const selectedLiveBoardList = (state) => state.liveBoards;
 export const selectedDetail = (state) => state.detail.data;

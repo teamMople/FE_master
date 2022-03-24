@@ -18,7 +18,6 @@ const getDateString = (dateArray) => {
   );
   const regDtTime = parseInt(regDt.getTime()) / 1000;
   const result = (nowTime - regDtTime) / 3600;
-  console.log(result);
 
   if (result > 24) {
     return parseInt(result / 24) + '일 전';
@@ -30,7 +29,6 @@ const getDateString = (dateArray) => {
 };
 
 const ProfileBox = (props) => {
-  console.log(props);
   const themeContext = useContext(ThemeContext);
   return (
     <ProfileWrapper {...props}>

@@ -13,7 +13,7 @@ import { useParams } from 'react-router-dom';
 function LiveBoardList(props) {
   const params = useParams();
   console.log(params.categoryName);
-  const data = useSelector(selectedLiveBoardList);
+  const { data, status } = useSelector(selectedLiveBoardList);
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
   console.log(data);
@@ -47,7 +47,7 @@ function LiveBoardList(props) {
         <Grid
           backgroundColor={themeContext.colors.backgroundGray}
           style={{
-            height: '100%',
+            height: '100vh',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -56,7 +56,6 @@ function LiveBoardList(props) {
           <Text color={themeContext.colors.blue}>검색 결과가 없습니다</Text>
         </Grid>
       )}
-
       <Grid
         height="89px"
         backgroundColor={themeContext.colors.backgroundGray}

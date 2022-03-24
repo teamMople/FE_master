@@ -56,7 +56,6 @@ function App() {
   };
 
   useEffect(() => {
-    console.log(window.location.pathname);
     if (locationArray.indexOf(window.location.pathname) !== -1) {
       setShowNav(false);
     } else {

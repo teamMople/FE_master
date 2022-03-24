@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  clearBoardList,
   getBoardListAsync,
   getBoardListByCategoryAsync,
   selectedBoardList,
@@ -13,7 +14,7 @@ import { useParams } from 'react-router-dom';
 function BoardList(props) {
   const params = useParams();
   console.log(params.categoryName);
-  const data = useSelector(selectedBoardList);
+  const { data, status } = useSelector(selectedBoardList);
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
   console.log(data);
@@ -24,7 +25,9 @@ function BoardList(props) {
     } else {
       dispatch(getBoardListByCategoryAsync(params.categoryName));
     }
-    return dispatch;
+    return () => {
+      dispatch(clearBoardList());
+    };
   }, [dispatch]);
 
   return (
@@ -47,7 +50,7 @@ function BoardList(props) {
         <Grid
           backgroundColor={themeContext.colors.backgroundGray}
           style={{
-            height: 'auto',
+            height: '100vh',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

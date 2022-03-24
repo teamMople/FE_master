@@ -52,7 +52,10 @@ Header.propTypes = {
   leftArrowOnClick: PropTypes.func,
   rightArrow: PropTypes.bool,
   rightArrowOnClick: PropTypes.func,
-  rightButtonRender: { label: PropTypes.string, onClickButton: PropTypes.func },
+  rightButtonRender: PropTypes.shape({
+    label: PropTypes.string,
+    onClickButton: PropTypes.func,
+  }),
 };
 
 const HeaderWrapper = styled.div`

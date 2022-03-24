@@ -13,10 +13,10 @@ function SearchBoard(props) {
       backgroundColor={themeContext.colors.backgroundGray}
       padding="56px 24px 0px 24px"
     >
-      <Grid isFlex>
+      <Grid width="100%" style={{ display: 'flex', alignItems: 'center' }}>
         <Input
           color={themeContext.colors.black}
-          backgroundColor="transparent"
+          backgroundColor={themeContext.colors.backgroundGray}
           width="100%"
           height="36px"
         />
@@ -70,7 +70,6 @@ function SearchBoard(props) {
             );
           })}
         </div>
-        <Outlet />
       </Grid>
     </Wrapper>
   );

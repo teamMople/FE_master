@@ -141,8 +141,8 @@ const RoomList = () => {
       <button onClick={user2}>사용자 2</button>
       <hr />
       <div>
-        {roomList &&
-          roomList.map((room, idx) => {
+        {roomList.data &&
+          roomList.data.map((room, idx) => {
             return (
               <div
                 key={idx}

@@ -40,11 +40,8 @@ const Home = (props) => {
   console.log(liveBoardsStatus);
 
   return (
-    <Wrapper>
-      <Grid
-        backgroundColor={themeContext.colors.backgroundGray}
-        padding="45px 0px 0px 0px"
-      >
+    <Wrapper backgroundColor={themeContext.colors.backgroundGray}>
+      <Grid padding="45px 0px 30px 0px">
         <CardCarousel
           label="실시간 HOT 라이브"
           type="live"
@@ -62,10 +59,6 @@ const Home = (props) => {
           boards={basicBoards}
         />
         <CategoryCarousel label="카테고리 둘러보기" />
-        <Grid
-          height="89px"
-          backgroundColor={themeContext.colors.backgroundGray}
-        ></Grid>
       </Grid>
     </Wrapper>
   );

@@ -4,6 +4,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import axios from 'axios';
+import apis from '../apis/apis';
 
 const roomInitialState = {
   data: {
@@ -15,7 +16,7 @@ const roomInitialState = {
   remoteHandsUpStatus: [{ remoteTarget: undefined, isHandsUp: undefined }],
   remotePermissionStatus: [{ remoteTarget: undefined, permitSpeaking: false }],
   remoteForceMuteStatus: [{ remoteTarget: undefined, forceMute: false }],
-  joinRoomStatus: {
+  roomState: {
     role: undefined,
     roomId: undefined,
     roomName: undefined,
@@ -34,6 +35,7 @@ const roomInitialState = {
     memberName: undefined,
     accessToken: undefined,
   },
+  createRoomStatus: false,
 };
 
 const sessionInit = {
@@ -47,14 +49,26 @@ const voteInitialState = {
   },
 };
 
-export const getToken = createAsyncThunk('get/token', async (data) => {
-  return await axios
-    .post(`http://localhost:8080/api/audio/join`, data)
-    .then((res) => {
-      return res.data.token;
-    })
-    .catch((err) => console.log(err));
-});
+export const ovGetTokenAsync = createAsyncThunk(
+  'chat/ovGetToken',
+  async (data) => {
+    return await apis.ovGetToken(data);
+  },
+);
+
+export const ovDeleteTokenAsync = createAsyncThunk(
+  'chat/ovDeleteToken',
+  async (data) => {
+    return await apis.ovDeleteToken(data);
+  },
+);
+
+export const closeRoomAsync = createAsyncThunk(
+  'chat/closeRoom',
+  async (data) => {
+    return await apis.closeRoom(data);
+  },
+);
 
 export const sessionSlice = createSlice({
   name: 'session',
@@ -65,6 +79,83 @@ export const sessionSlice = createSlice({
     },
   },
 });
+
+export const createRoomAsync = createAsyncThunk(
+  'chat/createRoom',
+  async ({ data, memberName, role }) => {
+    return await apis
+      .createRoom(data)
+      .then((res) => {
+        const status = {
+          role: role,
+          roomId: res.data.roomId,
+          roomName: res.data.roomName,
+          category: res.data.category,
+          moderatorId: res.data.moderatorId,
+          moderatorNickname: res.data.moderatorNickname,
+          maxParticipantCount: res.data.maxParticipantCount,
+          content: res.data.content,
+          isPrivate: res.data.isPrivate,
+          agreeCount: res.data.agreeCount,
+          disagreeCount: res.data.disagreeCount,
+          onAir: res.data.onAir,
+          createdAt: res.data.createdAt,
+          memberAgreed: res.data.memberAgreed,
+          memberDisagreed: res.data.memberDisagreed,
+          memberName: memberName,
+          accessToken: undefined,
+        };
+
+        return status;
+      })
+      .catch((err) => console.log(err));
+  },
+);
+
+export const joinRoomAsync = createAsyncThunk(
+  'chat/joinRoom',
+  async ({ data, memberName, role }) => {
+    return await apis
+      .joinRoom(data)
+      .then((res) => {
+        const status = {
+          role: role,
+          roomId: res.data.roomId,
+          roomName: res.data.roomName,
+          category: res.data.category,
+          moderatorId: res.data.moderatorId,
+          moderatorNickname: res.data.moderatorNickname,
+          maxParticipantCount: res.data.maxParticipantCount,
+          content: res.data.content,
+          isPrivate: res.data.isPrivate,
+          agreeCount: res.data.agreeCount,
+          disagreeCount: res.data.disagreeCount,
+          onAir: res.data.onAir,
+          createdAt: res.data.createdAt,
+          memberAgreed: res.data.memberAgreed,
+          memberDisagreed: res.data.memberDisagreed,
+          memberName: memberName,
+          // accessToken: undefined,
+        };
+        console.log('joinRoom : ', status);
+        return status;
+      })
+      .catch((err) => console.log(err));
+  },
+);
+
+export const leaveRoomAsync = createAsyncThunk(
+  'chat/leaveRoom',
+  async (data) => {
+    return await apis
+      .leaveRoom(data)
+      .then(() => {
+        return alert('방 떠나기 성공!');
+      })
+      .catch(() => alert('방 떠나기 실패!'));
+  },
+);
+
 export const roomSlice = createSlice({
   name: 'room',
   initialState: roomInitialState,
@@ -98,6 +189,15 @@ export const roomSlice = createSlice({
       state.joinRoomStatus = action.payload;
     },
   },
+  extraReducers: {
+    [createRoomAsync.fulfilled]: (state, action) => {
+      state.roomState = action.payload;
+      // state.createRoomStatus = action.payload.createRoomStatus;
+    },
+    [joinRoomAsync.fulfilled]: (state, action) => {
+      state.roomState = action.payload;
+    },
+  },
 });
 
 export const voteSlice = createSlice({
@@ -115,13 +215,17 @@ export const {
   setRoomSubscribers,
   setRemoteHandsUpStatus,
   setRemotePermissionStatus,
-  setJoinRoomStatus,
   removeRoomSubscriber,
+  setJoinRoomStatus,
   removeAllRoomSubscribers,
   setRemoteForceMuteStatus,
 } = roomSlice.actions;
 export const { setSession } = sessionSlice.actions;
 export const { setMemberVoteStatus } = voteSlice.actions;
+
+// selector setting
+export const selectRoomState = (state) => state.chats.room.roomState;
+
 const reducer = combineReducers({
   room: roomSlice.reducer,
   session: sessionSlice.reducer,

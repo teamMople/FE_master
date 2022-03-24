@@ -81,6 +81,7 @@ const P = styled.div`
   text-align: ${({ right, center }) =>
     center ? 'center' : right ? 'right' : 'left'};
   cursor: ${({ onClick }) => onClick && 'pointer'};
+  word-break: break-all;
 `;
 
 export default Text;

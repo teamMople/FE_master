@@ -23,27 +23,18 @@ const Tile = (props) => {
             />
           </Grid>
           <Grid margin="0px 0px 14px 0px">
-            <Text
-              bold
-              color={themeContext.colors.black}
-              size="14px"
-              lineHeight="18px"
-            >
+            <Text bold color={themeContext.colors.black} lineHeight="18px">
               {board.roomName}
             </Text>
           </Grid>
-          <Grid height={40}>
-            <Text
-              color={themeContext.colors.darkGray}
-              size="12px"
-              lineHeight="20px"
-            >
+          <Grid style={{ flex: 1, overflow: 'hidden', marginBottom: '20px' }}>
+            <Text color={themeContext.colors.darkGray} small lineHeight="20px">
               {board.content && board.content.length > 51
                 ? board.content.slice(0, 51) + '...'
                 : board.content}
             </Text>
           </Grid>
-          <Grid isFlex width="252px" className="buttonGroup">
+          <Grid isFlex className="buttonGroup">
             <Grid isFlex>
               <StatusBox
                 icon={'/asset/icons/Join.svg'}
@@ -81,62 +72,34 @@ const Tile = (props) => {
             margin="0px 0px 18px 0px"
           />
           <Grid margin="0px 0px 14px 0px">
-            <Text
-              bold
-              color={themeContext.colors.black}
-              size="14px"
-              lineHeight="18px"
-            >
+            <Text bold color={themeContext.colors.black} lineHeight="18px">
               {board.title}
             </Text>
           </Grid>
-          <Grid height={40}>
-            <Text
-              color={themeContext.colors.darkGray}
-              size="12px"
-              lineHeight="20px"
-            >
+          <Grid style={{ flex: 1, overflow: 'hidden', marginBottom: '20px' }}>
+            <Text color={themeContext.colors.darkGray} small lineHeight="20px">
               {board.content}
             </Text>
           </Grid>
-          <Grid isFlex width="100%" className="buttonGroup">
+          <Grid isFlex className="buttonGroup">
             <Grid isFlex>
-              <Button
-                size={'small'}
-                height="32px"
-                backgroundColor={themeContext.colors.lightGray}
-                onClick={() => {}}
-              >
-                <Grid margin="0px 5px 0px 0px">
-                  <img src="/asset/icons/Vote.svg" alt="vote icon" />
-                </Grid>
-                <Text>{board.recommendCount}</Text>
-              </Button>
+              <StatusBox
+                icon={'/asset/icons/Vote.svg'}
+                count={board.recommendCount}
+              />
             </Grid>
             <Grid isFlex>
               <Grid margin="0px 8px 0px 0px">
-                <Button
-                  size={'small'}
-                  height="32px"
-                  backgroundColor={themeContext.colors.lightGray}
-                >
-                  <Grid margin="0px 5px 0px 0px">
-                    <img src="/asset/icons/Agreed.svg" alt="agree icon" />
-                  </Grid>
-                  <Text>{board.agreeCount}</Text>
-                </Button>
+                <StatusBox
+                  icon={'/asset/icons/Agreed.svg'}
+                  count={board.agreeCount}
+                />
               </Grid>
               <Grid>
-                <Button
-                  size={'small'}
-                  height="32px"
-                  backgroundColor={themeContext.colors.lightGray}
-                >
-                  <Grid margin="0px 5px 0px 0px">
-                    <img src="/asset/icons/Disagreed.svg" alt="disagree icon" />
-                  </Grid>
-                  <Text>{board.disagreeCount}</Text>
-                </Button>
+                <StatusBox
+                  icon={'/asset/icons/Disagreed.svg'}
+                  count={board.disagreeCount}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -188,7 +151,8 @@ Tile.defaultProps = {
 };
 
 const LiveTileWrapper = styled.div`
-  position: relative;
+  display: flex;
+  flex-direction: column;
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 20px;
   padding: 20px 24px 20px 24px;
@@ -196,26 +160,22 @@ const LiveTileWrapper = styled.div`
   height: 218px;
 
   > .buttonGroup {
-    position: absolute;
-    bottom: 20px;
+    align-items: flex-end;
     justify-content: space-between;
   }
 `;
 
 const BasicTileWrapper = styled.div`
-  position: relative;
-  background-color: #fff;
   display: flex;
   flex-direction: column;
+  background-color: ${({ theme }) => theme.colors.white};
   border-radius: 20px;
   padding: 20px 24px 20px 24px;
   width: 300px;
   height: 218px;
-  box-sizing: border-box;
 
   > .buttonGroup {
-    position: absolute;
-    bottom: 20px;
+    align-items: flex-end;
     justify-content: space-between;
   }
 `;

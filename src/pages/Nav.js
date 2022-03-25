@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { keyframes } from 'styled-components';
 import { Grid } from 'components';
 
 const Nav = (props) => {
-  const [show, setShow] = useState(false);
+  const [showNav, setShowNav] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [rot, setRot] = useState(false);
 
   const navigate = useNavigate();
 
   const showSpeedDialMenu = () => {
-    setShow(!show);
+    setShowMenu(!showMenu);
     setRot(!rot);
     console.log(rot);
   };
@@ -28,17 +29,42 @@ const Nav = (props) => {
   const goMyPage = () => {
     navigate('/');
   };
+
+  let location = useLocation();
+  console.log(location);
+  console.log(showNav);
+
+  const locationArray = [
+    '/',
+    '/login',
+    '/signup',
+    '/welcome',
+    '/list',
+    '/settings',
+    '/editmyprofile',
+    '/createboard',
+  ];
+
+  useEffect(() => {
+    if (locationArray.indexOf(window.location.pathname) !== -1) {
+      setShowNav(false);
+    } else {
+      setShowNav(true);
+    }
+    return;
+  }, [location]);
+
   return (
     <>
-      {show && <Overlay show={show} />}
-      <NavWrapper {...props}>
-        {show && (
-          <SpeedDialMenu show={show}>
+      {showMenu && <Overlay show={showMenu} />}
+      <NavWrapper active={showNav} {...props}>
+        {showMenu && (
+          <SpeedDialMenu show={showMenu}>
             <div
               className="leftMenu"
               onClick={() => {
                 navigate('/createboard');
-                setShow(false);
+                setShowMenu(false);
               }}
             >
               일반토론

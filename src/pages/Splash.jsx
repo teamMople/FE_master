@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCookie } from '../shared/utils/Cookie';
 import { Logo } from 'components';
-import { LoadingSpinner } from 'components/molecules';
 
 const Splash = (props) => {
   const navigate = useNavigate();
@@ -12,7 +11,7 @@ const Splash = (props) => {
 
     setTimeout(() => {
       if (token) {
-        window.location.assign('/home');
+        navigate('/home');
       } else {
         navigate('/login');
       }

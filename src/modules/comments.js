@@ -11,6 +11,16 @@ const replyCommentListInitialState = {
   status: 'idle',
 };
 
+const commentInitialState = {
+  data: {},
+  status: 'idle',
+};
+
+const replyCommentInitialState = {
+  data: {},
+  status: 'idle',
+};
+
 export const getCommentListAsync = createAsyncThunk(
   'comments/getCommentList',
   async (boardId, thunkAPI) => {
@@ -106,12 +116,7 @@ export const increaseCommentRecommendCountAsync = createAsyncThunk(
       console.log(commentId);
       await apis
         .recommendComment(commentId)
-        .then((response) => {
-          console.log(response);
-          if (response.status === '200') {
-            thunkAPI.dispatch(increaseRecommendCount());
-          }
-        })
+        .then(thunkAPI.dispatch(increaseRecommendCount(commentId)))
         .catch((error) => {
           if (error) {
             console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
@@ -154,8 +159,11 @@ export const commentListSlice = createSlice({
       state.status = 'idle';
       state.data = [];
     },
-    increaseRecommendCount: (state, action) => {
-      state.data.recommendCount += 1;
+    increaseRecommendCount: (state, commentId) => {
+      console.log('increase');
+      state.data.filter((d) => {
+        return d.commentId === commentId;
+      }).recommendcount += 1;
     },
   },
   extraReducers: {

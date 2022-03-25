@@ -16,7 +16,7 @@ const CardCarousel = (props) => {
         </Text>
       </Grid>
       <Carousel
-        show={1.15}
+        show={1.2}
         slide={1}
         swiping={true}
         leftArrow={false}

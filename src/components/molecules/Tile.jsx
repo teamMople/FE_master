@@ -29,7 +29,9 @@ const Tile = (props) => {
               size="14px"
               lineHeight="18px"
             >
-              {board.roomName}
+              {board.roomName && board.roomName.length > 22
+                ? board.title.slice(0, 22) + '...'
+                : board.title}
             </Text>
           </Grid>
           <Grid height={40}>
@@ -38,8 +40,8 @@ const Tile = (props) => {
               size="12px"
               lineHeight="20px"
             >
-              {board.content && board.content.length > 51
-                ? board.content.slice(0, 51) + '...'
+              {board.content && board.content.length > 57
+                ? board.content.slice(0, 57) + '...'
                 : board.content}
             </Text>
           </Grid>
@@ -88,7 +90,9 @@ const Tile = (props) => {
                 size="14px"
                 lineHeight="18px"
               >
-                {board.title}
+                {board.title && board.title.length > 22
+                  ? board.title.slice(0, 22) + '...'
+                  : board.title}
               </Text>
             </Grid>
             <Grid height={40}>
@@ -97,7 +101,9 @@ const Tile = (props) => {
                 size="12px"
                 lineHeight="20px"
               >
-                {board.content}
+                {board.content && board.content.length > 57
+                  ? board.content.slice(0, 57) + '...'
+                  : board.content}
               </Text>
             </Grid>
           </Grid>

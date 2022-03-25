@@ -13,14 +13,14 @@ const StatusBox = ({ count, label, icon, gap, active, text }) => {
           {label}
         </Text>
       )}
-      {count && <Text style={{ marginLeft: gap }}>{count}</Text>}
-      {text && <Text style={{ marginLeft: gap }}>{text}</Text>}
+      {count && <Text>{count}</Text>}
+      {text && <Text>{text}</Text>}
     </Box>
   );
 };
 
 StatusBox.propTypes = {
-  count: PropTypes.number | PropTypes.string,
+  count: PropTypes.any,
   icon: PropTypes.string,
   label: PropTypes.string,
   gap: PropTypes.string,
@@ -35,7 +35,7 @@ StatusBox.defaultProps = {
 const Box = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   border-radius: 10em;
   min-width: 58px;
   padding: 8px 10px;

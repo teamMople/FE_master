@@ -80,11 +80,13 @@ export const getDetailAsync = createAsyncThunk(
 
 export const createBoardAsync = createAsyncThunk(
   'boards/createBoard',
-  async ({ boardInfo }, thunkAPI) => {
+  async (boardInfo, thunkAPI) => {
     const { title, content, imageUrl, category } = boardInfo;
     await apis
       .createBoard(title, content, imageUrl, category)
-      .then()
+      .then((response) => {
+        console.log(response);
+      })
       .catch((e) => console.log(e));
     return;
   },
@@ -109,13 +111,33 @@ export const increaseAgreeCountAsync = createAsyncThunk(
   'detail/increaseAgreeCount',
   async (boardId, thunkAPI) => {
     if (boardId) {
+      await apis
+        .agreeBoard(boardId)
+        .then(() => {
+          thunkAPI.dispatch(increaseAgreeCount());
+        })
+        .catch((error) => {
+          if (error) {
+            window.alert('잘못된 투표 요청입니다.');
+            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
+          }
+          return thunkAPI.rejectWithValue();
+        });
+    } else {
+      window.alert('잘못된 투표 요청입니다.');
+    }
+  },
+);
+
+export const decreaseAgreeCountAsync = createAsyncThunk(
+  'detail/increaseAgreeCount',
+  async (boardId, thunkAPI) => {
+    if (boardId) {
       console.log(boardId);
       await apis
         .agreeBoard(boardId)
-        .then((response) => {
-          if (response.data.status === 'ok') {
-            thunkAPI.dispatch(increaseAgreeCount());
-          }
+        .then(() => {
+          thunkAPI.dispatch(decreaseAgreeCount());
         })
         .catch((error) => {
           if (error) {
@@ -136,11 +158,27 @@ export const increaseDisagreeCountAsync = createAsyncThunk(
     if (boardId) {
       await apis
         .disagreeBoard(boardId)
-        .then((response) => {
-          if (response.data.status === 'ok') {
-            thunkAPI.dispatch(increaseDisagreeCountAsync());
+        .then(thunkAPI.dispatch(increaseDisagreeCount()))
+        .catch((error) => {
+          if (error) {
+            window.alert('잘못된 투표 요청입니다.');
+            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
           }
-        })
+          return thunkAPI.rejectWithValue();
+        });
+    } else {
+      window.alert('잘못된 투표 요청입니다.');
+    }
+  },
+);
+
+export const decreaseDisagreeCountAsync = createAsyncThunk(
+  'detail/increaseDisagreeCount',
+  async (boardId, thunkAPI) => {
+    if (boardId) {
+      await apis
+        .disagreeBoard(boardId)
+        .then(thunkAPI.dispatch(decreaseDisagreeCount()))
         .catch((error) => {
           if (error) {
             window.alert('잘못된 투표 요청입니다.');
@@ -264,6 +302,15 @@ export const detailSlice = createSlice({
     increaseRecommendCount: (state) => {
       state.data.recommendCount += 1;
     },
+    decreaseAgreeCount: (state) => {
+      state.data.agreeCount -= 1;
+    },
+    decreaseDisagreeCount: (state) => {
+      state.data.disagreeCount -= 1;
+    },
+    decreaseRecommendCount: (state) => {
+      state.data.recommendCount -= 1;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -288,7 +335,13 @@ export const {
   increaseAgreeCount,
   increaseDisagreeCount,
   increaseRecommendCount,
+  decreaseAgreeCount,
+  decreaseDisagreeCount,
+  decreaseRecommendCount,
 } = detailSlice.actions;
 export const selectedBoardList = (state) => state.boards;
 export const selectedLiveBoardList = (state) => state.liveBoards;
 export const selectedDetail = (state) => state.detail.data;
+
+export const selectedAgreeCount = (state) => state.detail.data.agreeCount;
+export const selectedDisagreeCount = (state) => state.detail.data.disagreeCount;

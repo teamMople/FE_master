@@ -17,6 +17,7 @@ import {
   Textarea,
   DropdownSelect,
 } from 'components';
+import { createRef } from 'react';
 
 function CreateBoard(props) {
   const themeContext = useContext(ThemeContext);
@@ -38,6 +39,8 @@ function CreateBoard(props) {
   const [previewImage, setPreviewImage] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+
+  const textareaRef = createRef();
 
   const changeCategory = (optionSelected) => {
     setCategory(optionSelected.value);
@@ -97,9 +100,7 @@ function CreateBoard(props) {
           rightButtonRender={{
             label: '완료',
             onClickButton: () => {
-              if (selectedFile) {
-                handleUpload('boards', selectedFile);
-              }
+              handleUpload('boards', selectedFile);
               dispatch(createBoardAsync(boardInfo));
               window.location.assign('/home');
             },
@@ -141,7 +142,10 @@ function CreateBoard(props) {
         />
         {previewImage && <Image src={previewImage} />}
       </Grid>
-      <Grid padding="16px 24px 89px 24px" style={{ display: 'flex' }}>
+      <Grid
+        padding="16px 24px 0px 24px"
+        style={{ display: 'flex', position: 'fixed', bottom: '10px' }}
+      >
         <Grid onClick={handleImageClick}>
           <img src="/asset/icons/Image.svg" />
           <input

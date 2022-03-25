@@ -1,7 +1,13 @@
 import React, { useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearDetail, getDetailAsync, selectedDetail } from 'modules/boards';
+import {
+  clearDetail,
+  getDetailAsync,
+  increaseAgreeCountAsync,
+  increaseDisagreeCountAsync,
+  selectedDetail,
+} from 'modules/boards';
 import { clearCommentList } from 'modules/comments';
 
 import { ThemeContext } from 'styled-components';
@@ -66,10 +72,21 @@ function BoardDetail(props) {
         <Grid padding="16px 0px 16px 0px" margin="0px 0px 22px 0px">
           {detail.content}
         </Grid>
+        {detail.imageUrl && (
+          <Grid>
+            <Image src={detail.imageUrl} />
+          </Grid>
+        )}
         <Grid margin="22px 0px 30px 0px">
           <VoteResultBar
             agreeCount={detail.agreeCount}
             disagreeCount={detail.disagreeCount}
+            clickAgreeButton={() => {
+              dispatch(increaseAgreeCountAsync(boardId));
+            }}
+            clickDisagreeButton={() => {
+              dispatch(increaseDisagreeCountAsync(boardId));
+            }}
           />
         </Grid>
         <Grid right margin="0px 0px 30px 0px">

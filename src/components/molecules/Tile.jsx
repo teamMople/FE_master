@@ -60,28 +60,39 @@ const Tile = (props) => {
       );
     case 'basic':
       return (
-        <BasicTileWrapper
-          onClick={() => {
-            navigate('/board/' + board.id);
-          }}
-        >
+        <BasicTileWrapper>
           <ProfileBox
             profileImageUrl={board.profileImageUrl}
             nickname={board.nickname}
             createdAt={board.createdAt}
             margin="0px 0px 18px 0px"
           />
-          <Grid margin="0px 0px 14px 0px">
-            <Text bold color={themeContext.colors.black} lineHeight="18px">
-              {board.title}
-            </Text>
+          <Grid
+            onClick={() => {
+              navigate('/board/' + board.id);
+            }}
+          >
+            <Grid margin="0px 0px 14px 0px">
+              <Text
+                bold
+                color={themeContext.colors.black}
+                size="14px"
+                lineHeight="18px"
+              >
+                {board.title}
+              </Text>
+            </Grid>
+            <Grid height={40}>
+              <Text
+                color={themeContext.colors.darkGray}
+                size="12px"
+                lineHeight="20px"
+              >
+                {board.content}
+              </Text>
+            </Grid>
           </Grid>
-          <Grid style={{ flex: 1, overflow: 'hidden', marginBottom: '20px' }}>
-            <Text color={themeContext.colors.darkGray} small lineHeight="20px">
-              {board.content}
-            </Text>
-          </Grid>
-          <Grid isFlex className="buttonGroup">
+          <Grid isFlex width="252px" className="buttonGroup">
             <Grid isFlex>
               <StatusBox
                 icon={'/asset/icons/Vote.svg'}
@@ -175,7 +186,9 @@ const BasicTileWrapper = styled.div`
   height: 218px;
 
   > .buttonGroup {
-    align-items: flex-end;
+    position: absolute;
+    bottom: 20px;
+    box-sizing: border-box;
     justify-content: space-between;
   }
 `;

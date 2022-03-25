@@ -80,15 +80,13 @@ export const getDetailAsync = createAsyncThunk(
 
 export const createBoardAsync = createAsyncThunk(
   'boards/createBoard',
-  async (boardInfo) => {
+  async ({ boardInfo }, thunkAPI) => {
     const { title, content, imageUrl, category } = boardInfo;
-
-    const response = await apis
+    await apis
       .createBoard(title, content, imageUrl, category)
-      .then((response) => {
-        console.log(response);
-      });
-    return response.data;
+      .then()
+      .catch((e) => console.log(e));
+    return;
   },
 );
 
@@ -108,9 +106,10 @@ export const searchBoardAsync = createAsyncThunk(
 );
 
 export const increaseAgreeCountAsync = createAsyncThunk(
-  'boards/increaseAgreeCount',
-  async ({ boardId }, thunkAPI) => {
+  'detail/increaseAgreeCount',
+  async (boardId, thunkAPI) => {
     if (boardId) {
+      console.log(boardId);
       await apis
         .agreeBoard(boardId)
         .then((response) => {
@@ -132,11 +131,11 @@ export const increaseAgreeCountAsync = createAsyncThunk(
 );
 
 export const increaseDisagreeCountAsync = createAsyncThunk(
-  'boards/increaseDisagreeCount',
-  async ({ boardId }, thunkAPI) => {
+  'detail/increaseDisagreeCount',
+  async (boardId, thunkAPI) => {
     if (boardId) {
       await apis
-        .recommendBoard(boardId)
+        .disagreeBoard(boardId)
         .then((response) => {
           if (response.data.status === 'ok') {
             thunkAPI.dispatch(increaseDisagreeCountAsync());
@@ -156,8 +155,8 @@ export const increaseDisagreeCountAsync = createAsyncThunk(
 );
 
 export const increaseRecommendCountAsync = createAsyncThunk(
-  'boards/increaseBoardDisagreeCount',
-  async ({ boardId }, thunkAPI) => {
+  'detail/increaseBoardDisagreeCount',
+  async (boardId, thunkAPI) => {
     if (boardId) {
       await apis
         .disagreeBoard(boardId)
@@ -208,6 +207,9 @@ export const boardListSlice = createSlice({
     },
     [getBoardListByCategoryAsync.rejected]: (state) => {
       state.status = 'failed';
+    },
+    [createBoardAsync.fulfilled]: (state, action) => {
+      state.data.push(action.payload);
     },
   },
 });

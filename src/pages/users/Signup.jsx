@@ -53,14 +53,6 @@ function Signup(props) {
     hiddenProfileImageInput.current.click();
   };
 
-  // const handleSignupButtonClick = (userInfo) => {
-  //   // console.log('click');
-  //   // localStorage.setItem('nickname', nickname);
-  //   // localStorage.setItem('profileImageUrl', profileImageUrl);
-  //   dispatch(signupAsync(userInfo));
-  //   // navigate('/welcome', { replace: true });
-  // };
-
   const changeEmail = (e) => {
     setEmail(e.target.value);
   };
@@ -84,6 +76,16 @@ function Signup(props) {
     setNickname(e.target.value);
   };
 
+  const checkEmail = (email) => {
+    const regEmail =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (email && regEmail.test(regEmail)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const checkPassword = (password, confirmPassword) => {
     const regPassword = /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[.!@#$%])/;
 
@@ -97,6 +99,18 @@ function Signup(props) {
       return '비밀번호와 확인 비밀번호가 일치하지 않아요.';
     } else {
       return '비밀번호와 확인 비밀번호가 일치합니다.';
+    }
+  };
+
+  const checkEmailPassword = (email, password, confirmPassword) => {
+    if (
+      checkEmail(email) &&
+      checkPassword(password, confirmPassword) ===
+        '비밀번호와 확인 비밀번호가 일치합니다'
+    ) {
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -248,7 +262,13 @@ function Signup(props) {
                   </Grid>
                 </InnerWrapper>
                 <NextButtonWrapper>
-                  <Button onClick={() => setStep(1)} secondary size={'large'}>
+                  <Button
+                    onClick={() => {
+                      setStep(1);
+                    }}
+                    secondary
+                    size={'large'}
+                  >
                     다음으로
                   </Button>
                 </NextButtonWrapper>

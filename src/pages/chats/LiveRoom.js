@@ -22,7 +22,7 @@ import VoteView from './VoteView';
 import SockJS from 'sockjs-client';
 import { over } from 'stompjs';
 import ChatUserProfile from '../../components/molecules/ChatUserProfile';
-import { Button } from '../../components';
+import { Button, Divider, Grid, Header, StatusBox, Text } from 'components';
 
 //!Todo 마이크 선택 가능하도록!!
 
@@ -561,13 +561,31 @@ const LiveRoom = () => {
 
   return (
     <>
-      <Wrapper padding={'16px'}>
-        {/* ---- 채팅방 ----*/}
-        <div>실시간 채팅방</div>
-        <p>방제 : {joinRoomStatus.roomName}</p>
-        {/*<p>방장 : {moderator}</p>*/}
-        <p>역할 : {joinRoomStatus.role}</p>
-        <hr />
+      <Wrapper padding="0 0px 0px 0px">
+        <Grid padding="8px 24px">
+          <Header label={joinRoomStatus.category} leftArrow />
+          <TitleWrapper>
+            <Text semiBold large>
+              제목 제목 제목
+            </Text>
+          </TitleWrapper>
+          <StatusWrapper>
+            <StatusBox icon={'/asset/icons/Join.svg'} count={5} />
+            <StatusBox
+              label={'hosted by'}
+              text={joinRoomStatus.moderatorNickname}
+              gap={'3px'}
+            />
+          </StatusWrapper>
+        </Grid>
+        {/*<div>*/}
+        {/*  <p>{joinRoomStatus.roomName}</p>*/}
+        {/*  <p>{joinRoomStatus.role}</p>*/}
+        {/*</div>*/}
+        <Divider />
+        <Grid padding="16px 24px">
+          <Text lineHeight={'22px'}>{joinRoomStatus.content}</Text>
+        </Grid>
 
         <div
           id="video-container"
@@ -673,15 +691,12 @@ const LiveRoom = () => {
   );
 };
 
-const UserImageWrapper = styled.div`
-  border-radius: 10em;
-  width: 50px;
-  overflow: hidden;
-
-  img {
-    width: inherit;
-    object-fit: cover;
-  }
+const StatusWrapper = styled.div`
+  display: flex;
+  column-gap: 8px;
+`;
+const TitleWrapper = styled.div`
+  margin-bottom: 16px;
 `;
 
 export default LiveRoom;

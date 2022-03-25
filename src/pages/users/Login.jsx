@@ -4,6 +4,7 @@ import { loginAsync } from '../../modules/users';
 import axios from 'axios';
 import { setCookie } from '../../shared/utils/Cookie';
 
+import styled, { css, keyframes } from 'styled-components';
 import { ThemeContext } from 'styled-components';
 import {
   Wrapper,
@@ -24,6 +25,7 @@ function Login(props) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showMessage, setShowMessage] = useState(false);
 
   const changeEmail = (e) => {
     setEmail(e.target.value);
@@ -51,7 +53,12 @@ function Login(props) {
             navigate('/home');
           }
         })
-        .catch((e) => console.log(e));
+        .catch((e) => {
+          setShowMessage(true);
+          setTimeout(() => {
+            setShowMessage(false);
+          }, 5000);
+        });
     }
   };
 
@@ -83,15 +90,21 @@ function Login(props) {
             />
           </Grid>
 
-          <div
-            style={{
-              display: 'flex',
-              height: '48px',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '35px',
-            }}
-          >
+          {showMessage && (
+            <MessageBox>
+              <Grid center>
+                <Text
+                  size="12px"
+                  lineHeight="18px"
+                  color={themeContext.colors.blue}
+                >
+                  이메일 또는 비밀번호를 다시 확인해주세요
+                </Text>
+              </Grid>
+            </MessageBox>
+          )}
+
+          <Grid center padding="13px 0px 13px 0px" margin="0px 0px 36px 0px">
             <Grid isFlex width="50%">
               <Link to="/findpassword">
                 <Text size="14px" color={themeContext.colors.blue}>
@@ -104,7 +117,7 @@ function Login(props) {
                 </Text>
               </Link>
             </Grid>
-          </div>
+          </Grid>
           <Grid padding="0px 15px 0px 15px">
             <Button
               onClick={handleLoginClick}
@@ -121,5 +134,9 @@ function Login(props) {
     </>
   );
 }
+
+const MessageBox = styled.div`
+  transition: 1s ease-in;
+`;
 
 export default Login;

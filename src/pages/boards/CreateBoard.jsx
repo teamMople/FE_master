@@ -1,16 +1,22 @@
 import React, { useContext, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import {
+  BUCKET,
+  awsS3Bucket,
+  BASE_S3_URL,
+} from '../../shared/utils/awsBucketConfig';
+import { createBoardAsync } from 'modules/boards';
 import { ThemeContext } from 'styled-components';
 import {
   Wrapper,
   Grid,
   Input,
+  Image,
   Header,
   Textarea,
   DropdownSelect,
 } from 'components';
-import { useDispatch } from 'react-redux';
-import { createBoardAsync } from 'modules/boards';
-import { useNavigate } from 'react-router-dom';
 
 function CreateBoard(props) {
   const themeContext = useContext(ThemeContext);
@@ -29,6 +35,9 @@ function CreateBoard(props) {
   const [category, setCategory] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [previewImage, setPreviewImage] = useState();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
 
   const changeCategory = (optionSelected) => {
     setCategory(optionSelected.value);
@@ -42,9 +51,42 @@ function CreateBoard(props) {
     setContent(e.target.value);
   };
 
-  const imageUrl =
-    'https://media.bunjang.co.kr/product/176548894_1_1642591546_w360.jpg';
   const boardInfo = { title, content, imageUrl, category };
+
+  const hiddenImageInput = React.useRef(null);
+  const handleImageClick = (e) => {
+    hiddenImageInput.current.click();
+  };
+
+  const onImageChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+    const reader = new FileReader();
+
+    reader.onloadend = (finishedEvent) => {
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setPreviewImage(result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleUpload = async (folderName, file) => {
+    const urlIdentifier = `img-${Math.ceil(Math.random() * 10 ** 10)}`;
+
+    const params = {
+      ACL: 'public-read',
+      Body: file,
+      Bucket: BUCKET,
+      Key: folderName + '/' + urlIdentifier,
+    };
+
+    await awsS3Bucket.putObject(params).send((response) => {
+      const signedUrl = BASE_S3_URL + folderName + '/' + urlIdentifier;
+      setImageUrl(signedUrl);
+    });
+  };
 
   return (
     <Wrapper padding="42px 0px 0px 0px">
@@ -55,8 +97,11 @@ function CreateBoard(props) {
           rightButtonRender={{
             label: '완료',
             onClickButton: () => {
+              if (selectedFile) {
+                handleUpload('boards', selectedFile);
+              }
               dispatch(createBoardAsync(boardInfo));
-              navigate('/home');
+              window.location.assign('/home');
             },
           }}
         />
@@ -89,14 +134,24 @@ function CreateBoard(props) {
         <Textarea
           fluid
           border="none"
-          height="200px"
+          height="auto"
           placeholder="토론하고 싶은 내용을 작성해주세요"
           onChange={changeContent}
           lineHeight="18px"
         />
+        {previewImage && <Image src={previewImage} />}
       </Grid>
-      <Grid padding="16px 24px 89px 24px">
-        <img src="/asset/icons/Image.svg" />
+      <Grid padding="16px 24px 89px 24px" style={{ display: 'flex' }}>
+        <Grid onClick={handleImageClick}>
+          <img src="/asset/icons/Image.svg" />
+          <input
+            type="file"
+            style={{ display: 'none' }}
+            accept=".jpg,.jpeg,.png,.gif"
+            ref={hiddenImageInput}
+            onChange={onImageChange}
+          />
+        </Grid>
       </Grid>
     </Wrapper>
   );

@@ -27,8 +27,8 @@ const BoardList = (props) => {
                   navigate('/board/' + board.id);
                 }}
               >
-                {board.title.length > 15
-                  ? board.title.slice(0, 15) + '...'
+                {board.title.length > 12
+                  ? board.title.slice(0, 12) + '...'
                   : board.title}
                 ({board.recommendCount})
               </div>

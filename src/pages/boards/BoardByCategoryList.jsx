@@ -31,7 +31,13 @@ function BoardByCategoryList(props) {
       padding="56px 0px 0px 0px"
     >
       <Grid padding="0px 24px 12px 24px">
-        <Header label={params.categoryName} leftArrow />
+        <Header
+          label={params.categoryName}
+          leftArrow
+          leftArrowOnClick={() => {
+            navigate('/search');
+          }}
+        />
       </Grid>
       <MenuTab
         labels={labels}

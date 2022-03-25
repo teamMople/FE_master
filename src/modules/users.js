@@ -123,7 +123,7 @@ export const logoutAsync = createAsyncThunk('users/logout', async () => {
     .logout()
     .then((response) => {
       console.log(response);
-      if (response.data.status === 'ok') {
+      if (response.status === '200') {
         deleteCookie('token');
         localStorage.removeItem('loginUser');
         navigate('/');
@@ -215,7 +215,14 @@ export const findMyPassword = createAsyncThunk(
 export const userSlice = createSlice({
   name: 'users',
   initialState: loginUserInitialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.isLogin = false;
+      deleteCookie('token');
+      localStorage.removeItem('loginUser');
+      window.location.assign('/');
+    },
+  },
   extraReducers: {
     [loginAsync.pending]: (state, action) => {
       state.isLogin = false;
@@ -270,5 +277,6 @@ export const userSlice = createSlice({
   },
 });
 
+export const { logout } = userSlice.actions;
 export const selectUserState = (state) => state.users;
 export default userSlice.reducer;

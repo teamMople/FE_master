@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { logoutAsync } from 'modules/users';
+import { logout } from 'modules/users';
 
 import { ThemeContext } from 'styled-components';
 import { Wrapper, Grid, Text, RightArrow, Header } from 'components';
@@ -56,7 +56,7 @@ function Settings(props) {
           <RightArrow
             active
             rightArrowOnClick={() => {
-              dispatch(logoutAsync());
+              dispatch(logout());
             }}
           />
         </Grid>

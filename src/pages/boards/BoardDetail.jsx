@@ -1,7 +1,17 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearDetail, getDetailAsync, selectedDetail } from 'modules/boards';
+import {
+  clearDetail,
+  decreaseAgreeCountAsync,
+  decreaseDisagreeCountAsync,
+  getDetailAsync,
+  increaseAgreeCountAsync,
+  increaseDisagreeCountAsync,
+  selectedAgreeCount,
+  selectedDetail,
+  selectedDisagreeCount,
+} from 'modules/boards';
 import { clearCommentList } from 'modules/comments';
 
 import { ThemeContext } from 'styled-components';
@@ -28,13 +38,24 @@ function BoardDetail(props) {
   const detail = useSelector(selectedDetail);
   const comments = useSelector(selectedCommentList);
 
+  const agreeCount = useSelector(selectedAgreeCount);
+  const disagreeCount = useSelector(selectedDisagreeCount);
+
+  const [onAgree, setOnAgree] = useState(false);
+  const [onDisagree, setOnDisagree] = useState(false);
+
+  console.log(onAgree);
+  console.log(onDisagree);
+
+  console.log(agreeCount);
+
   useEffect(() => {
     dispatch(getDetailAsync(params.boardId));
     dispatch(getCommentListAsync(params.boardId));
     return () => {
       dispatch(clearCommentList());
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <Wrapper padding="56px 0px 0px 0px">
@@ -66,10 +87,31 @@ function BoardDetail(props) {
         <Grid padding="16px 0px 16px 0px" margin="0px 0px 22px 0px">
           <Text preWrap>{detail.content}</Text>
         </Grid>
+        {detail.imageUrl && (
+          <Grid>
+            <Image src={detail.imageUrl} />
+          </Grid>
+        )}
         <Grid margin="22px 0px 30px 0px">
           <VoteResultBar
-            agreeCount={detail.agreeCount}
-            disagreeCount={detail.disagreeCount}
+            agreeCount={agreeCount}
+            disagreeCount={disagreeCount}
+            onClickAgree={() => {
+              setOnAgree(!onAgree);
+              if (onAgree) {
+                dispatch(increaseAgreeCountAsync(boardId));
+              } else {
+                dispatch(decreaseAgreeCountAsync(boardId));
+              }
+            }}
+            onClickDisagree={() => {
+              setOnDisagree(!onDisagree);
+              if (onDisagree) {
+                dispatch(increaseDisagreeCountAsync(boardId));
+              } else {
+                dispatch(decreaseDisagreeCountAsync(boardId));
+              }
+            }}
           />
         </Grid>
         <Grid right margin="0px 0px 30px 0px">

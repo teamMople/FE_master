@@ -21,6 +21,9 @@ const CustomTextarea = styled.textarea`
   box-sizing: border-box;
   padding: ${(props) => props.padding};
 
+  onkeydown: ${(props) => props.onkeydown};
+  onkeyup: ${(props) => props.onkeyup};
+
   &::placeholder {
     color: ${({ theme }) => theme.colors.gray};
     font-size: ${(props) => props.fontSize};

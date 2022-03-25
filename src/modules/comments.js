@@ -11,6 +11,16 @@ const replyCommentListInitialState = {
   status: 'idle',
 };
 
+const commentInitialState = {
+  data: {},
+  status: 'idle',
+};
+
+const replyCommentInitialState = {
+  data: {},
+  status: 'idle',
+};
+
 export const getCommentListAsync = createAsyncThunk(
   'comments/getCommentList',
   async (boardId, thunkAPI) => {
@@ -25,9 +35,8 @@ export const getCommentListAsync = createAsyncThunk(
 
 export const getReplyCommentListAsync = createAsyncThunk(
   'comments/getReplyCommentList',
-  async ({ commentId }, thunkAPI) => {
+  async (commentId, thunkAPI) => {
     try {
-      console.log(commentId);
       const response = await apis.getReplyCommentListByComment(commentId);
       return response.data;
     } catch (e) {
@@ -102,24 +111,18 @@ export const deleteCommentAsync = createAsyncThunk(
 
 export const increaseCommentRecommendCountAsync = createAsyncThunk(
   'comments/increaseRecommendCount',
-  async ({ commentId }, thunkAPI) => {
+  async (commentId, thunkAPI) => {
     if (commentId) {
+      console.log(commentId);
       await apis
         .recommendComment(commentId)
-        .then((response) => {
-          if (response.data.status === 'ok') {
-            thunkAPI.dispatch();
-          }
-        })
+        .then(thunkAPI.dispatch(increaseRecommendCount(commentId)))
         .catch((error) => {
           if (error) {
-            window.alert('잘못된 추천 요청입니다.');
             console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
           }
           return thunkAPI.rejectWithValue();
         });
-    } else {
-      window.alert('잘못된 추천 요청입니다.');
     }
   },
 );
@@ -156,8 +159,11 @@ export const commentListSlice = createSlice({
       state.status = 'idle';
       state.data = [];
     },
-    increaseRecommendCount: (state, action) => {
-      state.data.recommendCount += 1;
+    increaseRecommendCount: (state, commentId) => {
+      console.log('increase');
+      state.data.filter((d) => {
+        return d.commentId === commentId;
+      }).recommendcount += 1;
     },
   },
   extraReducers: {
@@ -177,7 +183,11 @@ export const commentListSlice = createSlice({
 export const replyCommentListSlice = createSlice({
   name: 'replyCommentList',
   initialState: replyCommentListInitialState,
-  reducers: {},
+  reducers: {
+    addReplyComment: (state, action) => {
+      state.data.push(action.payload);
+    },
+  },
   extraReducers: {
     [getReplyCommentListAsync.fulfilled]: (state, action) => {
       state.status = 'success';
@@ -192,6 +202,7 @@ export const replyCommentListSlice = createSlice({
   },
 });
 
-export const { clearCommentList } = commentListSlice.actions;
+export const { clearCommentList, increaseRecommendCount } =
+  commentListSlice.actions;
 export const selectedCommentList = (state) => state.comments.data;
 export const selectedReplyCommentList = (state) => state.replyComments.data;

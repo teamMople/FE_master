@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import {
@@ -35,17 +35,6 @@ import RoomList from '../../pages/chats/RoomList';
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
-  const [showNav, setShowNav] = useState(false);
-
-  const locationArray = [
-    '/',
-    '/login',
-    '/signup',
-    '/welcome',
-    '/list',
-    '/settings',
-    '/editmyprofile',
-  ];
 
   // 테마 변경 값 로컬 스토리지에 저장해야함!
   const changeTheme = () => {
@@ -54,15 +43,6 @@ function App() {
       setTheme(lightTheme);
     }
   };
-
-  useEffect(() => {
-    if (locationArray.indexOf(window.location.pathname) !== -1) {
-      setShowNav(false);
-    } else {
-      setShowNav(true);
-    }
-    return;
-  }, [window.location]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -114,7 +94,7 @@ function App() {
           <Route path="/modal" element={<Test />} />
           <Route path={'*'} element={<NotFound />} />
         </Routes>
-        <Nav active={showNav} />
+        <Nav />
       </BrowserRouter>
     </ThemeProvider>
   );

@@ -11,7 +11,7 @@ const Splash = (props) => {
 
     setTimeout(() => {
       if (token) {
-        window.location.assign('/home');
+        navigate('/home');
       } else {
         navigate('/login');
       }

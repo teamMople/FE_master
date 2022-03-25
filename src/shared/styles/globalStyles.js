@@ -27,6 +27,7 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     font-weight: 500;
     font-size: 14px;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
     //color: #282828;
     //line-height: 1;
   }

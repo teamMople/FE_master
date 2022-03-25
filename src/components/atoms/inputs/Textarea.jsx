@@ -7,7 +7,7 @@ const Textarea = ({ fluid, ...props }) => {
 };
 
 const CustomTextarea = styled.textarea`
-  border: ${(props) => props.border};
+  border: ${(props) => (props.border ? props.border : 'none')};
   background-color: ${(props) => props.backgroundColor};
   color: ${({ theme }) => theme.colors.black};
   font-size: ${(props) => props.fontSize};
@@ -19,8 +19,6 @@ const CustomTextarea = styled.textarea`
   min-height: ${(props) => props.minHeight};
   border-radius: ${(props) => props.borderRadius};
   box-sizing: border-box;
-
-  placeholder: ${(props) => props.placeholder};
   padding: ${(props) => props.padding};
 
   onkeydown: ${(props) => props.onkeydown};

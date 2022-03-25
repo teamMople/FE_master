@@ -20,7 +20,7 @@ const StatusBox = ({ count, label, icon, gap, active, text }) => {
 };
 
 StatusBox.propTypes = {
-  count: PropTypes.any,
+  count: PropTypes.number,
   icon: PropTypes.string,
   label: PropTypes.string,
   gap: PropTypes.string,

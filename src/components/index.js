@@ -11,6 +11,7 @@ import {
   Textarea,
   DropdownSelect,
   Divider,
+  StandardInput,
 } from './atoms';
 import {
   CategoryTile,
@@ -78,4 +79,5 @@ export {
   StatusBox,
   SearchInput,
   Divider,
+  StandardInput,
 };

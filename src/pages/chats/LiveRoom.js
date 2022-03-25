@@ -34,6 +34,7 @@ const LiveRoom = () => {
   const [myMicStatus, setMyMicStatus] = useState(false);
   const [isHandsUp, setIsHandsUp] = useState(false);
   const [myMutMute, setMyMicMute] = useState(false);
+  const [unsubscribe, setUnsubscribe] = useState(false);
   const [remoteMicStatus, setRemoteMicStatus] = useState({
     remoteTarget: undefined,
     isAudioActive: undefined,
@@ -47,26 +48,33 @@ const LiveRoom = () => {
   const remotePermissionStatus = useSelector(
     (state) => state.chats.room.remotePermissionStatus,
   );
-  const [OV, setOV] = useState(new OpenVidu());
-  const [session, setSession] = useState(OV.initSession());
-
   const roomSubscribers = useSelector((state) => state.chats.room.subscribers);
   const joinRoomStatus = useSelector(selectRoomState);
   const memberVoteStatus = useSelector((state) => state.chats.vote.voteStatus);
 
+  const [OV, setOV] = useState(new OpenVidu());
+  const [session, setSession] = useState(OV.initSession());
   console.log('joinRoomStatus :: ', joinRoomStatus);
   // Socket 초기화 - 여기서 초기화 해주고...
-  let sock = new SockJS(process.env.REACT_APP_SOCKET_URL);
-  let stompClient = over(sock);
+  let messageSock = new SockJS(process.env.REACT_APP_SOCKET_MESSAGE_URL);
+  let voteSock = new SockJS(process.env.REACT_APP_SOCKET_VOTE_URL);
+  let messageStomp = over(messageSock);
+  let voteStomp = over(voteSock);
 
-  const disconnectSocket = (streamManager) => {
+  const disconnectSocket = async (streamManager) => {
     let chatMessage = {
       sender: streamManager ? streamManager : joinRoomStatus.memberName,
       type: 'LEAVE',
       roomId: joinRoomStatus.roomId,
     };
-    stompClient.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
-    stompClient.disconnect();
+    messageStomp.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
+    // await voteStomp.send('/pub/chat/vote', {}, JSON.stringify(chatMessage));
+    await messageStomp.unsubscribe(joinRoomStatus.moderatorNickname);
+    await voteStomp.unsubscribe();
+    await messageStomp.disconnect(() => alert('Disconnected!!!'), {
+      memberName: joinRoomStatus.memberName,
+    });
+    await voteStomp.disconnect({}, { memberName: joinRoomStatus.memberName });
   };
 
   useEffect(() => {
@@ -150,7 +158,7 @@ const LiveRoom = () => {
       session.on('streamDestroyed', (event) => {
         // Remove the stream from 'subscribers' array
         console.log('🏙 streamDestroyed: streamDestroyed!!');
-        disconnectSocket(event.stream.streamManager.stream.connection.data);
+        // disconnectSocket(event.stream.streamManager.stream.connection.data);
         deleteSubscriber(event.stream.streamManager);
       });
     }
@@ -230,6 +238,7 @@ const LiveRoom = () => {
     const audioDevices = devices.filter((device) => {
       return device.kind === 'audioinput';
     });
+    console.log(audioDevices);
     let initPublisher = OV.initPublisher(undefined, {
       audioSource:
         joinRoomStatus.role === 'PUBLISHER' ? true : audioDevices[0].deviceId, // The source of audio. If undefined default microphone
@@ -237,7 +246,7 @@ const LiveRoom = () => {
       //   joinRoomStatus.role === 'PUBLISHER' ? false : videoDevices[1].deviceId, // The source of video. If undefined default webcam
       videoSource: false,
       publishAudio: joinRoomStatus.role !== 'PUBLISHER', // Whether you want to start publishing with your audio unmuted or not
-      publishVideo: joinRoomStatus.role !== 'PUBLISHER', // Whether you want to start publishing with your video enabled or not
+      publishVideo: false, // Whether you want to start publishing with your video enabled or not
       resolution: '640x480', // The resolution of your video
       frameRate: 30, // The frame rate of your video
       insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
@@ -292,6 +301,7 @@ const LiveRoom = () => {
           // await sendForceLeave();
           await closeRoom();
         }
+        await setUnsubscribe(true);
         // 1. 소켓 연결을 끊는다.
         await disconnectSocket();
         // 2. 전역에서 관리하고 있는 Subscribers 목록을 초기화한다.
@@ -566,7 +576,7 @@ const LiveRoom = () => {
           <Header label={joinRoomStatus.category} leftArrow />
           <TitleWrapper>
             <Text semiBold large>
-              제목 제목 제목
+              {joinRoomStatus.roomName}
             </Text>
           </TitleWrapper>
           <StatusWrapper>
@@ -672,19 +682,19 @@ const LiveRoom = () => {
             userId={publisher.session.connection.data}
             memberAgreed={joinRoomStatus.memberAgreed}
             memberDisagreed={joinRoomStatus.memberDisagreed}
-            // disconnect={disconnect}
-            stompClient={stompClient}
-            sock={sock}
+            stompClient={voteStomp}
+            sock={voteSock}
           />
         )}
       </Wrapper>
       {publisher && (
         <TextChatView
           roomId={joinRoomStatus.roomId}
-          userId={publisher.session.connection.data}
-          // disconnect={disconnect}
-          stompClient={stompClient}
-          sock={sock}
+          memberName={publisher.session.connection.data}
+          stompClient={messageStomp}
+          sock={messageSock}
+          unsubscribe={unsubscribe}
+          moderator={joinRoomStatus.moderatorNickname}
         />
       )}
     </>

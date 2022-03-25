@@ -3,7 +3,6 @@ import {
   createAsyncThunk,
   createSlice,
 } from '@reduxjs/toolkit';
-import axios from 'axios';
 import apis from '../apis/apis';
 
 const roomInitialState = {
@@ -47,6 +46,10 @@ const voteInitialState = {
     memberAgreed: false,
     memberDisagreed: false,
   },
+};
+
+const chatInitialState = {
+  data: {},
 };
 
 export const ovGetTokenAsync = createAsyncThunk(
@@ -210,6 +213,16 @@ export const voteSlice = createSlice({
   },
 });
 
+export const chatSlice = createSlice({
+  name: 'chat',
+  initialState: chatInitialState,
+  reducers: {
+    setChatContent: (state, action) => {
+      state.data = action.payload;
+    },
+  },
+});
+
 export const {
   setRoomInfo,
   setRoomSubscribers,
@@ -222,14 +235,17 @@ export const {
 } = roomSlice.actions;
 export const { setSession } = sessionSlice.actions;
 export const { setMemberVoteStatus } = voteSlice.actions;
+export const { setChatContent } = chatSlice.actions;
 
 // selector setting
 export const selectRoomState = (state) => state.chats.room.roomState;
+export const selectChatState = (state) => state.chats.chat.data;
 
 const reducer = combineReducers({
   room: roomSlice.reducer,
   session: sessionSlice.reducer,
   vote: voteSlice.reducer,
+  chat: chatSlice.reducer,
 });
 
 export default reducer;

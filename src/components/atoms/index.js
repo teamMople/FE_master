@@ -19,3 +19,4 @@ export { default as Divider } from './layout/Divider';
 export { default as Input } from './inputs/Input';
 export { default as Textarea } from './inputs/Textarea';
 export { default as DropdownSelect } from './inputs/DropdownSelect';
+export { default as StandardInput } from './inputs/StandardInput';

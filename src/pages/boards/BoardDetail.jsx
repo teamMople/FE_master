@@ -85,7 +85,7 @@ function BoardDetail(props) {
       />
       <Grid padding="0px 24px 0px 24px">
         <Grid padding="16px 0px 16px 0px" margin="0px 0px 22px 0px">
-          {detail.content}
+          <Text preWrap>{detail.content}</Text>
         </Grid>
         {detail.imageUrl && (
           <Grid>

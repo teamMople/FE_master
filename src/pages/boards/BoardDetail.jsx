@@ -81,10 +81,10 @@ function BoardDetail(props) {
           <VoteResultBar
             agreeCount={detail.agreeCount}
             disagreeCount={detail.disagreeCount}
-            clickAgreeButton={() => {
+            onClickAgree={() => {
               dispatch(increaseAgreeCountAsync(boardId));
             }}
-            clickDisagreeButton={() => {
+            onClickDisagree={() => {
               dispatch(increaseDisagreeCountAsync(boardId));
             }}
           />

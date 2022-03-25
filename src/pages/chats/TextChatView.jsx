@@ -13,7 +13,14 @@ import {
 
 // let stompClient = null;
 
-const TextChatView = ({ stompClient, sock, roomId, userId }) => {
+const TextChatView = ({
+  stompClient,
+  sock,
+  roomId,
+  memberName,
+  unsubscribe,
+  moderator,
+}) => {
   const [publicChats, setPublicChats] = useState([]);
   const [userData, setUserData] = useState({
     sender: '',
@@ -25,16 +32,16 @@ const TextChatView = ({ stompClient, sock, roomId, userId }) => {
   }, []);
 
   const connect = () => {
-    stompClient.connect({}, onConnected, onError);
+    stompClient.connect({ memberName: memberName }, onConnected, onError);
 
     sock.addEventListener('open', () => {
-      console.log('Connected to Browser!!!😀');
+      // console.log('Connected to Browser!!!😀');
     });
     sock.addEventListener('message', (message) => {
-      console.log('Got this:', message, '😀');
+      // console.log('Got this:', message, '😀');
     });
     sock.addEventListener('close', () => {
-      console.log('Disconnected to Server😀');
+      // console.log('Disconnected to Server😀');
     });
   };
 
@@ -43,7 +50,8 @@ const TextChatView = ({ stompClient, sock, roomId, userId }) => {
     stompClient.subscribe(
       `/sub/chat/room/${roomId}`,
       onMessageReceived,
-      onError,
+      // onError,
+      { id: moderator },
     );
     userJoin();
   };
@@ -51,7 +59,7 @@ const TextChatView = ({ stompClient, sock, roomId, userId }) => {
   const userJoin = () => {
     let chatMessage = {
       // sender: userData.sender,
-      sender: userId,
+      sender: memberName,
       type: 'ENTER',
       roomId: roomId,
     };
@@ -76,7 +84,7 @@ const TextChatView = ({ stompClient, sock, roomId, userId }) => {
     // console.log('👍 메시지 보내기 클릭!');
     if (stompClient) {
       let chatMessage = {
-        sender: userId,
+        sender: memberName,
         message: userData.message,
         type: 'CHAT',
         roomId: roomId,
@@ -101,7 +109,10 @@ const TextChatView = ({ stompClient, sock, roomId, userId }) => {
   //   leaveRoom();
   // }
   return (
-    <div className="container">
+    <div
+      className="container"
+      style={{ position: 'fixed', bottom: '100px', width: '100%' }}
+    >
       {userData.connected && (
         <ChatWrapper>
           {publicChats.map((chat, index) => (
@@ -111,7 +122,7 @@ const TextChatView = ({ stompClient, sock, roomId, userId }) => {
                   {chat.sender}님께서 입장~
                 </JoinerLeaver>
               )}
-              {chat.type === 'CHAT' && chat.sender !== userId && (
+              {chat.type === 'CHAT' && chat.sender !== memberName && (
                 <ReceiverWrapper key={index}>
                   <ReceiverInner>
                     <Receiver>{chat.sender}</Receiver>
@@ -119,7 +130,7 @@ const TextChatView = ({ stompClient, sock, roomId, userId }) => {
                   </ReceiverInner>
                 </ReceiverWrapper>
               )}
-              {chat.type === 'CHAT' && chat.sender === userId && (
+              {chat.type === 'CHAT' && chat.sender === memberName && (
                 <SenderWrapper key={index}>
                   <SenderInner>
                     <Sender>{chat.sender}</Sender>
@@ -158,7 +169,9 @@ TextChatView.propTypes = {
   sock: PropTypes.any,
   roomId: PropTypes.number,
   disconnect: PropTypes.bool,
-  userId: PropTypes.string,
+  memberName: PropTypes.string,
+  unsubscribe: PropTypes.bool,
+  moderator: PropTypes.string,
 };
 
 export default TextChatView;

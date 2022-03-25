@@ -30,6 +30,10 @@ const VoteView = ({
     dispatch(setMemberVoteStatus(data));
   }, [agree, disagree]);
 
+  // useEffect(() => {
+  //   dispatch(setMemberVoteStatus(data));
+  // }, [agree, disagree]);
+
   const connect = () => {
     stompClient.connect({}, onConnected, onError);
 
@@ -46,18 +50,27 @@ const VoteView = ({
 
   const onConnected = () => {
     stompClient.subscribe(
-      `/sub/chat/room/${roomId}`,
+      `/sub/chat/vote/${roomId}`,
       onMessageReceived,
       onError,
     );
     // userJoin();
   };
+  // const userJoin = () => {
+  //   let chatMessage = {
+  //     // sender: userData.sender,
+  //     sender: userId,
+  //     type: 'ENTER',
+  //     roomId: roomId,
+  //   };
+  //   stompClient.send('/pub/chat/vote', {}, JSON.stringify(chatMessage));
+  // };
 
   const onMessageReceived = (payload) => {
     let payloadData = JSON.parse(payload.body);
     setAgreeCount(payloadData.agreeCount);
     setDisagreeCount(payloadData.disagreeCount);
-    console.log('👺👺payloadData ====>', payloadData.agreeCount);
+    console.log('👺👺payloadData ====>', payloadData);
   };
 
   const onError = (err) => {
@@ -74,7 +87,7 @@ const VoteView = ({
         message: null,
       };
       console.log('🫖 찬성 ==>', message);
-      stompClient.send('/pub/chat/message', {}, JSON.stringify(message));
+      stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setAgree(true);
       setDisagree(false);
     }
@@ -90,7 +103,7 @@ const VoteView = ({
         message: null,
       };
       console.log('🫖 반대 ==>', message);
-      stompClient.send('/pub/chat/message', {}, JSON.stringify(message));
+      stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setDisagree(true);
       setAgree(false);
     }
@@ -106,7 +119,7 @@ const VoteView = ({
         message: null,
       };
       console.log('🫖 찬성 ==>', message);
-      stompClient.send('/pub/chat/message', {}, JSON.stringify(message));
+      stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setAgree(false);
       setDisagree(false);
     }
@@ -122,25 +135,20 @@ const VoteView = ({
         message: null,
       };
       console.log('🫖 찬성 ==>', message);
-      stompClient.send('/pub/chat/message', {}, JSON.stringify(message));
+      stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setAgree(false);
       setDisagree(false);
     }
   };
-
-  // if (disconnect) {
-  //   let chatMessage = {
-  //     sender: userId,
-  //     type: 'LEAVE',
-  //     roomId: roomId,
-  //   };
-  //   stompClient.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
-  //   leaveRoom();
-  // }
   return (
     <div className="container">
-      <VoteResultBar agreeCount={agreeCount} disagreeCount={disagreeCount} />
-      {agree ? (
+      <VoteResultBar
+        agreeCount={agreeCount}
+        disagreeCount={disagreeCount}
+        onClickAgree={agree ? sendCancelAgree : sendAddAgree}
+        onClickDisagree={disagree ? sendCancelDisagree : sendAddDisagree}
+      />
+      {/*{agree ? (
         <button onClick={sendCancelAgree}>찬성취소</button>
       ) : (
         <button onClick={sendAddAgree}>찬성</button>
@@ -149,7 +157,7 @@ const VoteView = ({
         <button onClick={sendCancelDisagree}>반대취소</button>
       ) : (
         <button onClick={sendAddDisagree}>반대</button>
-      )}
+      )}*/}
     </div>
   );
 };

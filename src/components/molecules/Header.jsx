@@ -12,6 +12,7 @@ const Header = ({
   label,
   rightArrow,
   rightArrowOnClick,
+  disabled,
 }) => {
   const themeContext = useContext(ThemeContext);
 
@@ -36,6 +37,7 @@ const Header = ({
             right: 0,
             minWidth: 'auto',
           }}
+          disabled={disabled}
           onClick={rightButtonRender.onClickButton}
         >
           {rightButtonRender.label}
@@ -47,6 +49,7 @@ const Header = ({
 
 Header.propTypes = {
   fixedTop: PropTypes.bool,
+  disabled: PropTypes.bool,
   label: PropTypes.string,
   leftArrow: PropTypes.bool,
   leftArrowOnClick: PropTypes.func,

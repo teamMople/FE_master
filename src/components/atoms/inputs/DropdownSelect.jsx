@@ -6,6 +6,7 @@ const DropdownSelect = ({ ...props }) => {
   return (
     <Select
       {...props}
+      isSearchable={false}
       styles={dropdownSelectStyles}
       components={animatedComponents}
     />

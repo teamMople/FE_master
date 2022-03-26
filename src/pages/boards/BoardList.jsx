@@ -13,11 +13,9 @@ import { useParams } from 'react-router-dom';
 
 function BoardList(props) {
   const params = useParams();
-  console.log(params.categoryName);
   const { data, status } = useSelector(selectedBoardList);
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
-  console.log(data);
 
   useEffect(() => {
     if (typeof params.categoryName === 'undefined') {

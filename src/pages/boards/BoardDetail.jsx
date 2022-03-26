@@ -44,11 +44,6 @@ function BoardDetail(props) {
   const [onAgree, setOnAgree] = useState(false);
   const [onDisagree, setOnDisagree] = useState(false);
 
-  console.log(onAgree);
-  console.log(onDisagree);
-
-  console.log(agreeCount);
-
   useEffect(() => {
     dispatch(getDetailAsync(params.boardId));
     dispatch(getCommentListAsync(params.boardId));

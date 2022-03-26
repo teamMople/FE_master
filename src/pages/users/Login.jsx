@@ -41,7 +41,7 @@ function Login(props) {
     } else {
       axios
         .post(
-          'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/api/login',
+          `${process.env.REACT_APP_API_URL}/api/login`,
           JSON.stringify({ email, password }),
           { headers: { 'Content-Type': 'application/json' } },
         )

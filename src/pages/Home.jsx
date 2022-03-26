@@ -35,11 +35,6 @@ const Home = (props) => {
     dispatch(getLiveBoardListAsync());
   }, [dispatch]);
 
-  console.log(basicBoards);
-  console.log(basicBoardsStatus);
-  console.log(liveBoards);
-  console.log(liveBoardsStatus);
-
   if (basicBoardsStatus !== 'success' || liveBoardsStatus !== 'success') {
     return (
       <Wrapper>

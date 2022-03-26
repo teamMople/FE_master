@@ -54,7 +54,6 @@ export const getLiveBoardListAsync = createAsyncThunk(
   async (thunkAPI) => {
     try {
       const response = await apis.getLiveRoomList();
-      console.log(response.data);
       return response.data;
     } catch (e) {
       return thunkAPI.rejectWithValue(await e.response.data);

@@ -14,7 +14,6 @@ const Nav = (props) => {
   const showSpeedDialMenu = () => {
     setShowMenu(!showMenu);
     setRot(!rot);
-    console.log(rot);
   };
 
   const goHome = () => {
@@ -31,8 +30,6 @@ const Nav = (props) => {
   };
 
   let location = useLocation();
-  console.log(location);
-  console.log(showNav);
 
   const locationArray = [
     '/',

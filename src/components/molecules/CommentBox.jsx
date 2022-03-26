@@ -19,6 +19,8 @@ const CommentBox = (props) => {
   const replyComments = useSelector(selectedReplyCommentList);
   const commentId = comment.commentId;
 
+  console.log(comment);
+
   const [isVisible, setIsVisible] = useState(false);
   const [replyContent, setReplyContent] = useState();
 

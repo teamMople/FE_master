@@ -119,7 +119,7 @@ const CreateRoom = () => {
             label="라이브 채팅방 개설"
             leftArrow
             disabled={
-              roomName === '' || content === '' || selectedOption.value === ''
+              roomName === '' || selectedOption.value === '' || content === ''
             }
             rightButtonRender={{ label: '완료', onClickButton: createRoom }}
           />

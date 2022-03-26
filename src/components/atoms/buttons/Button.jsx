@@ -68,8 +68,10 @@ const B = styled.button`
       : secondary
       ? theme.colors.blue
       : theme.colors.backgroundGray};
-  color: ${({ primary, secondary, theme }) =>
-    primary
+  color: ${({ primary, secondary, theme, color }) =>
+    color
+      ? color
+      : primary
       ? theme.colors.black
       : secondary
       ? theme.colors.white

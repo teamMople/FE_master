@@ -50,6 +50,7 @@ const voteInitialState = {
 
 const chatInitialState = {
   data: {},
+  hide: false,
 };
 
 export const ovGetTokenAsync = createAsyncThunk(
@@ -153,7 +154,8 @@ export const leaveRoomAsync = createAsyncThunk(
     return await apis
       .leaveRoom(data)
       .then(() => {
-        return alert('방 떠나기 성공!');
+        //!Todo 주석 풀 것
+        // return alert('방 떠나기 성공!');
       })
       .catch(() => alert('방 떠나기 실패!'));
   },
@@ -220,6 +222,9 @@ export const chatSlice = createSlice({
     setChatContent: (state, action) => {
       state.data = action.payload;
     },
+    hideChat: (state, action) => {
+      state.hide = action.payload;
+    },
   },
 });
 
@@ -235,11 +240,12 @@ export const {
 } = roomSlice.actions;
 export const { setSession } = sessionSlice.actions;
 export const { setMemberVoteStatus } = voteSlice.actions;
-export const { setChatContent } = chatSlice.actions;
+export const { setChatContent, hideChat } = chatSlice.actions;
 
 // selector setting
 export const selectRoomState = (state) => state.chats.room.roomState;
 export const selectChatState = (state) => state.chats.chat.data;
+export const selectChatHideState = (state) => state.chats.chat.hide;
 
 const reducer = combineReducers({
   room: roomSlice.reducer,

@@ -11,6 +11,7 @@ function Button({
   secondary,
   color,
   shape,
+  disabled,
   ...props
 }) {
   return (
@@ -23,6 +24,7 @@ function Button({
       secondary={secondary}
       color={color}
       shape={shape}
+      disabled={disabled}
       {...props}
     >
       {props.children}
@@ -32,6 +34,7 @@ function Button({
 
 Button.propTypes = {
   children: PropTypes.any,
+  disabled: PropTypes.bool,
   backgroundColor: PropTypes.any,
   size: PropTypes.oneOf(['small', 'normal', 'large']),
   fluid: PropTypes.bool,
@@ -64,9 +67,11 @@ const B = styled.button`
       ? theme.colors.primaryYellow
       : secondary
       ? theme.colors.blue
-      : theme.colors.lightGray};
-  color: ${({ primary, secondary, theme }) =>
-    primary
+      : theme.colors.backgroundGray};
+  color: ${({ primary, secondary, theme, color }) =>
+    color
+      ? color
+      : primary
       ? theme.colors.black
       : secondary
       ? theme.colors.white
@@ -79,6 +84,11 @@ const B = styled.button`
   margin: ${(props) => props.margin};
   border: none;
   cursor: pointer;
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.backgroundGray};
+    color: ${({ theme }) => theme.colors.gray};
+  }
 
   &:hover {
     background-color: ${({ primary, secondary }) =>

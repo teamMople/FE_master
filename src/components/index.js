@@ -10,6 +10,9 @@ import {
   Input,
   Textarea,
   DropdownSelect,
+  Divider,
+  StandardInput,
+  IconButton,
 } from './atoms';
 import {
   CategoryTile,
@@ -76,4 +79,7 @@ export {
   ChatUserProfile,
   StatusBox,
   SearchInput,
+  Divider,
+  StandardInput,
+  IconButton,
 };

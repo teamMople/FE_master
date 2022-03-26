@@ -31,7 +31,13 @@ function BoardByCategoryList(props) {
       padding="56px 0px 0px 0px"
     >
       <Grid padding="0px 24px 12px 24px">
-        <Header label={params.categoryName} leftArrow />
+        <Header
+          label={params.categoryName}
+          leftArrow
+          leftArrowOnClick={() => {
+            navigate('/search');
+          }}
+        />
       </Grid>
       <MenuTab
         labels={labels}
@@ -45,32 +51,5 @@ function BoardByCategoryList(props) {
     </Wrapper>
   );
 }
-
-const categories = [
-  {
-    category: '직장생활',
-    categoryImageUrl: '/asset/image/category/office.svg',
-  },
-  {
-    category: '학교생활',
-    categoryImageUrl: '/asset/image/category/school.svg',
-  },
-  {
-    category: '관계/심리',
-    categoryImageUrl: '/asset/image/category/relation.svg',
-  },
-  {
-    category: '일상생활',
-    categoryImageUrl: '/asset/image/category/life.svg',
-  },
-  {
-    category: '시사/이슈',
-    categoryImageUrl: '/asset/image/category/trends.svg',
-  },
-  {
-    category: '기타',
-    categoryImageUrl: '/asset/image/category/etc.svg',
-  },
-];
 
 export default BoardByCategoryList;

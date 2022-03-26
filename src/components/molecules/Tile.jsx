@@ -29,7 +29,9 @@ const Tile = (props) => {
               size="14px"
               lineHeight="18px"
             >
-              {board.roomName}
+              {board.roomName && board.roomName.length > 22
+                ? board.title.slice(0, 22) + '...'
+                : board.title}
             </Text>
           </Grid>
           <Grid height={40}>
@@ -38,8 +40,8 @@ const Tile = (props) => {
               size="12px"
               lineHeight="20px"
             >
-              {board.content && board.content.length > 51
-                ? board.content.slice(0, 51) + '...'
+              {board.content && board.content.length > 57
+                ? board.content.slice(0, 57) + '...'
                 : board.content}
             </Text>
           </Grid>
@@ -69,74 +71,61 @@ const Tile = (props) => {
       );
     case 'basic':
       return (
-        <BasicTileWrapper
-          onClick={() => {
-            navigate('/board/' + board.id);
-          }}
-        >
+        <BasicTileWrapper>
           <ProfileBox
             profileImageUrl={board.profileImageUrl}
             nickname={board.nickname}
             createdAt={board.createdAt}
             margin="0px 0px 18px 0px"
           />
-          <Grid margin="0px 0px 14px 0px">
-            <Text
-              bold
-              color={themeContext.colors.black}
-              size="14px"
-              lineHeight="18px"
-            >
-              {board.title}
-            </Text>
-          </Grid>
-          <Grid height={40}>
-            <Text
-              color={themeContext.colors.darkGray}
-              size="12px"
-              lineHeight="20px"
-            >
-              {board.content}
-            </Text>
-          </Grid>
-          <Grid isFlex width="100%" className="buttonGroup">
-            <Grid isFlex>
-              <Button
-                size={'small'}
-                height="32px"
-                backgroundColor={themeContext.colors.lightGray}
-                onClick={() => {}}
+          <Grid
+            onClick={() => {
+              navigate('/board/' + board.id);
+            }}
+          >
+            <Grid margin="0px 0px 14px 0px">
+              <Text
+                bold
+                color={themeContext.colors.black}
+                size="14px"
+                lineHeight="18px"
               >
-                <Grid margin="0px 5px 0px 0px">
-                  <img src="/asset/icons/Vote.svg" alt="vote icon" />
-                </Grid>
-                <Text>{board.recommendCount}</Text>
-              </Button>
+                {board.title && board.title.length > 22
+                  ? board.title.slice(0, 22) + '...'
+                  : board.title}
+              </Text>
+            </Grid>
+            <Grid height={40}>
+              <Text
+                color={themeContext.colors.darkGray}
+                size="12px"
+                lineHeight="20px"
+              >
+                {board.content && board.content.length > 57
+                  ? board.content.slice(0, 57) + '...'
+                  : board.content}
+              </Text>
+            </Grid>
+          </Grid>
+          <Grid isFlex width="252px" className="buttonGroup">
+            <Grid isFlex>
+              <StatusBox
+                icon={'/asset/icons/Vote.svg'}
+                count={board.recommendCount}
+              />
             </Grid>
             <Grid isFlex>
               <Grid margin="0px 8px 0px 0px">
-                <Button
-                  size={'small'}
-                  height="32px"
-                  backgroundColor={themeContext.colors.lightGray}
-                >
-                  <Grid margin="0px 5px 0px 0px">
-                    <img src="/asset/icons/Agreed.svg" alt="agree icon" />
-                  </Grid>
-                  <Text>{board.agreeCount}</Text>
-                </Button>
+                <StatusBox
+                  icon={'/asset/icons/Agreed.svg'}
+                  count={board.agreeCount}
+                />
               </Grid>
               <Grid>
-                <Button
-                  size={'small'}
-                  height="32px"
-                  backgroundColor={themeContext.colors.lightGray}
-                >
-                  <Grid margin="0px 5px 0px 0px">
-                    <img src="/asset/icons/Disagreed.svg" alt="disagree icon" />
-                  </Grid>
-                  <Text>{board.disagreeCount}</Text>
-                </Button>
+                <StatusBox
+                  icon={'/asset/icons/Disagreed.svg'}
+                  count={board.disagreeCount}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -216,6 +205,7 @@ const BasicTileWrapper = styled.div`
   > .buttonGroup {
     position: absolute;
     bottom: 20px;
+    box-sizing: border-box;
     justify-content: space-between;
   }
 `;

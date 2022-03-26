@@ -50,7 +50,7 @@ const CommentInputWindow = (props) => {
 };
 
 CommentInputWindow.propTypes = {
-  boardId: PropTypes.string,
+  boardId: PropTypes.number,
 };
 
 const Window = styled.div`

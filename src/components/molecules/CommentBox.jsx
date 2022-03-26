@@ -6,6 +6,7 @@ import { Grid, Text, Button, Textarea, ProfileBox } from 'components';
 
 import ReplyCommentList from 'components/organisms/ReplyCommentList';
 import {
+  increaseCommentRecommendCountAsync,
   getReplyCommentListAsync,
   createReplyCommentAsync,
   selectedReplyCommentList,
@@ -16,6 +17,7 @@ const CommentBox = (props) => {
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
   const replyComments = useSelector(selectedReplyCommentList);
+  const commentId = comment.commentId;
 
   const [isVisible, setIsVisible] = useState(false);
   const [replyContent, setReplyContent] = useState();
@@ -25,10 +27,8 @@ const CommentBox = (props) => {
   };
 
   useEffect(() => {
-    console.log(comment.commentId);
-    const id = comment.commentId;
-    dispatch(getReplyCommentListAsync(id));
-  }, []);
+    dispatch(getReplyCommentListAsync(commentId));
+  }, [dispatch]);
 
   return (
     <Grid width="100%">
@@ -72,6 +72,9 @@ const CommentBox = (props) => {
               height="26px"
               margin="0px 0px 0px 8px"
               backgroundColor={themeContext.colors.lightGray}
+              onClick={(e) => {
+                dispatch(increaseCommentRecommendCountAsync(commentId));
+              }}
             >
               <Grid margin="0px 5px 0px 0px">
                 <img src="/asset/icons/Comment_recommend.svg" />
@@ -103,8 +106,7 @@ const CommentBox = (props) => {
               margin="0px 0px 0px 8px"
               onClick={(e) => {
                 e.preventDefault();
-                const id = comment.commentId;
-                const replyCommentInfo = { id, replyContent };
+                const replyCommentInfo = { commentId, replyContent };
                 dispatch(createReplyCommentAsync(replyCommentInfo));
               }}
             >

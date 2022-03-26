@@ -74,12 +74,11 @@ const apis = {
     authApi.delete(`/auth/api/board/${boardId}`, { boardId }),
   getMyBoardList: () => authApi.get('/auth/api/board/myboard'),
   getMyCommentList: () => authApi.get('/auth/api/board/mycomments'),
-  agreeBoard: (boardId) =>
-    authApi.get(`/auth/api/board/agree/${boardId}`, { boardId }),
+  agreeBoard: (boardId) => authApi.get(`/auth/api/board/agree/${boardId}`),
   disagreeBoard: (boardId) =>
-    authApi.get(`/auth/api/board/disagree/${boardId}`, { boardId }),
-  recommentBoard: (boardId) =>
-    authApi.get(`/auth/api/board/recommend/${boardId}`, { boardId }),
+    authApi.get(`/auth/api/board/disagree/${boardId}`),
+  recommendBoard: (boardId) =>
+    authApi.get(`/auth/api/board/recommend/${boardId}`),
   createComment: (boardId, content) =>
     authApi.post(`/auth/api/comment/${boardId}`, { boardId, content }),
   getCommentsByBoard: (boardId) => authApi.get(`/auth/api/comment/${boardId}`),

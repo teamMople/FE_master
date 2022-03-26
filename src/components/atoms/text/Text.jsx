@@ -14,8 +14,10 @@ const Text = ({
   right,
   onClick,
   size,
+  tiny,
   small,
   large,
+  preWrap,
   ...props
 }) => {
   return (
@@ -31,8 +33,10 @@ const Text = ({
       right={right}
       onClick={onClick}
       size={size}
+      tiny={tiny}
       small={small}
       large={large}
+      preWrap={preWrap}
       {...props}
     >
       {props.children}
@@ -54,7 +58,9 @@ Text.propTypes = {
   onClick: PropTypes.func,
   size: PropTypes.string,
   small: PropTypes.bool,
+  tiny: PropTypes.bool,
   large: PropTypes.bool,
+  preWrap: PropTypes.bool,
 };
 
 Text.defaultProps = {
@@ -64,7 +70,8 @@ Text.defaultProps = {
 const P = styled.div`
   color: ${({ color, theme }) => (color ? color : theme.colors.black)};
   font-family: ${(props) => props.font};
-  font-size: ${({ small, size }) => (size ? size : small ? '12px' : '14px')};
+  font-size: ${({ small, size, large, tiny }) =>
+    size ? size : tiny ? '10px' : small ? '12px' : large ? '16px' : '14px'};
   font-weight: ${(props) =>
     props.bold
       ? '700'
@@ -81,6 +88,8 @@ const P = styled.div`
   text-align: ${({ right, center }) =>
     center ? 'center' : right ? 'right' : 'left'};
   cursor: ${({ onClick }) => onClick && 'pointer'};
+  word-break: break-all;
+  white-space: ${({ preWrap }) => preWrap && 'pre-wrap'};
 `;
 
 export default Text;

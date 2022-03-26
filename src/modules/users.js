@@ -31,10 +31,7 @@ export const loginAsync = createAsyncThunk(
       window.alert('올바른 이메일 형식이 아닙니다.');
     } else {
       await axios
-        .post(
-          'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/api/login',
-          { email, password },
-        )
+        .post(`${process.env.REACT_APP_API_URL}/api/login`, { email, password })
         .then((response) => {
           console.log(response);
           if (response.data.status === 'ok') {
@@ -123,7 +120,7 @@ export const logoutAsync = createAsyncThunk('users/logout', async () => {
     .logout()
     .then((response) => {
       console.log(response);
-      if (response.data.status === 'ok') {
+      if (response.status === '200') {
         deleteCookie('token');
         localStorage.removeItem('loginUser');
         navigate('/');
@@ -144,7 +141,7 @@ export const signupAsync = createAsyncThunk(
     console.log(userInfo);
     await axios
       .post(
-        'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/api/signup',
+        `${process.env.REACT_APP_API_URL}/api/signup`,
         JSON.stringify(userInfo),
         { headers: { 'Content-Type': 'application/json' } },
       )
@@ -215,7 +212,14 @@ export const findMyPassword = createAsyncThunk(
 export const userSlice = createSlice({
   name: 'users',
   initialState: loginUserInitialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.isLogin = false;
+      deleteCookie('token');
+      localStorage.removeItem('loginUser');
+      window.location.assign('/');
+    },
+  },
   extraReducers: {
     [loginAsync.pending]: (state, action) => {
       state.isLogin = false;
@@ -270,5 +274,6 @@ export const userSlice = createSlice({
   },
 });
 
+export const { logout } = userSlice.actions;
 export const selectUserState = (state) => state.users;
 export default userSlice.reducer;

@@ -1,25 +1,30 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Textarea, SelectTab, DropdownSelect } from 'components';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useState } from 'react';
+import styled, { ThemeContext } from 'styled-components';
 import {
-  createRoomAsync,
-  joinRoomAsync,
-  selectRoomState,
-} from '../../modules/chat';
+  Textarea,
+  DropdownSelect,
+  Header,
+  Wrapper,
+  Grid,
+  Text,
+  StandardInput,
+} from 'components';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { createRoomAsync, joinRoomAsync } from '../../modules/chat';
+import { SetMemberCount } from './component';
 
 const CreateRoom = () => {
   const [roomName, setRoomName] = useState('');
-  const [currentTab, setCurrentTab] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState('');
   const [memberCount, setMemberCount] = useState(10);
-  const [content, setContent] = useState(null);
+  const [content, setContent] = useState('');
   const [moderator, setModerator] = useState('TestUser');
+  const [textLength, setTextLength] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const themeContext = useContext(ThemeContext);
 
-  const selectMenu = [{ value: '공개토론' }, { value: '비공개토론' }];
   const options = [
     { value: '일상생활', label: '일생생활' },
     { value: '직장생활', label: '직장생활' },
@@ -92,7 +97,10 @@ const CreateRoom = () => {
   };
   const handleChangeContent = (e) => {
     const value = e.target.value;
-    setContent(value);
+    if (value.length < 300) {
+      setTextLength(value.length);
+      setContent(value);
+    }
   };
 
   const handleMember = (param) => {
@@ -103,65 +111,64 @@ const CreateRoom = () => {
     }
   };
 
-  const handleSelect = (idx) => {
-    setCurrentTab(idx);
-  };
-
   return (
     <>
-      <div>토론방 개설</div>
-      <SelectTabBox>
-        {selectMenu.map((ele, idx) => (
-          <SelectTab
-            key={idx}
-            active={currentTab === idx}
-            onClick={() => handleSelect(idx)}
-          >
-            {ele.value}
-          </SelectTab>
-        ))}
-      </SelectTabBox>
-      <DropdownSelect
-        defaultValue={selectedOption}
-        onChange={setSelectedOption}
-        options={options}
-      />
-      <input
-        onChange={handleChangeValue}
-        placeholder="방 제목을 입력해주세요."
-      />
-      <Textarea
-        fluid
-        placeholder="토론하고 싶은 내용을 작성해주세요."
-        onChange={handleChangeContent}
-      />
-      <div>
-        참여인원
-        {memberCount}
-        <button
-          disabled={memberCount === 2}
-          onClick={() => handleMember('decrease')}
-        >
-          -
-        </button>
-        <button
-          disabled={memberCount === 10}
-          onClick={() => handleMember('increase')}
-        >
-          +
-        </button>
-      </div>
-      <button onClick={createRoom} disabled={roomName === ''}>
-        만들기
-      </button>
-      <button onClick={navigateVoiceRoom}>이동</button>
+      <Wrapper>
+        <Grid padding="8px 24px">
+          <Header
+            label="라이브 채팅방 개설"
+            leftArrow
+            disabled={
+              roomName === '' || selectedOption.value === '' || content === ''
+            }
+            rightButtonRender={{ label: '완료', onClickButton: createRoom }}
+          />
+        </Grid>
+
+        <DropdownSelect
+          placeholder="카테고리를 선택해주세요"
+          color={themeContext.colors.lightGray}
+          onChange={setSelectedOption}
+          options={options}
+        />
+        <BodyWrapper>
+          <StandardInput
+            fluid
+            placeholder="제목을 입력해주세요"
+            onChange={handleChangeValue}
+          />
+          <TextareaWrapper>
+            <Textarea
+              fluid
+              height="200px"
+              placeholder="토론하고 싶은 내용을 작성해주세요"
+              onChange={handleChangeContent}
+              value={content}
+              lineHeight="18px"
+            />
+          </TextareaWrapper>
+          <Text tiny right color={themeContext.colors.darkGray}>
+            {textLength} / 300
+          </Text>
+          <Text style={{ margin: '1rem 0' }}>참여인원 설정 </Text>
+          <SetMemberCount
+            disabledDecrease={memberCount === 2}
+            disabledIncrease={memberCount === 10}
+            count={memberCount}
+            onClickDecrease={() => handleMember('decrease')}
+            onClickIncrease={() => handleMember('increase')}
+          />
+        </BodyWrapper>
+      </Wrapper>
     </>
   );
 };
 
-const SelectTabBox = styled.div`
-  display: flex;
-  align-items: center;
+const BodyWrapper = styled.div`
+  padding: 0 24px;
+`;
+const TextareaWrapper = styled.div`
+  padding: 10px 0;
 `;
 
 export default CreateRoom;

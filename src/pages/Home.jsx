@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import { ThemeContext } from 'styled-components';
-import { Wrapper, Grid, Loader } from 'components';
+import { Wrapper, Grid, Loader, Button } from 'components';
 import Nav from './Nav';
 import {
   CardCarousel,
@@ -17,10 +17,12 @@ import {
 } from 'modules/boards';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCommentListAsync } from 'modules/comments';
+import { useNavigate } from 'react-router-dom';
 
 const Home = (props) => {
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { data: basicBoards, status: basicBoardsStatus } =
     useSelector(selectedBoardList);
@@ -47,6 +49,17 @@ const Home = (props) => {
   } else {
     return (
       <Wrapper backgroundColor={themeContext.colors.backgroundGray}>
+        <Button
+          style={{
+            width: 'auto',
+            fontSize: '10px',
+            position: 'absolute',
+            right: 0,
+          }}
+          onClick={() => navigate('/room')}
+        >
+          라이브 방 리스트로 가기(임시)
+        </Button>
         <Grid padding="45px 0px 30px 0px">
           <CardCarousel
             label="실시간 HOT 라이브"

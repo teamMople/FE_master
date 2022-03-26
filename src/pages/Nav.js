@@ -69,7 +69,15 @@ const Nav = (props) => {
             >
               일반토론
             </div>
-            <div className="rightMenu">LIVE토론</div>
+            <div
+              className="rightMenu"
+              onClick={() => {
+                navigate('/room/create');
+                setShowMenu(false);
+              }}
+            >
+              LIVE토론
+            </div>
           </SpeedDialMenu>
         )}
         <SpeedDial rot={rot} onClick={showSpeedDialMenu}>

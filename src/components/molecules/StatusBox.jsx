@@ -3,18 +3,26 @@ import { Text } from '../atoms';
 import styled, { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
 
-const StatusBox = ({ count, label, icon, gap, active, text }) => {
-  const tnemeContext = useContext(ThemeContext);
+const StatusBox = ({
+  count,
+  label,
+  icon,
+  gap,
+  active,
+  text,
+  backgroundColor,
+}) => {
+  const themeContext = useContext(ThemeContext);
   return (
-    <Box active={active}>
+    <Box active={active} backgroundColor={backgroundColor}>
       {icon && <img src={icon} alt={'icon'} />}
       {label && (
-        <Text tiny color={tnemeContext.colors.darkGray}>
+        <Text tiny color={themeContext.colors.darkGray}>
           {label}
         </Text>
       )}
-      {count && <Text>{count}</Text>}
-      {text && <Text>{text}</Text>}
+      {count && <Text style={{ marginLeft: gap }}>{count}</Text>}
+      {text && <Text style={{ marginLeft: gap }}>{text}</Text>}
     </Box>
   );
 };
@@ -26,6 +34,7 @@ StatusBox.propTypes = {
   gap: PropTypes.string,
   text: PropTypes.string,
   active: PropTypes.bool,
+  backgroundColor: PropTypes.string,
 };
 
 StatusBox.defaultProps = {
@@ -40,8 +49,12 @@ const Box = styled.div`
   min-width: 58px;
   padding: 8px 10px;
   height: 32px;
-  background-color: ${({ theme, active }) =>
-    active ? theme.colors.blue : theme.colors.lightGray};
+  background-color: ${({ theme, active, backgroundColor }) =>
+    backgroundColor
+      ? backgroundColor
+      : active
+      ? theme.colors.blue
+      : theme.colors.lightGray};
 `;
 
 export default StatusBox;

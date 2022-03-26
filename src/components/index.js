@@ -12,6 +12,7 @@ import {
   DropdownSelect,
   Divider,
   StandardInput,
+  IconButton,
 } from './atoms';
 import {
   CategoryTile,
@@ -80,4 +81,5 @@ export {
   SearchInput,
   Divider,
   StandardInput,
+  IconButton,
 };

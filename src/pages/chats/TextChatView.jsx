@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
+  BackDrop,
   ChatWrapper,
   JoinerLeaver,
   Receiver,
@@ -9,7 +10,12 @@ import {
   Sender,
   SenderInner,
   SenderWrapper,
+  TextInputWrapper,
 } from './style';
+import { Button, Text, Textarea } from '../../components';
+import { ThemeContext } from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { hideChat } from '../../modules/chat';
 
 // let stompClient = null;
 
@@ -20,12 +26,18 @@ const TextChatView = ({
   memberName,
   unsubscribe,
   moderator,
+  className,
+  onClickShow,
+  active,
+  onClickMoveUserRoom,
 }) => {
+  const themeContext = useContext(ThemeContext);
+  const dispatch = useDispatch();
   const [publicChats, setPublicChats] = useState([]);
   const [userData, setUserData] = useState({
     sender: '',
     connected: false,
-    message: '',
+    message: null,
   });
   useEffect(() => {
     connect();
@@ -80,6 +92,12 @@ const TextChatView = ({
     const { value } = event.target;
     setUserData({ ...userData, message: value });
   };
+
+  const handleKeyDownSendMessage = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      sendMessage();
+    }
+  };
   const sendMessage = () => {
     // console.log('👍 메시지 보내기 클릭!');
     if (stompClient) {
@@ -109,24 +127,36 @@ const TextChatView = ({
   //   leaveRoom();
   // }
   return (
-    <div
-      className="container"
-      style={{ position: 'fixed', bottom: '100px', width: '100%' }}
-    >
+    <>
       {userData.connected && (
-        <ChatWrapper>
+        <ChatWrapper className={active && 'active'}>
+          {/*<Button>숨기기</Button>*/}
           {publicChats.map((chat, index) => (
             <>
               {chat.type === 'ENTER' && (
-                <JoinerLeaver key={index}>
-                  {chat.sender}님께서 입장~
-                </JoinerLeaver>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: `${themeContext.colors.lightGray}`,
+                    margin: '10px',
+                  }}
+                >
+                  <Text key={index}>{chat.sender}님이 입장하셨습니다.</Text>
+                </div>
               )}
               {chat.type === 'CHAT' && chat.sender !== memberName && (
                 <ReceiverWrapper key={index}>
                   <ReceiverInner>
                     <Receiver>{chat.sender}</Receiver>
-                    <div className="message-data">{chat.message}</div>
+                    <Text
+                      className="message-data"
+                      preWrap
+                      color={themeContext.colors.white}
+                    >
+                      {chat.message}
+                    </Text>
                   </ReceiverInner>
                 </ReceiverWrapper>
               )}
@@ -134,7 +164,9 @@ const TextChatView = ({
                 <SenderWrapper key={index}>
                   <SenderInner>
                     <Sender>{chat.sender}</Sender>
-                    <div className="message-data">{chat.message}</div>
+                    <Text className="message-data" preWrap>
+                      {chat.message}
+                    </Text>
                   </SenderInner>
                 </SenderWrapper>
               )}
@@ -146,21 +178,32 @@ const TextChatView = ({
             </>
           ))}
 
-          <div className="send-message">
-            <input
-              type="text"
-              className="input-message"
-              placeholder="enter the message"
+          <TextInputWrapper>
+            <Textarea
+              fluid
+              height="34px"
+              backgroundColor={themeContext.colors.backgroundGray}
+              border="none"
+              borderRadius="10px"
+              placeholder="메시지를 입력하세요"
+              padding="8px 12px 8px 12px"
               value={userData.message}
               onChange={handleMessage}
+              onKeyDown={handleKeyDownSendMessage}
             />
-            <button type="button" className="send-button" onClick={sendMessage}>
-              send
-            </button>
-          </div>
+            <Button
+              small
+              shape="rounded"
+              style={{ minWidth: 'auto', whiteSpace: 'nowrap' }}
+              onClick={sendMessage}
+              disabled={userData.message === ''}
+            >
+              보내기
+            </Button>
+          </TextInputWrapper>
         </ChatWrapper>
       )}
-    </div>
+    </>
   );
 };
 
@@ -171,7 +214,11 @@ TextChatView.propTypes = {
   disconnect: PropTypes.bool,
   memberName: PropTypes.string,
   unsubscribe: PropTypes.bool,
+  active: PropTypes.bool,
   moderator: PropTypes.string,
+  className: PropTypes.any,
+  onClickShow: PropTypes.func,
+  onClickMoveUserRoom: PropTypes.func,
 };
 
 export default TextChatView;

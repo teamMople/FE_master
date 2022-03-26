@@ -372,7 +372,7 @@ function Signup(props) {
                       localStorage.setItem('profileImageUrl', profileImageUrl);
                       axios
                         .post(
-                          'http://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/api/signup',
+                          `${process.env.REACT_APP_API_URL}/api/signup`,
                           JSON.stringify(userInfo),
                           { headers: { 'Content-Type': 'application/json' } },
                         )

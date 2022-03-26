@@ -679,32 +679,59 @@ const LiveRoom = () => {
             )}
             {roomSubscribers.map((sub, i) => (
               <>
-                <ChatUser
-                  key={i}
-                  streamManager={sub}
-                  memberName={sub.stream.connection.data}
-                  isMute={
-                    sub.stream.connection.connectionId ===
-                      remoteMicStatus.remoteTarget &&
-                    remoteMicStatus.isAudioActive
-                  }
-                />
-                {publisher &&
-                  isModerator(publisher) &&
-                  remoteTarget(sub) &&
-                  remoteTargetForceMuteStatus(sub) && (
-                    <button onClick={() => sendForceMute(sub)}>
-                      강제음소거
-                    </button>
-                  )}
-                {publisher &&
-                  isModerator(publisher) &&
-                  remoteTarget(sub) &&
-                  !remoteTargetPermissionStatus(sub) && (
-                    <button onClick={() => sendPermitSpeaking(sub)}>
-                      수락하기
-                    </button>
-                  )}
+                <div style={{ position: 'relative' }}>
+                  <ChatUser
+                    key={i}
+                    streamManager={sub}
+                    memberName={sub.stream.connection.data}
+                    isMute={
+                      sub.stream.connection.connectionId ===
+                        remoteMicStatus.remoteTarget &&
+                      remoteMicStatus.isAudioActive
+                    }
+                  />
+                  {publisher &&
+                    isModerator(publisher) &&
+                    remoteTarget(sub) &&
+                    remoteTargetForceMuteStatus(sub) && (
+                      <button
+                        onClick={() => sendForceMute(sub)}
+                        style={{
+                          position: 'absolute',
+                          background: `${themeContext.colors.blue}`,
+                          fontSize: '10px',
+                          borderRadius: '10em',
+                          padding: '4px 10px',
+                          top: '68px',
+                          left: '-3px',
+                          border: 'none',
+                          color: `${themeContext.colors.white}`,
+                        }}
+                      >
+                        강제음소거
+                      </button>
+                    )}
+                  {publisher &&
+                    isModerator(publisher) &&
+                    remoteTarget(sub) &&
+                    !remoteTargetPermissionStatus(sub) && (
+                      <button
+                        onClick={() => sendPermitSpeaking(sub)}
+                        style={{
+                          position: 'absolute',
+                          background: `${themeContext.colors.primaryYellow}`,
+                          fontSize: '10px',
+                          borderRadius: '10em',
+                          padding: '4px 10px',
+                          top: '68px',
+                          left: '-3px',
+                          border: 'none',
+                        }}
+                      >
+                        수락하기
+                      </button>
+                    )}
+                </div>
               </>
             ))}
           </InnerWrapper>

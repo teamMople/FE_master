@@ -34,6 +34,7 @@ import {
   ReplyCommentBox,
   StatusBox,
   SearchInput,
+  BasicModal,
 } from './molecules';
 import {
   BoardList,
@@ -82,4 +83,5 @@ export {
   Divider,
   StandardInput,
   IconButton,
+  BasicModal,
 };

@@ -21,7 +21,6 @@ import {
   LiveBoardList,
   Settings,
   NotFound,
-  Test,
 } from '../../pages';
 import '../styles/App.css';
 
@@ -91,7 +90,6 @@ function App() {
           <Route path="/findpassword" element={<FindPassword />} />
           <Route path="/alarm" element={<AlarmList />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/modal" element={<Test />} />
           <Route path={'*'} element={<NotFound />} />
         </Routes>
         <Nav />

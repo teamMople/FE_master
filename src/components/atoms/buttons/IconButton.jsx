@@ -1,10 +1,14 @@
 import React from 'react';
-import styled, { ThemeContext } from 'styled-components';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const IconButton = ({ src, alt, backgroundColor, onClick }) => {
+const IconButton = ({ src, alt, backgroundColor, onClick, ...props }) => {
   return (
-    <CustomButton backgroundColor={backgroundColor} onClick={onClick}>
+    <CustomButton
+      backgroundColor={backgroundColor}
+      onClick={onClick}
+      {...props}
+    >
       <img src={src} alt={alt} />
     </CustomButton>
   );
@@ -17,8 +21,8 @@ IconButton.propTypes = {
   onClick: PropTypes.func,
 };
 const CustomButton = styled.button`
-  width: 30px;
-  height: 30px;
+  width: 16px;
+  height: 16px;
   border: none;
   border-radius: 10em;
   background-color: ${({ backgroundColor }) =>
@@ -28,6 +32,18 @@ const CustomButton = styled.button`
   align-items: center;
   justify-content: center;
   transition: all 0.1s ease;
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    height: 200%;
+    border-radius: 10em;
+  }
 
   &:active {
     background-color: rgba(0, 0, 0, 0.1);

@@ -36,7 +36,7 @@ Button.propTypes = {
   children: PropTypes.any,
   disabled: PropTypes.bool,
   backgroundColor: PropTypes.any,
-  size: PropTypes.oneOf(['small', 'normal', 'large']),
+  size: PropTypes.oneOf(['tiny', 'small', 'normal', 'large']),
   fluid: PropTypes.bool,
   width: PropTypes.any,
   primary: PropTypes.bool,
@@ -53,11 +53,15 @@ Button.defaultProps = {
 const B = styled.button`
   width: ${({ width, fluid }) => (width ? width : fluid ? '100%' : width)};
   min-width: ${({ size }) =>
-    size === 'small' ? '66px' : size === 'large' ? '148px' : '100px'};
+    size === 'tiny' && 'small' ? '66px' : size === 'large' ? '148px' : '100px'};
   min-height: ${({ size }) =>
-    size === 'small' ? '24px' : size === 'large' ? '38px' : '30px'};
+    size === 'tiny' && 'small' ? '24px' : size === 'large' ? '38px' : '30px'};
   padding: ${({ size }) =>
-    size === 'small' ? '8px 16px' : size === 'large' ? '8px 16px' : '8px 16px'};
+    size === 'tiny' && 'small'
+      ? '8px 16px'
+      : size === 'large'
+      ? '8px 16px'
+      : '8px 16px'};
   line-height: 1;
   height: ${(props) => props.height};
   background-color: ${({ backgroundColor, theme, primary, secondary }) =>
@@ -77,7 +81,7 @@ const B = styled.button`
       ? theme.colors.white
       : theme.colors.blue};
   border-radius: ${({ shape }) => (shape === 'rounded' ? '10px' : '10em')};
-  font-size: 14px;
+  font-size: ${({ size }) => (size === 'tiny' ? '10px' : '14px')};
   display: flex;
   justify-content: center;
   align-items: center;

@@ -59,6 +59,10 @@ const style = {
   header: {
     height: '42px',
   },
+  borderRadius: {
+    rounded: '20px',
+    circular: '10em',
+  },
 };
 
 const lightThemeColors = {

@@ -17,6 +17,7 @@ import {
 } from 'components';
 import { useDispatch } from 'react-redux';
 import SectionWrapper from '../../components/molecules/SectionWrapper';
+import BasicModal from '../../components/molecules/modal/BasicModal';
 
 function Login(props) {
   const themeContext = useContext(ThemeContext);
@@ -71,8 +72,25 @@ function Login(props) {
 
   React.useEffect(() => {}, []);
 
+  const [isOpened, setIsOpened] = useState(false);
+  const handleClose = () => {
+    setIsOpened(false);
+  };
+  const handleOpen = () => {
+    setIsOpened(true);
+  };
   return (
     <>
+      <button onClick={handleOpen}>open modal</button>
+      <BasicModal
+        open={isOpened}
+        close={isOpened}
+        onClose={handleClose}
+        onConfirm={handleClose}
+      >
+        보일러 플레이트에서 보다 건강한 토론 문화를 즐기시려면 유의사항에 모두
+        동의해주세요
+      </BasicModal>
       <Wrapper backgroundColor={themeContext.colors.white}>
         <Header label="" leftArrow={true} rightArrow={false} fixedTop />
         <SectionWrapper>

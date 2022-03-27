@@ -11,6 +11,7 @@ function Input({
   height,
   backgroundColor,
   fluid,
+  disabled,
   ...props
 }) {
   return (
@@ -21,6 +22,7 @@ function Input({
         height={height}
         fluid={fluid}
         backgroundColor={backgroundColor}
+        disabled={disabled}
         {...props}
       >
         {props.children}
@@ -37,6 +39,7 @@ Input.propTypes = {
   height: PropTypes.string,
   backgroundColor: PropTypes.string,
   fluid: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 Input.defaultProps = {
@@ -68,8 +71,14 @@ const I = styled.input`
   }
 
   &::placeholder {
-    color: ${({ theme }) => theme.colors.lightGray};
+    color: ${({ theme }) => theme.colors.gray2};
     font-weight: ${(props) => (props.bold ? 600 : 500)};
+  }
+
+  &:disabled {
+    &::placeholder {
+      color: ${({ theme }) => theme.colors.lightGray};
+    }
   }
 `;
 

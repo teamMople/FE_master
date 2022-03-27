@@ -88,6 +88,7 @@ const B = styled.button`
   &:disabled {
     background-color: ${({ theme }) => theme.colors.backgroundGray};
     color: ${({ theme }) => theme.colors.gray};
+    pointer-events: none;
   }
 
   &:hover {

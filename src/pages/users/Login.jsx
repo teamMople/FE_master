@@ -35,7 +35,12 @@ function Login(props) {
     setPassword(e.target.value);
   };
 
-  const handleLoginClick = (e) => {
+  const handleKeyDown = (e) => {
+    if (e.keyCode === 'Enter') {
+      handleLoginClick();
+    }
+  };
+  const handleLoginClick = () => {
     if (email === '' || password === '') {
       window.alert('이메일, 비밀번호 모두 입력해주세요.');
     } else {
@@ -75,7 +80,7 @@ function Login(props) {
             <Input
               marign-bottom="8px"
               type="text"
-              placeholder="이름"
+              placeholder="이메일(아이디)"
               value={email}
               onChange={changeEmail}
             />
@@ -84,9 +89,10 @@ function Login(props) {
             <Input
               marign-bottom="5px"
               type="password"
-              placeholder="이메일(아이디)"
+              placeholder="비밀번호"
               value={password}
               onChange={changePassword}
+              onKeyDown={handleKeyDown}
             />
           </Grid>
 
@@ -96,7 +102,7 @@ function Login(props) {
                 <Text
                   size="12px"
                   lineHeight="18px"
-                  color={themeContext.colors.blue}
+                  color={themeContext.colors.red}
                 >
                   이메일 또는 비밀번호를 다시 확인해주세요
                 </Text>

@@ -21,7 +21,7 @@ import Home from './Home';
 import Nav from './Nav';
 import Settings from './Settings';
 import NotFound from './NotFound';
-import Test from './Test';
+import Test from '../components/molecules/modal/_CustomModal';
 
 export {
   EditUserProfile,

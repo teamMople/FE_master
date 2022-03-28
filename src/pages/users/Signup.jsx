@@ -37,11 +37,11 @@ function Signup(props) {
 
   const [step, setStep] = useState(0);
   const [email, setEmail] = useState('');
-  const [nickname, setNickname] = useState('noname');
+  const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [previewProfileImage, setPreviewProfileImage] = useState(
-    'http://localhost:3001/asset/icons/Image.svg',
+    '/asset/icons/Image_white.svg',
   );
   const [selectedFile, setSelectedFile] = useState(null);
   const [profileImageUrl, setProfileImageUrl] = useState(null);
@@ -158,6 +158,18 @@ function Signup(props) {
     });
   };
 
+  const labels = [
+    '심한 욕설 또는 저속한 표현으로 이용자 다수에게 불쾌감을 주는 경우는 이용이 제한될 수 있습니다.',
+    '타인의 신체, 외모, 취향 등에 대해 경멸의 의미를 담아 비하하는 게시물은 제한될 수 있습니다.',
+    '특정 계층, 지역, 국민, 종교를 근거없이 비하하거나 비방하는 내용의 게시물은 제한될 수 있습니다.',
+    '사회적 소수자를 근거 없이 비하하거나 비방하는 내용의 게시물은 제한될 수 있습니다.',
+  ];
+
+  const [checkList, setCheckList] = useState([false, false, false, false]);
+  const handleCheckClick = (index) => {
+    setCheckList((checks) => checks.map((c, i) => (i === index ? !c : c)));
+  };
+  const isAllChecked = checkList.every((x) => x);
   return (
     <Wrapper
       backgroundColor={themeContext.colors.white}
@@ -219,6 +231,7 @@ function Signup(props) {
                     onChange={changeEmail}
                     placeholder="이메일(아이디)"
                     margin="19px 0 0 0"
+                    autoFocus
                   />
                   <Grid isFlex>
                     <Text
@@ -253,12 +266,14 @@ function Signup(props) {
                     margin="16px 0px 8px 0px"
                     onChange={changePassword}
                     placeholder="비밀번호"
+                    disabled={email === ''}
                   />
                   <Input
                     fluid
                     type="password"
                     onChange={changeConfirmPassword}
                     placeholder="비밀번호 확인"
+                    disabled={email === '' || password === ''}
                   />
                   <Grid margin="16px 17.5px">
                     {!password ? (
@@ -280,6 +295,9 @@ function Signup(props) {
                     }}
                     secondary
                     size={'large'}
+                    disabled={
+                      email === '' || password === '' || confirmPassword === ''
+                    }
                   >
                     다음으로
                   </Button>
@@ -317,6 +335,7 @@ function Signup(props) {
                       onChange={changeNickname}
                       placeholder="닉네임"
                       margin="8px 0 0 0"
+                      autoFocus
                     />
                   </Grid>
                   <Grid isFlex>
@@ -355,6 +374,7 @@ function Signup(props) {
                     }}
                     secondary
                     size={'large'}
+                    disabled={nickname === ''}
                   >
                     다음으로
                   </Button>
@@ -381,7 +401,14 @@ function Signup(props) {
                       아래 사항을 꼭 준수해주세요 :)
                     </Text>
                   </Grid>
-                  <Survey />
+                  {labels.map((label, idx) => (
+                    <Survey
+                      key={idx}
+                      label={label}
+                      onClick={() => handleCheckClick(idx)}
+                      checked={checkList[idx]}
+                    />
+                  ))}
                 </InnerWrapper>
                 <NextButtonWrapper>
                   <Button
@@ -399,8 +426,9 @@ function Signup(props) {
                         });
                     }}
                     secondary
+                    disabled={!isAllChecked}
                   >
-                    다음으로
+                    확인
                   </Button>
                 </NextButtonWrapper>
               </SectionWrapper>

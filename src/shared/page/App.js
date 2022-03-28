@@ -21,7 +21,6 @@ import {
   LiveBoardList,
   Settings,
   NotFound,
-  Test,
 } from '../../pages';
 import '../styles/App.css';
 
@@ -29,7 +28,7 @@ import { darkTheme, lightTheme } from '../styles/theme';
 import history from '../utils/history';
 import { ThemeProvider } from 'styled-components';
 
-import CreateRoom from '../../pages/chats/CreateRoom';
+import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
 import LiveRoom from '../../pages/chats/LiveRoom';
 import RoomList from '../../pages/chats/RoomList';
 
@@ -91,7 +90,6 @@ function App() {
           <Route path="/findpassword" element={<FindPassword />} />
           <Route path="/alarm" element={<AlarmList />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/modal" element={<Test />} />
           <Route path={'*'} element={<NotFound />} />
         </Routes>
         <Nav />

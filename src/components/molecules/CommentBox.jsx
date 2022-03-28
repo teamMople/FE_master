@@ -10,6 +10,7 @@ import {
   getReplyCommentListAsync,
   createReplyCommentAsync,
   selectedReplyCommentList,
+  recommendCommentAsync,
 } from 'modules/comments';
 
 const CommentBox = (props) => {
@@ -73,7 +74,8 @@ const CommentBox = (props) => {
               margin="0px 0px 0px 8px"
               backgroundColor={themeContext.colors.lightGray}
               onClick={(e) => {
-                dispatch(increaseCommentRecommendCountAsync(commentId));
+                e.preventDefault();
+                dispatch(recommendCommentAsync(commentId));
               }}
             >
               <Grid margin="0px 5px 0px 0px">

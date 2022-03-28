@@ -2,15 +2,18 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  agreeBoardAsync,
   clearDetail,
   decreaseAgreeCountAsync,
   decreaseDisagreeCountAsync,
+  disagreeBoardAsync,
   getDetailAsync,
   increaseAgreeCountAsync,
   increaseDisagreeCountAsync,
   selectedAgreeCount,
   selectedDetail,
   selectedDisagreeCount,
+  selectedUserVoteStatus,
 } from 'modules/boards';
 import { clearCommentList } from 'modules/comments';
 
@@ -38,11 +41,10 @@ function BoardDetail(props) {
   const detail = useSelector(selectedDetail);
   const comments = useSelector(selectedCommentList);
 
+  const userVoteStatus = useSelector(selectedUserVoteStatus);
   const agreeCount = useSelector(selectedAgreeCount);
   const disagreeCount = useSelector(selectedDisagreeCount);
-
-  const [onAgree, setOnAgree] = useState(false);
-  const [onDisagree, setOnDisagree] = useState(false);
+  const voteInfo = { userVoteStatus, boardId };
 
   useEffect(() => {
     dispatch(getDetailAsync(params.boardId));
@@ -92,20 +94,12 @@ function BoardDetail(props) {
             agreeCount={agreeCount}
             disagreeCount={disagreeCount}
             onClickAgree={() => {
-              setOnAgree(!onAgree);
-              if (onAgree) {
-                dispatch(increaseAgreeCountAsync(boardId));
-              } else {
-                dispatch(decreaseAgreeCountAsync(boardId));
-              }
+              console.log(voteInfo);
+              dispatch(agreeBoardAsync(voteInfo));
             }}
             onClickDisagree={() => {
-              setOnDisagree(!onDisagree);
-              if (onDisagree) {
-                dispatch(increaseDisagreeCountAsync(boardId));
-              } else {
-                dispatch(decreaseDisagreeCountAsync(boardId));
-              }
+              console.log(voteInfo);
+              dispatch(disagreeBoardAsync(voteInfo));
             }}
           />
         </Grid>

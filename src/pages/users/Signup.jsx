@@ -7,7 +7,11 @@ import {
 } from '../../shared/utils/awsBucketConfig';
 import styled from 'styled-components';
 import axios from 'axios';
-import { signupAsync } from '../../modules/users';
+import {
+  signupAsync,
+  verifyEmailAsync,
+  verifyNicknameAsync,
+} from '../../modules/users';
 
 import { ThemeContext } from 'styled-components';
 import {
@@ -24,6 +28,7 @@ import {
 } from 'components';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
+import apis from 'apis/apis';
 
 function Signup(props) {
   const dispatch = useDispatch();
@@ -56,6 +61,7 @@ function Signup(props) {
   const changeEmail = (e) => {
     setEmail(e.target.value);
   };
+
   const validateEmail = () => {
     const regEmail = /^((\w|[\-\.])+)@((\w|[\-\.])+)\.([A-Za-z]+){2,3}$/;
 
@@ -243,9 +249,15 @@ function Signup(props) {
                         flex: 0.2,
                       }}
                     >
-                      <Text small color={themeContext.colors.blue} right>
-                        중복확인
-                      </Text>
+                      <Grid
+                        onClick={() => {
+                          dispatch(verifyEmailAsync(email));
+                        }}
+                      >
+                        <Text small color={themeContext.colors.blue} right>
+                          중복확인
+                        </Text>
+                      </Grid>
                     </div>
                   </Grid>
                   <Input
@@ -342,9 +354,15 @@ function Signup(props) {
                         flex: 0.2,
                       }}
                     >
-                      <Text small color={themeContext.colors.blue}>
-                        중복확인
-                      </Text>
+                      <Grid
+                        onClick={() => {
+                          dispatch(verifyNicknameAsync(nickname));
+                        }}
+                      >
+                        <Text small color={themeContext.colors.blue}>
+                          중복확인
+                        </Text>
+                      </Grid>
                     </div>
                   </Grid>
                 </InnerWrapper>
@@ -404,7 +422,6 @@ function Signup(props) {
                           { headers: { 'Content-Type': 'application/json' } },
                         )
                         .then((response) => {
-                          console.log(response);
                           navigate('/login');
                         });
                     }}

@@ -2,19 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { keyframes } from 'styled-components';
-import { Grid } from 'components';
+import CreateRoom from './chats/views/CreateRoom/CreateRoom';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectCreateRoomState,
+  selectOpenRoomState,
+  setCreateRoomNextStep,
+  setCreateRoomSetting,
+  setOpenCreateRoom,
+  setOpenRoomState,
+} from '../modules/chat';
 
 const Nav = (props) => {
   const [showNav, setShowNav] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [rot, setRot] = useState(false);
 
-  const navigate = useNavigate();
+  const openRoomState = useSelector(selectOpenRoomState);
 
-  const showSpeedDialMenu = () => {
-    setShowMenu(!showMenu);
-    setRot(!rot);
-  };
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const goHome = () => {
     navigate('/');
@@ -51,27 +58,83 @@ const Nav = (props) => {
     return;
   }, [location]);
 
+  // const [openCreateRoom, setOpenCreateRoom] = useState(false);
+  const [openSetting, setOpenSetting] = useState(false);
+  const [openNextStep, setOpenNextStep] = useState(false);
+  const createRoomState = useSelector(selectCreateRoomState);
+  const handleOpenCreateRoom = () => {
+    dispatch(setOpenRoomState(false));
+    if (!openRoomState) {
+      setOpenNextStep(false);
+      setOpenSetting(false);
+      setOpenCreateRoom(false);
+    }
+    if (createRoomState.openCreateRoom) {
+      setShowMenu(false);
+    }
+    dispatch(setOpenCreateRoom(!createRoomState.openCreateRoom));
+    // setOpenCreateRoom(!openCreateRoom);
+  };
+  const handleNextStep = () => {
+    dispatch(setCreateRoomNextStep(true));
+    dispatch(setOpenCreateRoom(false));
+    dispatch(setCreateRoomSetting(false));
+    // setOpenNextStep(true);
+    // setOpenCreateRoom(false);
+    setShowMenu(false);
+    // setOpenSetting(false);
+  };
+  const handleSetting = () => {
+    dispatch(setOpenCreateRoom(true));
+    dispatch(setCreateRoomSetting(true));
+    // setOpenCreateRoom(true);
+    // setOpenSetting(true);
+    setShowMenu(false);
+  };
+  const handleClickLeftArrow = () => {
+    dispatch(setCreateRoomNextStep(false));
+    dispatch(setOpenCreateRoom(false));
+    dispatch(setCreateRoomSetting(false));
+    // setOpenNextStep(false);
+    // setOpenCreateRoom(false);
+    setShowMenu(false);
+    // setOpenSetting(false);
+  };
+
+  const showSpeedDialMenu = () => {
+    setShowMenu(!showMenu);
+    // setRot(!rot);
+    // setOpenCreateRoom(false);
+    // setOpenSetting(false);
+    dispatch(setOpenCreateRoom(false));
+    dispatch(setCreateRoomSetting(false));
+  };
+  const handleClickHeaderSubLeft = () => {
+    setShowMenu(false);
+    // setOpenCreateRoom(false);
+    // setOpenSetting(false);
+    dispatch(setOpenCreateRoom(false));
+    dispatch(setCreateRoomSetting(false));
+  };
+
   return (
     <>
-      {showMenu && <Overlay show={showMenu} />}
       <NavWrapper active={showNav} {...props}>
         {showMenu && (
-          <SpeedDialMenu show={showMenu}>
+          <SpeedDialMenu>
             <div
-              className="leftMenu"
+              className={showMenu && 'leftMenu'}
               onClick={() => {
                 navigate('/createboard');
                 setShowMenu(false);
+                setOpenCreateRoom(false);
               }}
             >
               일반토론
             </div>
             <div
-              className="rightMenu"
-              onClick={() => {
-                navigate('/room/create');
-                setShowMenu(false);
-              }}
+              className={showMenu && 'rightMenu'}
+              onClick={handleOpenCreateRoom}
             >
               LIVE토론
             </div>
@@ -106,7 +169,30 @@ const Nav = (props) => {
           </div>
         </MenuWrapper>
       </NavWrapper>
+      <CreateRoom
+        // show={openCreateRoom}
+        show={createRoomState.openCreateRoom}
+        // openSetting={openSetting}
+        openSetting={createRoomState.createRoomSetting}
+        onClickNextStep={handleNextStep}
+        // nextStep={openNextStep}
+        nextStep={createRoomState.createRoomNextStep}
+        onClickSetting={handleSetting}
+        leftArrowOnClick={handleClickLeftArrow}
+        onClickHeaderSubLeft={handleClickHeaderSubLeft}
+      />
+      <Overlay
+        onClick={showSpeedDialMenu}
+        className={
+          showMenu
+            ? 'active'
+            : createRoomState.createRoomSetting
+            ? 'overActive'
+            : ''
+        }
+      />
     </>
+    // document.getElementById('create_room'),
   );
 };
 
@@ -136,75 +222,63 @@ const Overlay = styled.div`
   width: 100%;
   height: 100%;
   background-color: ${({ theme }) => theme.colors.black};
-  opacity: 0.5;
-  ${(props) =>
-    props.show
-      ? css`
-          display: flex;
-          transition: 1s ease-in;
-        `
-      : css`
-          display: none;
-          transition: 1s ease-in;
-        `};
+  opacity: 0;
+  z-index: 9;
+  visibility: hidden;
+  transition: all 0.2s ease;
+
+  &.active {
+    opacity: 0.5;
+    visibility: visible;
+  }
+
+  &.overActive {
+    z-index: 11;
+    opacity: 0.5;
+    visibility: visible;
+  }
 `;
 
 const SpeedDialMenu = styled.div`
-  ${(props) =>
-    props.show
-      ? css`
-          display: flex;
-          transition: 1s ease-in;
-        `
-      : css`
-          display: none;
-          transition: 1s ease-in;
-        `}
+  display: flex;
   position: absolute;
   left: 50%;
   bottom: 100%;
   transform: translateX(-50%);
-  width: 150px;
   justify-content: space-evenly;
-  transition: all 0.5s ease;
+  transition: all 0.2s ease;
+  column-gap: 1.5px;
 
-  > .leftMenu {
-    width: 76px;
+  > div {
+    width: 80px;
     height: 38px;
     text-align: center;
     line-height: 38px;
     font-size: 12px;
-    font-weight: 500;
-    background-color: #fff;
-    border-radius: 50px 4px 1px 1px;
-    margin-right: 1.5px;
-  }
+    background-color: ${({ theme }) => theme.colors.white};
+    cursor: pointer;
 
-  > .leftMenu:hover {
-    color: #fff;
-    background-color: #fade86;
-  }
+    &.leftMenu {
+      border-radius: 30px 4px 1px 1px;
+    }
 
-  > .rightMenu {
-    width: 76px;
-    height: 38px;
-    text-align: center;
-    line-height: 38px;
-    font-size: 12px;
-    font-weight: 500;
-    background-color: #fff;
-    border-radius: 1px 50px 1px 4px;
-    margin-left: 1.5px;
-  }
-
-  > .rightMenu:hover {
-    color: #fff;
-    background-color: #fade86;
+    &.rightMenu {
+      border-radius: 4px 30px 1px 1px;
+    }
+    &:hover,
+    &:active,
+    &:focus {
+      transition: all 0.2s ease;
+      color: ${({ theme }) => theme.colors.white};
+      background-color: ${({ theme }) => theme.colors.primaryYellow};
+    }
   }
 `;
 
 const NavWrapper = styled.div`
   position: fixed;
+  z-index: 11;
+  //z-index: 99;
   width: 100%;
   bottom: 0;
   display: ${(props) => (props.active ? 'flex' : 'none')};
@@ -230,9 +304,9 @@ const MenuWrapper = styled.div`
 const SpeedDial = styled.div`
   width: 50px;
   height: 50px;
-  background-color: #fade86;
+  background-color: ${({ theme }) => theme.colors.primaryYellow};
 
-  border: 2px solid #fff;
+  border: 2px solid ${({ theme }) => theme.colors.white};
   border-radius: 10em;
 
   display: flex;

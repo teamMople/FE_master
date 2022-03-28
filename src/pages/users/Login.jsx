@@ -37,7 +37,7 @@ function Login(props) {
   };
 
   const handleKeyDown = (e) => {
-    if (e.keyCode === 'Enter') {
+    if (e.key === 'Enter') {
       handleLoginClick();
     }
   };

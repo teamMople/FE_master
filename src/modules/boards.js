@@ -73,6 +73,7 @@ export const getDetailAsync = createAsyncThunk(
   'boards/getDetail',
   async (boardId) => {
     const response = await apis.getDetail(boardId);
+    console.log(response);
     return response.data;
   },
 );
@@ -106,82 +107,70 @@ export const searchBoardAsync = createAsyncThunk(
   },
 );
 
-export const increaseAgreeCountAsync = createAsyncThunk(
-  'detail/increaseAgreeCount',
-  async (boardId, thunkAPI) => {
+export const agreeBoardAsync = createAsyncThunk(
+  'detail/agreeBoard',
+  async (voteInfo, thunkAPI) => {
+    const { userVoteStatus, boardId } = voteInfo;
     if (boardId) {
       await apis
         .agreeBoard(boardId)
-        .then(() => {
-          thunkAPI.dispatch(increaseAgreeCount());
+        .then((response) => {
+          console.log(response);
+          if (userVoteStatus === '없다' || userVoteStatus === '찬성') {
+            if (response.data.clicked) {
+              thunkAPI.dispatch(increaseAgreeCount());
+              thunkAPI.dispatch(setUserVoteStatus('찬성'));
+            } else {
+              thunkAPI.dispatch(decreaseAgreeCount());
+              thunkAPI.dispatch(setUserVoteStatus('없다'));
+            }
+          } else if (userVoteStatus === '반대') {
+            if (!response.data.clicked) {
+              thunkAPI.dispatch(increaseAgreeCount());
+              thunkAPI.dispatch(decreaseDisagreeCount());
+              thunkAPI.dispatch(setUserVoteStatus('찬성'));
+            } else {
+            }
+          }
+        })
+        .catch((error) => {
+          if (error) {
+            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
+          }
+          return thunkAPI.rejectWithValue();
+        });
+    }
+  },
+);
+
+export const disagreeBoardAsync = createAsyncThunk(
+  'detail/increaseDisagreeCount',
+  async (voteInfo, thunkAPI) => {
+    const { userVoteStatus, boardId } = voteInfo;
+    if (boardId) {
+      await apis
+        .disagreeBoard(boardId)
+        .then((response) => {
+          console.log(response);
+          if (userVoteStatus === '없다' || userVoteStatus === '반대') {
+            if (response.data.clicked) {
+              thunkAPI.dispatch(increaseDisagreeCount());
+              thunkAPI.dispatch(setUserVoteStatus('반대'));
+            } else {
+              thunkAPI.dispatch(decreaseDisagreeCount());
+              thunkAPI.dispatch(setUserVoteStatus('없다'));
+            }
+          } else if (userVoteStatus === '찬성') {
+            if (!response.data.clicked) {
+              thunkAPI.dispatch(increaseDisagreeCount());
+              thunkAPI.dispatch(decreaseAgreeCount());
+              thunkAPI.dispatch(setUserVoteStatus('반대'));
+            }
+          }
         })
         .catch((error) => {
           if (error) {
             window.alert('잘못된 투표 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-          }
-          return thunkAPI.rejectWithValue();
-        });
-    } else {
-      window.alert('잘못된 투표 요청입니다.');
-    }
-  },
-);
-
-export const decreaseAgreeCountAsync = createAsyncThunk(
-  'detail/increaseAgreeCount',
-  async (boardId, thunkAPI) => {
-    if (boardId) {
-      console.log(boardId);
-      await apis
-        .agreeBoard(boardId)
-        .then(() => {
-          thunkAPI.dispatch(decreaseAgreeCount());
-        })
-        .catch((error) => {
-          if (error) {
-            window.alert('잘못된 투표 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-          }
-          return thunkAPI.rejectWithValue();
-        });
-    } else {
-      window.alert('잘못된 투표 요청입니다.');
-    }
-  },
-);
-
-export const increaseDisagreeCountAsync = createAsyncThunk(
-  'detail/increaseDisagreeCount',
-  async (boardId, thunkAPI) => {
-    if (boardId) {
-      await apis
-        .disagreeBoard(boardId)
-        .then(thunkAPI.dispatch(increaseDisagreeCount()))
-        .catch((error) => {
-          if (error) {
-            window.alert('잘못된 투표 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-          }
-          return thunkAPI.rejectWithValue();
-        });
-    } else {
-      window.alert('잘못된 투표 요청입니다.');
-    }
-  },
-);
-
-export const decreaseDisagreeCountAsync = createAsyncThunk(
-  'detail/increaseDisagreeCount',
-  async (boardId, thunkAPI) => {
-    if (boardId) {
-      await apis
-        .disagreeBoard(boardId)
-        .then(thunkAPI.dispatch(decreaseDisagreeCount()))
-        .catch((error) => {
-          if (error) {
-            window.alert('잘못된 투표 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
           }
           return thunkAPI.rejectWithValue();
         });
@@ -205,7 +194,6 @@ export const increaseRecommendCountAsync = createAsyncThunk(
         .catch((error) => {
           if (error) {
             window.alert('잘못된 추천 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
           }
           return thunkAPI.rejectWithValue();
         });
@@ -292,6 +280,10 @@ export const detailSlice = createSlice({
       state.status = 'idle';
       state.data = {};
     },
+    setUserVoteStatus: (state, action) => {
+      console.log(action.payload);
+      state.data.userStatus = action.payload;
+    },
     increaseAgreeCount: (state) => {
       state.data.agreeCount += 1;
     },
@@ -331,6 +323,7 @@ export const { clearBoardList } = boardListSlice.actions;
 export const { clearLiveBoardList } = liveBoardListSlice.actions;
 export const {
   clearDetail,
+  setUserVoteStatus,
   increaseAgreeCount,
   increaseDisagreeCount,
   increaseRecommendCount,
@@ -342,5 +335,6 @@ export const selectedBoardList = (state) => state.boards;
 export const selectedLiveBoardList = (state) => state.liveBoards;
 export const selectedDetail = (state) => state.detail.data;
 
+export const selectedUserVoteStatus = (state) => state.detail.data.userStatus;
 export const selectedAgreeCount = (state) => state.detail.data.agreeCount;
 export const selectedDisagreeCount = (state) => state.detail.data.disagreeCount;

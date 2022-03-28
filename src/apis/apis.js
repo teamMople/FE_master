@@ -53,9 +53,9 @@ const apis = {
   editMyInfo: (email, profileImageUrl, nickname, password) =>
     api.put('/api/user/update', { email, profileImageUrl, nickname, password }),
   findMyPassword: (email) => api.post('/api/user/mypw', { email }),
-  // 비밀번호 생성
-  // 이메일 중복 확인
-  // 닉네임 중복 확인
+  verifyEmail: (email) => api.get('/api/user/check/Email', { email }),
+  verifyNickname: (nickname) =>
+    api.get('/api/user/check/Nickname', { nickname }),
 
   // 게시물
   createBoard: (title, content, imageUrl, category) =>

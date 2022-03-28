@@ -190,6 +190,22 @@ export const findMyPassword = createAsyncThunk(
   },
 );
 
+export const verifyEmailAsync = createAsyncThunk(
+  'users/verifyEmail',
+  async (email) => {
+    await apis.verifyEmail(email).then((response) => console.log(response));
+  },
+);
+
+export const verifyNicknameAsync = createAsyncThunk(
+  'users/verifyEmail',
+  async (nickname) => {
+    await apis
+      .verifyNickname(nickname)
+      .then((response) => console.log(response));
+  },
+);
+
 export const userSlice = createSlice({
   name: 'users',
   initialState: loginUserInitialState,

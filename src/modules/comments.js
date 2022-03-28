@@ -51,11 +51,7 @@ export const createCommentAsync = createAsyncThunk(
     const { boardId, content } = commentInfo;
     await apis
       .createComment(boardId, content)
-      .then(() => {
-        // 임시
-        // thunkAPI.dispatch(addComment(response.data))
-        document.location.reload(true);
-      })
+      .then((response) => thunkAPI.dispatch(addComment(response.data)))
       .catch((error) => {
         return thunkAPI.rejectWithValue();
       });
@@ -68,11 +64,10 @@ export const createReplyCommentAsync = createAsyncThunk(
     const { id, replyContent } = replyCommentInfo;
     await apis
       .createReplyComment(id, replyContent)
-      .then()
+      .then((response) => thunkAPI.addReplyComment(response.data))
       .catch((error) => {
         if (error) {
           window.alert('잘못된 생성 요청입니다.');
-          console.log(error.response.message);
         }
         return thunkAPI.rejectWithValue();
       });
@@ -92,24 +87,28 @@ export const deleteCommentAsync = createAsyncThunk(
       .catch((error) => {
         if (error) {
           window.alert('잘못된 생성 요청입니다.');
-          console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
         }
         return thunkAPI.rejectWithValue();
       });
   },
 );
 
-export const increaseCommentRecommendCountAsync = createAsyncThunk(
+export const recommendCommentAsync = createAsyncThunk(
   'comments/increaseRecommendCount',
   async (commentId, thunkAPI) => {
     if (commentId) {
-      console.log(commentId);
       await apis
         .recommendComment(commentId)
-        .then(thunkAPI.dispatch(increaseRecommendCount(commentId)))
+        .then((response) => {
+          if (response.data.clicked) {
+            thunkAPI.dispatch(increaseRecommendCount(commentId));
+          } else {
+            thunkAPI.dispatch(decreaseRecommendCount(commentId));
+          }
+        })
         .catch((error) => {
           if (error) {
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
+            window.alert('잘못된 추천 요청입니다.');
           }
           return thunkAPI.rejectWithValue();
         });
@@ -117,39 +116,22 @@ export const increaseCommentRecommendCountAsync = createAsyncThunk(
   },
 );
 
-export const decreaseCommentRecommendCountAsync = createAsyncThunk(
+export const recommendReplyCommentAsync = createAsyncThunk(
   'comments/increaseRecommendCount',
-  async (commentId, thunkAPI) => {
-    if (commentId) {
-      console.log(commentId);
-      await apis
-        .recommendComment(commentId)
-        .then(thunkAPI.dispatch(decreaseRecommendCount(commentId)))
-        .catch((error) => {
-          if (error) {
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-          }
-          return thunkAPI.rejectWithValue();
-        });
-    }
-  },
-);
-
-export const increaseReplyCommentRecommendCountAsync = createAsyncThunk(
-  'comments/increaseRecommendCount',
-  async ({ replyId }, thunkAPI) => {
+  async (replyId, thunkAPI) => {
     if (replyId) {
       await apis
         .recommendReplyComment(replyId)
         .then((response) => {
-          if (response.data.status === 'ok') {
+          if (response.data.clicked) {
+            thunkAPI.dispatch();
+          } else {
             thunkAPI.dispatch();
           }
         })
         .catch((error) => {
           if (error) {
             window.alert('잘못된 추천 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
           }
           return thunkAPI.rejectWithValue();
         });
@@ -201,8 +183,24 @@ export const replyCommentListSlice = createSlice({
   name: 'replyCommentList',
   initialState: replyCommentListInitialState,
   reducers: {
+    clearReplyCommentList: (state) => {
+      state.status = 'idle';
+      state.data = [];
+    },
     addReplyComment: (state, action) => {
       state.data.push(action.payload);
+    },
+    increaseReplyRecommendCount: (state, action) => {
+      const commentIndex = state.data.findIndex((d) => {
+        return d.commentId === action.payload;
+      });
+      state.data[commentIndex].recommendCount += 1;
+    },
+    decreaseReplyRecommendCount: (state, action) => {
+      const commentIndex = state.data.findIndex((d) => {
+        return d.commentId === action.payload;
+      });
+      state.data[commentIndex].recommendCount -= 1;
     },
   },
   extraReducers: {
@@ -225,5 +223,12 @@ export const {
   increaseRecommendCount,
   decreaseRecommendCount,
 } = commentListSlice.actions;
+
+export const {
+  clearReplyCommentList,
+  addReplyComment,
+  increaseReplyRecommendCount,
+  decreaseReplyRecommendCount,
+} = replyCommentListSlice.actions;
 export const selectedCommentList = (state) => state.comments.data;
 export const selectedReplyCommentList = (state) => state.replyComments.data;

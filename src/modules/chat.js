@@ -114,6 +114,7 @@ export const createRoomAsync = createAsyncThunk(
           memberName: memberName,
           accessToken: undefined,
         };
+        console.log('res :::::>>>>>>', res);
 
         return status;
       })
@@ -178,7 +179,10 @@ export const roomSlice = createSlice({
       state.subscribers.push(action.payload);
     },
     removeRoomSubscriber: (state, action) => {
-      const index = state.subscribers.indexOf(action.payload.streamManager, 0);
+      // const index = state.subscribers.indexOf(action.payload.streamManager, 0);
+      const index = state.subscribers.findIndex(
+        (sub) => sub.subscriber === action.payload.streamManager,
+      );
       if (index > -1) {
         state.subscribers.splice(index, 1);
       }

@@ -57,8 +57,10 @@ export const Messenger = styled.div`
   margin-bottom: 5px;
 `;
 export const UserProfileImage = styled.img`
-  width: 32px;
-  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  max-width: 32px;
+  max-height: 32px;
   border-radius: 10em;
 `;
 

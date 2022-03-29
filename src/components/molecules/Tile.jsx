@@ -48,7 +48,8 @@ const Tile = (props) => {
           <Grid isFlex width="252px" className="buttonGroup">
             <Grid isFlex>
               <StatusBox
-                icon={'/asset/icons/Join.svg'}
+                live
+                // icon={'/asset/icons/Join.svg'}
                 count={board.participantsNicknames.length}
               />
             </Grid>

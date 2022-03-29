@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef } from 'react';
-import styled, { ThemeContext } from 'styled-components';
+import styled, { ThemeContext, keyframes } from 'styled-components';
 import { Text } from 'components';
 import PropTypes from 'prop-types';
 
@@ -10,6 +10,7 @@ const ChatUser = ({
   detectSpeaking,
   moderator,
   myHandsUpState,
+  profileImageUrl,
 }) => {
   const themeContext = useContext(ThemeContext);
   const videoRef = useRef();
@@ -26,7 +27,11 @@ const ChatUser = ({
           <ImageWrapper>
             <UserVideo autoPlay={true} ref={videoRef} />
             <UserImage
-              src={'/asset/image/users/test.png'}
+              src={
+                profileImageUrl
+                  ? profileImageUrl
+                  : '/asset/image/users/test.png'
+              }
               alt="user"
               style={{
                 outline: detectSpeaking
@@ -36,12 +41,12 @@ const ChatUser = ({
               }}
             />
             {myHandsUpState ? (
-              <MicIcon>
+              <HandIcon>
                 <img
                   src={'/asset/icons/raisehand_active_mini.svg'}
                   alt="icon"
                 />
-              </MicIcon>
+              </HandIcon>
             ) : !myHandsUpState && isMute ? (
               <MicIcon>
                 <img src={'/asset/icons/microphone_active.svg'} alt="user" />
@@ -71,6 +76,7 @@ ChatUser.propTypes = {
   detectSpeaking: PropTypes.any,
   moderator: PropTypes.string,
   myHandsUpState: PropTypes.bool,
+  profileImageUrl: PropTypes.string,
 };
 const UserVideo = styled.video`
   width: 0;
@@ -89,17 +95,42 @@ const ImageWrapper = styled.div`
   margin-bottom: 11px;
 `;
 const UserImage = styled.img`
-  width: 75px;
-  height: 75px;
+  min-width: 75px;
+  min-height: 75px;
+  max-width: 75px;
+  max-height: 75px;
   overflow: hidden;
   border-radius: 10em;
   outline-offset: 5px;
   box-sizing: border-box;
+  object-fit: cover;
 `;
 const MicIcon = styled.div`
   position: absolute;
   right: 0;
   bottom: -8px;
+`;
+
+const shakeHand = keyframes`
+  0%{
+    //transform: rotate(-30deg);
+    transform: scale(1);
+  }
+  100%{
+    //transform: rotate(30deg);
+    transform: scale(1.2);
+  }
+`;
+const HandIcon = styled.div`
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  animation-name: ${shakeHand};
+  animation-duration: 0.3s;
+  //animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
 `;
 
 export default ChatUser;

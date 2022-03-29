@@ -1,6 +1,6 @@
 {
   "name": "front-end",
-  "version": "0.1.0",
+  "version": "alpha 0.1.0",
   "private": true,
   "dependencies": {
     "@mui/material": "^5.5.1",

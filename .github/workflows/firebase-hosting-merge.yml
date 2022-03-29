@@ -10,10 +10,6 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: yarn && yarn build
-        env:
-          CI: ""
       - name: Setting .env
         run: |
           echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
@@ -27,6 +23,10 @@ jobs:
           echo "REACT_APP_SOCKET_MESSAGE_URL=${{ secrets.REACT_APP_SOCKET_MESSAGE_URL }}" >> .env
           echo "REACT_APP_SOCKET_VOTE_URL=${{ secrets.REACT_APP_SOCKET_VOTE_URL }}" >> .env
           cat .env
+      - uses: actions/checkout@v2
+      - run: yarn && yarn build
+        env:
+          CI: ""
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

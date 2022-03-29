@@ -1,15 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   agreeBoardAsync,
-  clearDetail,
-  decreaseAgreeCountAsync,
-  decreaseDisagreeCountAsync,
   disagreeBoardAsync,
   getDetailAsync,
-  increaseAgreeCountAsync,
-  increaseDisagreeCountAsync,
   selectedAgreeCount,
   selectedDetail,
   selectedDisagreeCount,
@@ -29,22 +24,43 @@ import {
   VoteResultBar,
   CommentList,
   CommentInputWindow,
+  KebabMenu,
 } from 'components';
 import { getCommentListAsync, selectedCommentList } from 'modules/comments';
+import { forwardRef } from 'react';
 
-function BoardDetail(props) {
+const BoardDetail = (props, ref) => {
   const params = useParams();
   const boardId = parseInt(params.boardId);
 
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
+
+  const inputRef = useRef(null);
+
   const detail = useSelector(selectedDetail);
   const comments = useSelector(selectedCommentList);
 
   const userVoteStatus = useSelector(selectedUserVoteStatus);
   const agreeCount = useSelector(selectedAgreeCount);
   const disagreeCount = useSelector(selectedDisagreeCount);
+
   const voteInfo = { userVoteStatus, boardId };
+
+  const deleteBoard = () => {};
+  const showReportModal = () => {};
+
+  const isMyBoard = (props) => {
+    const nickname = localStorage.getItem('nickname');
+    if (nickname === detail.nickname) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const isPrivateKebabMenu = [true, false];
+  const kebabMenuLabels = ['글 삭제하기', '글 신고하기'];
+  const kebabMenuOnClicks = [deleteBoard, showReportModal];
 
   useEffect(() => {
     dispatch(getDetailAsync(params.boardId));
@@ -55,13 +71,21 @@ function BoardDetail(props) {
   }, [dispatch]);
 
   return (
-    <Wrapper padding="56px 0px 0px 0px">
+    <Wrapper padding="0px 0px 0px 0px" ref={ref}>
       <Grid padding="0px 24px 0px 24px">
-        <Header label="" leftArrow />
+        <Grid isFlex>
+          <Header label="" leftArrow />
+          <KebabMenu
+            showPrivateMenu={isMyBoard()}
+            isPrivateMenu={isPrivateKebabMenu}
+            labels={kebabMenuLabels}
+            onClicks={kebabMenuOnClicks}
+          />
+        </Grid>
         <Grid margin="8px 0px 0px 0px" padding="2px 0px 2px 0px">
-          <Text size="14px" lineHeight="18px" color={themeContext.colors.blue}>
+          {/* <Text size="14px" lineHeight="18px" color={themeContext.colors.blue}>
             {detail.category}
-          </Text>
+          </Text> */}
         </Grid>
         <Grid padding="8px 0px 8px 0px">
           <Text bold size="16px" lineHeight="24px">
@@ -94,13 +118,12 @@ function BoardDetail(props) {
             agreeCount={agreeCount}
             disagreeCount={disagreeCount}
             onClickAgree={() => {
-              console.log(voteInfo);
               dispatch(agreeBoardAsync(voteInfo));
             }}
             onClickDisagree={() => {
-              console.log(voteInfo);
               dispatch(disagreeBoardAsync(voteInfo));
             }}
+            selected={userVoteStatus}
           />
         </Grid>
         <Grid right margin="0px 0px 30px 0px">
@@ -110,10 +133,12 @@ function BoardDetail(props) {
         </Grid>
       </Grid>
       <CommentList comments={comments} />
-      <CommentInputWindow boardId={boardId} />
+      <CommentInputWindow boardId={boardId} ref={inputRef} />
     </Wrapper>
   );
-}
+};
+
+BoardDetail.displayName = 'BoardDetail';
 
 BoardDetail.propTypes = {
   category: PropTypes.string,

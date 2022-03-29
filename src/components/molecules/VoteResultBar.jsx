@@ -6,15 +6,16 @@ import { Grid, Text } from 'components';
 
 const VoteResultBar = (props) => {
   const themeContext = useContext(ThemeContext);
-  const { agreeCount, disagreeCount, onClickAgree, onClickDisagree } = props;
+  const { agreeCount, disagreeCount, onClickAgree, onClickDisagree, selected } =
+    props;
   const totalCount = agreeCount + disagreeCount;
   const agreePercentageWidth =
     totalCount === 0 ? '50%' : (agreeCount / totalCount) * 100 + '%';
 
   return (
     <BarWrapper>
-      <Background>
-        <Highlight width={agreePercentageWidth}>
+      <Background selected={selected}>
+        <Highlight width={agreePercentageWidth} selected={selected}>
           <Grid
             style={{
               display: 'flex',
@@ -92,6 +93,7 @@ VoteResultBar.propTypes = {
   disagreeCount: PropTypes.number,
   onClickAgree: PropTypes.func,
   onClickDisagree: PropTypes.func,
+  selected: PropTypes.string,
 };
 
 const BarWrapper = styled.div`
@@ -113,8 +115,12 @@ const Background = styled.div`
   width: 100%;
   height: 100%;
   border-radius: 100px;
-  background: ${({ theme }) => theme.colors.orange};
+  background: ${({ selected, theme }) =>
+    selected === '없다' || selected === '찬성'
+      ? theme.colors.lightGray
+      : theme.colors.orange};
   box-shadow: inset 0 3px 3px rgba(255, 255, 255, 0.25);
+  transition: 1s ease-in;
 `;
 const Highlight = styled.div`
   position: relative;
@@ -123,11 +129,16 @@ const Highlight = styled.div`
   justify-content: space-between;
   width: ${(props) => props.width};
   height: 100%;
-  border-radius: ${(props) =>
-    props.width === '100%' ? '100px' : '100px 0px 0px 100px'};
-  background: ${({ theme }) => theme.colors.lightGreen};
+  min-width: 60px;
+  max-width: calc(100% - 60px);
+  border-right: 2px solid ${({ theme }) => theme.colors.white};
+  border-radius: 100px 0px 0px 100px;
+  background: ${({ selected, theme }) =>
+    selected === '없다' || selected === '반대'
+      ? theme.colors.lightGray
+      : theme.colors.lightGreen};
   box-shadow: inset 3px 2px 3px rgba(255, 255, 255, 0.15);
-  transition: 1s ease-in-out;
+  transition: 1s ease-in;
 `;
 
 export default VoteResultBar;

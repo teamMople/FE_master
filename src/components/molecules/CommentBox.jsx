@@ -12,6 +12,7 @@ import {
   selectedReplyCommentList,
   recommendCommentAsync,
 } from 'modules/comments';
+import { KebabMenu } from '.';
 
 const CommentBox = (props) => {
   const { comment } = props;
@@ -20,12 +21,29 @@ const CommentBox = (props) => {
   const replyComments = useSelector(selectedReplyCommentList);
   const commentId = comment.commentId;
 
+  const [isRecommened, setIsRecommended] = useState();
   const [isVisible, setIsVisible] = useState(false);
   const [replyContent, setReplyContent] = useState();
 
   const changeReplyContent = (e) => {
     setReplyContent(e.target.value);
   };
+
+  const deleteComment = () => {};
+
+  const showReportModal = () => {};
+
+  const isMyComment = () => {
+    const nickname = localStorage.getItem('nickname');
+    if (nickname === comment.nickname) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const isPrivateKebabMenu = [true, false];
+  const kebabMenuLabels = ['댓글 삭제하기', '댓글 신고하기'];
+  const kebabMenuOnClicks = [deleteComment, showReportModal];
 
   useEffect(() => {
     dispatch(getReplyCommentListAsync(commentId));
@@ -39,11 +57,23 @@ const CommentBox = (props) => {
         backgroundColor={themeContext.colors.lightGray}
       />
       <Grid padding="16px 24px 16px 24px" margin="0px 0px 8px 0px">
-        <Grid margin="0px 0px 8px 0px">
+        <Grid
+          isFlex
+          margin="0px 0px 8px 0px"
+          style={{
+            alignItems: 'flex-start',
+          }}
+        >
           <ProfileBox
             profileImageUrl={comment.profileImageUrl}
             nickname={comment.nickname}
             createdAt={comment.createdAt}
+          />
+          <KebabMenu
+            showPrivateMenu={isMyComment()}
+            isPrivateMenu={isPrivateKebabMenu}
+            labels={kebabMenuLabels}
+            onClicks={kebabMenuOnClicks}
           />
         </Grid>
         <Grid margin="0px 0px 6px 0px">
@@ -54,8 +84,7 @@ const CommentBox = (props) => {
         <Grid right>
           <Grid isFlex>
             <Button
-              size={'small'}
-              width="49px"
+              size={'tiny'}
               height="26px"
               backgroundColor={themeContext.colors.lightGray}
               onClick={() => {
@@ -68,8 +97,7 @@ const CommentBox = (props) => {
               <Text>{replyComments.length}</Text>
             </Button>
             <Button
-              size={'small'}
-              width="49px"
+              size={'tiny'}
               height="26px"
               margin="0px 0px 0px 8px"
               backgroundColor={themeContext.colors.lightGray}

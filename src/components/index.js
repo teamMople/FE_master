@@ -36,6 +36,7 @@ import {
   SearchInput,
   BasicModal,
   LiveAnimation,
+  KebabMenu,
 } from './molecules';
 import {
   BoardList,
@@ -86,4 +87,5 @@ export {
   IconButton,
   BasicModal,
   LiveAnimation,
+  KebabMenu,
 };

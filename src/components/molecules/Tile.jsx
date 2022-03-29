@@ -30,8 +30,8 @@ const Tile = (props) => {
               lineHeight="18px"
             >
               {board.roomName && board.roomName.length > 22
-                ? board.title.slice(0, 22) + '...'
-                : board.title}
+                ? board.roomName.slice(0, 22) + '...'
+                : board.roomName}
             </Text>
           </Grid>
           <Grid height={40}>

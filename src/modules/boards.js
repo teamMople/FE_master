@@ -12,6 +12,11 @@ const liveBoardListInitialState = {
   status: 'idle',
 };
 
+const combinedBoardListInitialState = {
+  data: [],
+  status: 'idle',
+};
+
 const detailInitialState = {
   data: {
     id: '',
@@ -49,6 +54,23 @@ export const getBoardListByCategoryAsync = createAsyncThunk(
   },
 );
 
+export const getMyBoardListAsync = createAsyncThunk(
+  'boards/getMyBoardList',
+  async () => {
+    const response = await apis.getMyBoardList();
+    console.log(response.data);
+    return response.data;
+  },
+);
+
+export const getMyCommentListAsync = createAsyncThunk(
+  'boards/getMyCommentList',
+  async () => {
+    const response = await apis.getMyCommentList();
+    return response.data;
+  },
+);
+
 export const getLiveBoardListAsync = createAsyncThunk(
   'boards/getLiveBoardList',
   async (thunkAPI) => {
@@ -73,7 +95,6 @@ export const getDetailAsync = createAsyncThunk(
   'boards/getDetail',
   async (boardId) => {
     const response = await apis.getDetail(boardId);
-    console.log(response);
     return response.data;
   },
 );
@@ -84,9 +105,7 @@ export const createBoardAsync = createAsyncThunk(
     const { title, content, imageUrl, category } = boardInfo;
     await apis
       .createBoard(title, content, imageUrl, category)
-      .then((response) => {
-        console.log(response);
-      })
+      .then()
       .catch((e) => console.log(e));
     return;
   },
@@ -94,15 +113,16 @@ export const createBoardAsync = createAsyncThunk(
 
 export const searchBoardAsync = createAsyncThunk(
   'boards/searchBoard',
-  async ({ search }, thunkAPI) => {
-    const response = await apis
-      .searchBoard(search)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((e) => {
-        return null;
-      });
+  async (search, thunkAPI) => {
+    const response = await apis.searchBoard(search);
+    return response.data;
+  },
+);
+
+export const searchLiveBoardAsync = createAsyncThunk(
+  'boards/searchLiveBoard',
+  async (search, thunkAPI) => {
+    const response = await apis.searchLiveRoom(search);
     return response.data;
   },
 );
@@ -211,6 +231,10 @@ export const boardListSlice = createSlice({
       state.status = 'idle';
       state.data = [];
     },
+    addSearchResult: (state, action) => {
+      state.status = 'idle';
+      state.data = action.payload;
+    },
   },
   extraReducers: {
     [getBoardListAsync.fulfilled]: (state, action) => {
@@ -231,6 +255,26 @@ export const boardListSlice = createSlice({
       state.status = 'loading';
     },
     [getBoardListByCategoryAsync.rejected]: (state) => {
+      state.status = 'failed';
+    },
+    [getMyBoardListAsync.fulfilled]: (state, action) => {
+      state.status = 'success';
+      state.data = action.payload;
+    },
+    [getMyBoardListAsync.pending]: (state) => {
+      state.status = 'loading';
+    },
+    [getMyBoardListAsync.rejected]: (state) => {
+      state.status = 'failed';
+    },
+    [getMyCommentListAsync.fulfilled]: (state, action) => {
+      state.status = 'success';
+      state.data = action.payload;
+    },
+    [getMyCommentListAsync.pending]: (state) => {
+      state.status = 'loading';
+    },
+    [getMyCommentListAsync.rejected]: (state) => {
       state.status = 'failed';
     },
     [createBoardAsync.fulfilled]: (state, action) => {
@@ -267,6 +311,43 @@ export const liveBoardListSlice = createSlice({
       state.status = 'loading';
     },
     [getLiveBoardListByCategoryAsync.rejected]: (state) => {
+      state.status = 'failed';
+    },
+  },
+});
+
+export const combinedBoardListSlice = createSlice({
+  name: 'combinedBoardList',
+  initialState: combinedBoardListInitialState,
+  reducers: {
+    clearCombinedBoardList: (state) => {
+      state.status = 'idle';
+      state.data = [];
+    },
+  },
+  extraReducers: {
+    [searchBoardAsync.fulfilled]: (state, action) => {
+      state.status = 'success';
+      action.payload.forEach((p) => {
+        state.data.push({ type: 'basic', ...p });
+      });
+    },
+    [searchBoardAsync.pending]: (state) => {
+      state.status = 'loading';
+    },
+    [searchBoardAsync.rejected]: (state) => {
+      state.status = 'failed';
+    },
+    [searchLiveBoardAsync.fulfilled]: (state, action) => {
+      state.status = 'success';
+      action.payload.forEach((p) => {
+        state.data.push({ type: 'live', ...p });
+      });
+    },
+    [searchLiveBoardAsync.pending]: (state) => {
+      state.status = 'loading';
+    },
+    [searchLiveBoardAsync.rejected]: (state) => {
       state.status = 'failed';
     },
   },
@@ -318,9 +399,9 @@ export const detailSlice = createSlice({
   },
 });
 
-export const { loadBoardList } = boardListSlice.actions;
-export const { clearBoardList } = boardListSlice.actions;
+export const { clearBoardList, loadBoardList } = boardListSlice.actions;
 export const { clearLiveBoardList } = liveBoardListSlice.actions;
+export const { clearCombinedBoardList } = combinedBoardListSlice.actions;
 export const {
   clearDetail,
   setUserVoteStatus,
@@ -333,6 +414,7 @@ export const {
 } = detailSlice.actions;
 export const selectedBoardList = (state) => state.boards;
 export const selectedLiveBoardList = (state) => state.liveBoards;
+export const selectedCombinedBoardList = (state) => state.combinedBoards;
 export const selectedDetail = (state) => state.detail.data;
 
 export const selectedUserVoteStatus = (state) => state.detail.data.userStatus;

@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import styled, { ThemeContext, keyframes } from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { createCommentAsync } from '../../modules/comments';
-import { Grid, Button, Input, Textarea, Text, ProfileBox } from 'components';
+import { Grid, Button, Textarea } from 'components';
 
-const CommentInputWindow = (props) => {
+const CommentInputWindow = (props, ref) => {
   const { boardId } = props;
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
@@ -32,9 +32,11 @@ const CommentInputWindow = (props) => {
           onChange={changeContent}
         />
         <Button
+          ref={ref}
           size={'small'}
-          height={30}
-          backgroundColor={themeContext.colors.lightGray}
+          width="57px"
+          height="30px"
+          backgroundColor={themeContext.colors.backgroundGray}
           color={themeContext.colors.blue}
           margin="0px 0px 0px 16px"
           onClick={(e) => {
@@ -65,4 +67,4 @@ const Window = styled.div`
   filter: drop-shadow(0px -2px 4px rgba(0, 0, 0, 0.05));
 `;
 
-export default CommentInputWindow;
+export default forwardRef(CommentInputWindow);

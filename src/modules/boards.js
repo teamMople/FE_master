@@ -12,6 +12,11 @@ const liveBoardListInitialState = {
   status: 'idle',
 };
 
+const combinedBoardListInitialState = {
+  data: [],
+  status: 'idle',
+};
+
 const detailInitialState = {
   data: {
     id: '',
@@ -49,12 +54,28 @@ export const getBoardListByCategoryAsync = createAsyncThunk(
   },
 );
 
+export const getMyBoardListAsync = createAsyncThunk(
+  'boards/getMyBoardList',
+  async () => {
+    const response = await apis.getMyBoardList();
+    console.log(response.data);
+    return response.data;
+  },
+);
+
+export const getMyCommentListAsync = createAsyncThunk(
+  'boards/getMyCommentList',
+  async () => {
+    const response = await apis.getMyCommentList();
+    return response.data;
+  },
+);
+
 export const getLiveBoardListAsync = createAsyncThunk(
   'boards/getLiveBoardList',
   async (thunkAPI) => {
     try {
       const response = await apis.getLiveRoomList();
-      console.log(response.data);
       return response.data;
     } catch (e) {
       return thunkAPI.rejectWithValue(await e.response.data);
@@ -84,9 +105,7 @@ export const createBoardAsync = createAsyncThunk(
     const { title, content, imageUrl, category } = boardInfo;
     await apis
       .createBoard(title, content, imageUrl, category)
-      .then((response) => {
-        console.log(response);
-      })
+      .then()
       .catch((e) => console.log(e));
     return;
   },
@@ -94,95 +113,84 @@ export const createBoardAsync = createAsyncThunk(
 
 export const searchBoardAsync = createAsyncThunk(
   'boards/searchBoard',
-  async ({ search }, thunkAPI) => {
-    const response = await apis
-      .searchBoard(search)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((e) => {
-        return null;
-      });
+  async (search, thunkAPI) => {
+    const response = await apis.searchBoard(search);
     return response.data;
   },
 );
 
-export const increaseAgreeCountAsync = createAsyncThunk(
-  'detail/increaseAgreeCount',
-  async (boardId, thunkAPI) => {
+export const searchLiveBoardAsync = createAsyncThunk(
+  'boards/searchLiveBoard',
+  async (search, thunkAPI) => {
+    const response = await apis.searchLiveRoom(search);
+    return response.data;
+  },
+);
+
+export const agreeBoardAsync = createAsyncThunk(
+  'detail/agreeBoard',
+  async (voteInfo, thunkAPI) => {
+    const { userVoteStatus, boardId } = voteInfo;
     if (boardId) {
       await apis
         .agreeBoard(boardId)
-        .then(() => {
-          thunkAPI.dispatch(increaseAgreeCount());
+        .then((response) => {
+          console.log(response);
+          if (userVoteStatus === '없다' || userVoteStatus === '찬성') {
+            if (response.data.clicked) {
+              thunkAPI.dispatch(increaseAgreeCount());
+              thunkAPI.dispatch(setUserVoteStatus('찬성'));
+            } else {
+              thunkAPI.dispatch(decreaseAgreeCount());
+              thunkAPI.dispatch(setUserVoteStatus('없다'));
+            }
+          } else if (userVoteStatus === '반대') {
+            if (!response.data.clicked) {
+              thunkAPI.dispatch(increaseAgreeCount());
+              thunkAPI.dispatch(decreaseDisagreeCount());
+              thunkAPI.dispatch(setUserVoteStatus('찬성'));
+            } else {
+            }
+          }
+        })
+        .catch((error) => {
+          if (error) {
+            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
+          }
+          return thunkAPI.rejectWithValue();
+        });
+    }
+  },
+);
+
+export const disagreeBoardAsync = createAsyncThunk(
+  'detail/increaseDisagreeCount',
+  async (voteInfo, thunkAPI) => {
+    const { userVoteStatus, boardId } = voteInfo;
+    if (boardId) {
+      await apis
+        .disagreeBoard(boardId)
+        .then((response) => {
+          console.log(response);
+          if (userVoteStatus === '없다' || userVoteStatus === '반대') {
+            if (response.data.clicked) {
+              thunkAPI.dispatch(increaseDisagreeCount());
+              thunkAPI.dispatch(setUserVoteStatus('반대'));
+            } else {
+              thunkAPI.dispatch(decreaseDisagreeCount());
+              thunkAPI.dispatch(setUserVoteStatus('없다'));
+            }
+          } else if (userVoteStatus === '찬성') {
+            if (!response.data.clicked) {
+              thunkAPI.dispatch(increaseDisagreeCount());
+              thunkAPI.dispatch(decreaseAgreeCount());
+              thunkAPI.dispatch(setUserVoteStatus('반대'));
+            }
+          }
         })
         .catch((error) => {
           if (error) {
             window.alert('잘못된 투표 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-          }
-          return thunkAPI.rejectWithValue();
-        });
-    } else {
-      window.alert('잘못된 투표 요청입니다.');
-    }
-  },
-);
-
-export const decreaseAgreeCountAsync = createAsyncThunk(
-  'detail/increaseAgreeCount',
-  async (boardId, thunkAPI) => {
-    if (boardId) {
-      console.log(boardId);
-      await apis
-        .agreeBoard(boardId)
-        .then(() => {
-          thunkAPI.dispatch(decreaseAgreeCount());
-        })
-        .catch((error) => {
-          if (error) {
-            window.alert('잘못된 투표 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-          }
-          return thunkAPI.rejectWithValue();
-        });
-    } else {
-      window.alert('잘못된 투표 요청입니다.');
-    }
-  },
-);
-
-export const increaseDisagreeCountAsync = createAsyncThunk(
-  'detail/increaseDisagreeCount',
-  async (boardId, thunkAPI) => {
-    if (boardId) {
-      await apis
-        .disagreeBoard(boardId)
-        .then(thunkAPI.dispatch(increaseDisagreeCount()))
-        .catch((error) => {
-          if (error) {
-            window.alert('잘못된 투표 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-          }
-          return thunkAPI.rejectWithValue();
-        });
-    } else {
-      window.alert('잘못된 투표 요청입니다.');
-    }
-  },
-);
-
-export const decreaseDisagreeCountAsync = createAsyncThunk(
-  'detail/increaseDisagreeCount',
-  async (boardId, thunkAPI) => {
-    if (boardId) {
-      await apis
-        .disagreeBoard(boardId)
-        .then(thunkAPI.dispatch(decreaseDisagreeCount()))
-        .catch((error) => {
-          if (error) {
-            window.alert('잘못된 투표 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
           }
           return thunkAPI.rejectWithValue();
         });
@@ -206,7 +214,6 @@ export const increaseRecommendCountAsync = createAsyncThunk(
         .catch((error) => {
           if (error) {
             window.alert('잘못된 추천 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
           }
           return thunkAPI.rejectWithValue();
         });
@@ -223,6 +230,10 @@ export const boardListSlice = createSlice({
     clearBoardList: (state) => {
       state.status = 'idle';
       state.data = [];
+    },
+    addSearchResult: (state, action) => {
+      state.status = 'idle';
+      state.data = action.payload;
     },
   },
   extraReducers: {
@@ -244,6 +255,26 @@ export const boardListSlice = createSlice({
       state.status = 'loading';
     },
     [getBoardListByCategoryAsync.rejected]: (state) => {
+      state.status = 'failed';
+    },
+    [getMyBoardListAsync.fulfilled]: (state, action) => {
+      state.status = 'success';
+      state.data = action.payload;
+    },
+    [getMyBoardListAsync.pending]: (state) => {
+      state.status = 'loading';
+    },
+    [getMyBoardListAsync.rejected]: (state) => {
+      state.status = 'failed';
+    },
+    [getMyCommentListAsync.fulfilled]: (state, action) => {
+      state.status = 'success';
+      state.data = action.payload;
+    },
+    [getMyCommentListAsync.pending]: (state) => {
+      state.status = 'loading';
+    },
+    [getMyCommentListAsync.rejected]: (state) => {
       state.status = 'failed';
     },
     [createBoardAsync.fulfilled]: (state, action) => {
@@ -285,6 +316,43 @@ export const liveBoardListSlice = createSlice({
   },
 });
 
+export const combinedBoardListSlice = createSlice({
+  name: 'combinedBoardList',
+  initialState: combinedBoardListInitialState,
+  reducers: {
+    clearCombinedBoardList: (state) => {
+      state.status = 'idle';
+      state.data = [];
+    },
+  },
+  extraReducers: {
+    [searchBoardAsync.fulfilled]: (state, action) => {
+      state.status = 'success';
+      action.payload.forEach((p) => {
+        state.data.push({ type: 'basic', ...p });
+      });
+    },
+    [searchBoardAsync.pending]: (state) => {
+      state.status = 'loading';
+    },
+    [searchBoardAsync.rejected]: (state) => {
+      state.status = 'failed';
+    },
+    [searchLiveBoardAsync.fulfilled]: (state, action) => {
+      state.status = 'success';
+      action.payload.forEach((p) => {
+        state.data.push({ type: 'live', ...p });
+      });
+    },
+    [searchLiveBoardAsync.pending]: (state) => {
+      state.status = 'loading';
+    },
+    [searchLiveBoardAsync.rejected]: (state) => {
+      state.status = 'failed';
+    },
+  },
+});
+
 export const detailSlice = createSlice({
   name: 'detail',
   initialState: detailInitialState,
@@ -292,6 +360,10 @@ export const detailSlice = createSlice({
     clearDetail: (state) => {
       state.status = 'idle';
       state.data = {};
+    },
+    setUserVoteStatus: (state, action) => {
+      console.log(action.payload);
+      state.data.userStatus = action.payload;
     },
     increaseAgreeCount: (state) => {
       state.data.agreeCount += 1;
@@ -327,11 +399,12 @@ export const detailSlice = createSlice({
   },
 });
 
-export const { loadBoardList } = boardListSlice.actions;
-export const { clearBoardList } = boardListSlice.actions;
+export const { clearBoardList, loadBoardList } = boardListSlice.actions;
 export const { clearLiveBoardList } = liveBoardListSlice.actions;
+export const { clearCombinedBoardList } = combinedBoardListSlice.actions;
 export const {
   clearDetail,
+  setUserVoteStatus,
   increaseAgreeCount,
   increaseDisagreeCount,
   increaseRecommendCount,
@@ -341,7 +414,9 @@ export const {
 } = detailSlice.actions;
 export const selectedBoardList = (state) => state.boards;
 export const selectedLiveBoardList = (state) => state.liveBoards;
+export const selectedCombinedBoardList = (state) => state.combinedBoards;
 export const selectedDetail = (state) => state.detail.data;
 
+export const selectedUserVoteStatus = (state) => state.detail.data.userStatus;
 export const selectedAgreeCount = (state) => state.detail.data.agreeCount;
 export const selectedDisagreeCount = (state) => state.detail.data.disagreeCount;

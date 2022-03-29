@@ -30,8 +30,8 @@ const Tile = (props) => {
               lineHeight="18px"
             >
               {board.roomName && board.roomName.length > 22
-                ? board.title.slice(0, 22) + '...'
-                : board.title}
+                ? board.roomName.slice(0, 22) + '...'
+                : board.roomName}
             </Text>
           </Grid>
           <Grid height={40}>
@@ -48,7 +48,8 @@ const Tile = (props) => {
           <Grid isFlex width="252px" className="buttonGroup">
             <Grid isFlex>
               <StatusBox
-                icon={'/asset/icons/Join.svg'}
+                live
+                // icon={'/asset/icons/Join.svg'}
                 count={board.participantsNicknames.length}
               />
             </Grid>

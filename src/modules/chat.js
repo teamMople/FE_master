@@ -34,7 +34,12 @@ const roomInitialState = {
     memberName: undefined,
     accessToken: undefined,
   },
-  createRoomStatus: false,
+  openRoomState: false,
+  createRoomState: {
+    openCreateRoom: false,
+    createRoomNextStep: false,
+    createRoomSetting: false,
+  },
 };
 
 const sessionInit = {
@@ -109,6 +114,7 @@ export const createRoomAsync = createAsyncThunk(
           memberName: memberName,
           accessToken: undefined,
         };
+        console.log('res :::::>>>>>>', res);
 
         return status;
       })
@@ -173,7 +179,10 @@ export const roomSlice = createSlice({
       state.subscribers.push(action.payload);
     },
     removeRoomSubscriber: (state, action) => {
-      const index = state.subscribers.indexOf(action.payload.streamManager, 0);
+      // const index = state.subscribers.indexOf(action.payload.streamManager, 0);
+      const index = state.subscribers.findIndex(
+        (sub) => sub.subscriber === action.payload.streamManager,
+      );
       if (index > -1) {
         state.subscribers.splice(index, 1);
       }
@@ -192,6 +201,18 @@ export const roomSlice = createSlice({
     },
     setJoinRoomStatus: (state, action) => {
       state.joinRoomStatus = action.payload;
+    },
+    setOpenRoomState: (state, action) => {
+      state.openRoomState = action.payload;
+    },
+    setOpenCreateRoom: (state, action) => {
+      state.createRoomState.openCreateRoom = action.payload;
+    },
+    setCreateRoomNextStep: (state, action) => {
+      state.createRoomState.createRoomNextStep = action.payload;
+    },
+    setCreateRoomSetting: (state, action) => {
+      state.createRoomState.createRoomSetting = action.payload;
     },
   },
   extraReducers: {
@@ -237,12 +258,19 @@ export const {
   setJoinRoomStatus,
   removeAllRoomSubscribers,
   setRemoteForceMuteStatus,
+  setOpenRoomState,
+  setOpenCreateRoom,
+  setCreateRoomNextStep,
+  setCreateRoomSetting,
 } = roomSlice.actions;
 export const { setSession } = sessionSlice.actions;
 export const { setMemberVoteStatus } = voteSlice.actions;
 export const { setChatContent, hideChat } = chatSlice.actions;
 
 // selector setting
+export const selectOpenRoomState = (state) => state.chats.room.openRoomState;
+export const selectCreateRoomState = (state) =>
+  state.chats.room.createRoomState;
 export const selectRoomState = (state) => state.chats.room.roomState;
 export const selectChatState = (state) => state.chats.chat.data;
 export const selectChatHideState = (state) => state.chats.chat.hide;

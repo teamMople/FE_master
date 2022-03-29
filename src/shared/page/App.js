@@ -21,7 +21,8 @@ import {
   LiveBoardList,
   Settings,
   NotFound,
-  Test,
+  CombinedBoardList,
+  Loading,
 } from '../../pages';
 import '../styles/App.css';
 
@@ -29,8 +30,8 @@ import { darkTheme, lightTheme } from '../styles/theme';
 import history from '../utils/history';
 import { ThemeProvider } from 'styled-components';
 
-import CreateRoom from '../../pages/chats/CreateRoom';
-import LiveRoom from '../../pages/chats/LiveRoom';
+import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
+import LiveRoom from '../../pages/chats/views/LiveRoom/LiveRoom';
 import RoomList from '../../pages/chats/RoomList';
 
 function App() {
@@ -65,9 +66,9 @@ function App() {
           <Route path={'/room/:roomId'} element={<LiveRoom />} />
           <Route path="/home" element={<Home />} />
           <Route path="/search" element={<SearchBoard />}>
-            <Route path="result" element={<BoardList />} />
-            <Route path="result/general" element={<BoardList />} />
-            <Route path="result/live" element={<BoardList />} />
+            <Route path="result" element={<CombinedBoardList />} />
+            <Route path="result/general" element={<CombinedBoardList />} />
+            <Route path="result/live" element={<CombinedBoardList />} />
           </Route>
           <Route path="/list" element={<BoardList />}>
             <Route path=":categoryName" element={<BoardList />} />
@@ -91,7 +92,7 @@ function App() {
           <Route path="/findpassword" element={<FindPassword />} />
           <Route path="/alarm" element={<AlarmList />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/modal" element={<Test />} />
+          <Route path="/loading" element={<Loading />} />
           <Route path={'*'} element={<NotFound />} />
         </Routes>
         <Nav />

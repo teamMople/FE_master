@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { setMemberVoteStatus } from '../../modules/chat';
 import { VoteResultBar } from '../../components';
+import { VoteResultBarWrapper } from './views/LiveRoom/style';
 
 const VoteView = ({
   roomId,
@@ -84,9 +85,9 @@ const VoteView = ({
         type: 'AGREE',
         roomId: roomId,
         sender: userId,
-        message: null,
+        agreedBefore: agree,
+        disagreedBefore: disagree,
       };
-      console.log('🫖 찬성 ==>', message);
       stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setAgree(true);
       setDisagree(false);
@@ -100,9 +101,9 @@ const VoteView = ({
         type: 'DISAGREE',
         roomId: roomId,
         sender: userId,
-        message: null,
+        agreedBefore: agree,
+        disagreedBefore: disagree,
       };
-      console.log('🫖 반대 ==>', message);
       stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setDisagree(true);
       setAgree(false);
@@ -116,12 +117,11 @@ const VoteView = ({
         type: 'CANCEL_AGREE',
         roomId: roomId,
         sender: userId,
-        message: null,
+        agreedBefore: agree,
+        disagreedBefore: disagree,
       };
-      console.log('🫖 찬성 ==>', message);
       stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setAgree(false);
-      setDisagree(false);
     }
   };
 
@@ -132,16 +132,15 @@ const VoteView = ({
         type: 'CANCEL_DISAGREE',
         roomId: roomId,
         sender: userId,
-        message: null,
+        agreedBefore: agree,
+        disagreedBefore: disagree,
       };
-      console.log('🫖 찬성 ==>', message);
       stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
-      setAgree(false);
       setDisagree(false);
     }
   };
   return (
-    <div className="container">
+    <VoteResultBarWrapper>
       <VoteResultBar
         agreeCount={agreeCount}
         disagreeCount={disagreeCount}
@@ -158,7 +157,7 @@ const VoteView = ({
       ) : (
         <button onClick={sendAddDisagree}>반대</button>
       )}*/}
-    </div>
+    </VoteResultBarWrapper>
   );
 };
 

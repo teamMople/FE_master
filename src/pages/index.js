@@ -1,3 +1,14 @@
+// boards
+import AlarmList from './boards/AlarmList';
+import BoardByCategoryList from './boards/BoardByCategoryList';
+import BoardDetail from './boards/BoardDetail';
+import BoardList from './boards/BoardList';
+import CombinedBoardList from './boards/CombinedBoardList';
+import CreateBoard from './boards/CreateBoard';
+import LiveBoardList from './boards/LiveBoardList';
+import SearchBoard from './boards/SearchBoard';
+
+// users
 import EditUserProfile from './users/EditUserProfile';
 import FindPassword from './users/FindPassword';
 import Inactivate from './users/Inactivate';
@@ -8,22 +19,26 @@ import ResetPassword from './users/ResetPassword';
 import Signup from './users/Signup';
 import Welcome from './users/Welcome';
 
-import BoardDetail from './boards/BoardDetail';
-import BoardList from './boards/BoardList';
-import LiveBoardList from './boards/LiveBoardList';
-import CreateBoard from './boards/CreateBoard';
-import AlarmList from './boards/AlarmList';
-import SearchBoard from './boards/SearchBoard';
-import BoardByCategoryList from './boards/BoardByCategoryList';
-
-import Splash from './Splash';
+// common
 import Home from './Home';
+import Loading from './Loading';
 import Nav from './Nav';
-import Settings from './Settings';
 import NotFound from './NotFound';
-import Test from './Test';
+import Settings from './Settings';
+import Splash from './Splash';
+// import Test from '../components/molecules/modal/_CustomModal';
 
 export {
+  // boards
+  AlarmList,
+  BoardByCategoryList,
+  BoardDetail,
+  BoardList,
+  CombinedBoardList,
+  CreateBoard,
+  LiveBoardList,
+  SearchBoard,
+  // users
   EditUserProfile,
   FindPassword,
   Inactivate,
@@ -33,17 +48,12 @@ export {
   ResetPassword,
   Signup,
   Welcome,
-  BoardDetail,
-  BoardList,
-  LiveBoardList,
-  CreateBoard,
-  AlarmList,
-  SearchBoard,
-  BoardByCategoryList,
-  Splash,
+  // common
   Home,
+  Loading,
+  Splash,
   Nav,
-  Settings,
   NotFound,
-  Test,
+  Settings,
+  // Test,
 };

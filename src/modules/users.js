@@ -22,43 +22,24 @@ const isRightEmailType = (email) => {
 export const loginAsync = createAsyncThunk(
   'users/login',
   async (userInfo, thunkAPI) => {
-    const { email, password } = userInfo;
     const navigate = useNavigate();
+    const { email, password } = userInfo;
 
-    console.log('로그인');
-
-    if (isRightEmailType === false) {
-      window.alert('올바른 이메일 형식이 아닙니다.');
+    if (email === '' || password === '') {
+      window.alert('이메일, 비밀번호 모두 입력해주세요.');
     } else {
-      await axios
-        .post(`${process.env.REACT_APP_API_URL}/api/login`, { email, password })
+      apis
+        .login(email, password)
         .then((response) => {
           console.log(response);
-          if (response.data.status === 'ok') {
-            setCookie('token', response.data.token, 1);
-            setCookie('userPassword', password, 1);
-            const loginUserInfo = {
-              id: response.data.id,
-              nickname: response.data.nickname,
-            };
-            localStorage.setItem(
-              'json',
-              JSON.stringify({
-                loginUser: loginUserInfo,
-              }),
-            );
-            navigate('/');
-            return { loginUser: loginUserInfo };
+          if (response.status === 200) {
+            setCookie('token', response.headers.authorization, 1);
+            localStorage.setItem('email', response.data.email);
+            localStorage.setItem('nickname', response.data.nickname);
+            navigate('/home');
           }
-          return response.data;
         })
-        .catch((error) => {
-          if (error) {
-            window.alert('잘못된 로그인 요청입니다.');
-            console.log(error.response.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-          }
-          return thunkAPI.rejectWithValue();
-        });
+        .catch((e) => {});
     }
   },
 );
@@ -206,6 +187,22 @@ export const findMyPassword = createAsyncThunk(
     } else {
       window.alert('올바른 이메일 형식이 아닙니다.');
     }
+  },
+);
+
+export const verifyEmailAsync = createAsyncThunk(
+  'users/verifyEmail',
+  async (email) => {
+    await apis.verifyEmail(email).then((response) => console.log(response));
+  },
+);
+
+export const verifyNicknameAsync = createAsyncThunk(
+  'users/verifyEmail',
+  async (nickname) => {
+    await apis
+      .verifyNickname(nickname)
+      .then((response) => console.log(response));
   },
 );
 

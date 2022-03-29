@@ -31,6 +31,34 @@ const GlobalStyle = createGlobalStyle`
     //color: #282828;
     //line-height: 1;
   }
+  ul {
+    //margin-block-start: 0;
+    //margin-block-end: 0;
+    //padding-inline-start: 0;
+  }
+  .carousel .slide img {
+    width: unset;
+    vertical-align: unset;
+    border: unset;
+  }
+  .carousel img {
+    width: unset;
+    display: unset;
+    pointer-events: unset;
+  }
+  .carousel-root {
+    height: 100%;
+    >div {
+      height: inherit;
+      > div {
+        height: inherit;
+        >ul {
+          height: inherit;
+        }
+      }
+    }
+  }
+  
   @font-face {
     font-family: 'Suit';
     font-weight: 400;

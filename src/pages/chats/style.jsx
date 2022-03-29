@@ -16,57 +16,54 @@ export const BackDrop = styled.div`
 `;
 
 export const ChatWrapper = styled.div`
-  position: fixed;
-  bottom: 0;
-  z-index: 11;
+  //position: fixed;
+  //bottom: 0;
+  //z-index: 11;
   width: 100%;
-  height: 90%;
+  //height: 90%;
+  //height: 100%;
   background-color: ${({ theme }) => theme.colors.white};
-  transform: translateY(100%);
-  transition: all 0.3s ease;
+  //transform: translateY(100%);
+  //transition: all 0.3s ease;
+  padding: 0 24px;
+  overflow-y: auto;
+  height: calc(100% - 66px);
 
   &.active {
     transform: translateY(0);
   }
 `;
-export const MessageWrapper = styled.div``;
 
-export const Sender = styled.div`
-  color: ${({ theme }) => theme.colors.darkGray};
-  font-size: 0.5rem;
-`;
-
-export const Receiver = styled.div`
-  color: ${({ theme }) => theme.colors.lightGray};
-  font-size: 0.5rem;
-`;
-
-export const ReceiverWrapper = styled.div`
+export const EnterLeaveWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  border-radius: 4px;
-  margin: 10px;
-`;
-export const SenderWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  border-radius: 4px;
-  margin: 10px;
-`;
-
-export const SenderInner = styled.div`
+  align-items: center;
   background-color: ${({ theme }) => theme.colors.primaryYellow};
-  border-radius: 4px;
-  padding: 4px 8px;
+  justify-content: center;
+  margin: 16px 0;
+  padding: 8px;
+  border-radius: 10px;
+`;
+export const MessengerWrapper = styled.div`
+  display: flex;
+  align-items: flex-start;
+  margin: 16px 0;
+`;
+export const MessengerInner = styled.div`
+  margin-left: 8px;
+`;
+export const Messenger = styled.div`
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 5px;
+`;
+export const UserProfileImage = styled.img`
+  min-width: 32px;
+  min-height: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  border-radius: 10em;
 `;
 
-export const ReceiverInner = styled.div`
-  background-color: ${({ theme }) => theme.colors.blue};
-  border-radius: 4px;
-  padding: 4px 8px;
-`;
 export const JoinerLeaver = styled.div`
   background-color: #e8e8e8;
   border-radius: 4px;

@@ -5,22 +5,29 @@ import {
   clearBoardList,
   getBoardListAsync,
   getBoardListByCategoryAsync,
+  getMyBoardList,
+  getMyBoardListAsync,
+  getMyCommentListAsync,
   selectedBoardList,
 } from '../../modules/boards';
 
 import { Wrapper, Grid, Tile, Text } from 'components';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 function BoardList(props) {
   const params = useParams();
-  console.log(params.categoryName);
-  const { data, status } = useSelector(selectedBoardList);
+  const location = useLocation();
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
-  console.log(data);
+
+  const { data, status } = useSelector(selectedBoardList);
 
   useEffect(() => {
-    if (typeof params.categoryName === 'undefined') {
+    if (location.pathname === '/myaccount/boards') {
+      dispatch(getMyBoardListAsync());
+    } else if (location.pathname === '/myaccount/mycomments') {
+      dispatch(getMyCommentListAsync());
+    } else if (typeof params.categoryName === 'undefined') {
       dispatch(getBoardListAsync());
     } else {
       dispatch(getBoardListByCategoryAsync(params.categoryName));
@@ -28,7 +35,7 @@ function BoardList(props) {
     return () => {
       dispatch(clearBoardList());
     };
-  }, [dispatch]);
+  }, [dispatch, location]);
 
   return (
     <Wrapper>

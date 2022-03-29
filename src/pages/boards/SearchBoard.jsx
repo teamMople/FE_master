@@ -1,27 +1,40 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback, useEffect } from 'react';
 import styled, { ThemeContext } from 'styled-components';
-import { Outlet, useNavigate } from 'react-router-dom';
-import lo from 'lodash';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import lo, { debounce } from 'lodash';
+import queryString from 'query-string';
 
-import { Wrapper, Grid, CategoryTile, SearchInput } from 'components';
-import { useDispatch } from 'react-redux';
-import { searchBoardAsync } from 'modules/boards';
+import { Wrapper, Grid, CategoryTile, SearchInput, Loader } from 'components';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  searchBoardAsync,
+  searchLiveBoardAsync,
+  selectedBoardList,
+  selectedLiveBoardList,
+} from 'modules/boards';
+import { Loading } from 'pages';
 
 function SearchBoard(props) {
+  const { search } = useLocation();
+  const { keyword } = queryString.parse(search);
+
   const themeContext = useContext(ThemeContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const throttle = lo.throttle((k) => {
-    console.log(searchValue);
-    dispatch(searchBoardAsync(searchValue));
-  }, 1000);
-  const keyPress = React.useCallback(throttle, []);
 
   const [searchValue, setSearchValue] = useState();
+  console.log(searchValue);
+  const { data: basicBoardList, status: basicBoardListStatus } =
+    useSelector(selectedBoardList);
+  const { data: liveBoardList, status: liveBoardListStatus } = useSelector(
+    selectedLiveBoardList,
+  );
+
+  const debounce = lo.debounce((k) => setSearchValue(k), 1000);
+  const keyPress = useCallback(debounce, []);
 
   const changeSearchInput = (e) => {
     keyPress(e.target.value);
-    setSearchValue(e.target.value);
   };
 
   return (
@@ -30,9 +43,10 @@ function SearchBoard(props) {
       padding="56px 24px 0px 24px"
     >
       <SearchInput
+        backgroundColor={themeContext.colors.backgroundGray}
         onChange={changeSearchInput}
         iconButtonClick={() => {
-          navigate('/search/result?' + searchValue);
+          navigate('/search/result?keyword=' + searchValue);
         }}
       />
       {!searchValue && (
@@ -56,9 +70,8 @@ function SearchBoard(props) {
           </CategoryWrapper>
         </Grid>
       )}
-      <Grid>
-        <Outlet />
-      </Grid>
+      {searchValue && searchValue !== keyword && <Loading />}
+      {searchValue && searchValue === keyword && <Outlet />}
     </Wrapper>
   );
 }

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 export const FixedTop = styled.div`
   position: fixed;
@@ -113,7 +113,28 @@ export const CircleButtons = styled.div`
   align-items: center;
   column-gap: 8px;
 `;
-export const MyStateWrapper = styled.div``;
+export const MyStateWrapper = styled.div`
+  position: absolute;
+  top: -10px;
+  white-space: nowrap;
+  right: 24px;
+  background-color: ${({ theme }) => theme.colors.primaryYellow};
+  padding: 4px 6px;
+  border-radius: 4px;
+  > div:first-child {
+    position: relative;
+    z-index: 2;
+  }
+  > div:last-child {
+    width: 15px;
+    height: 15px;
+    transform: rotate(45deg);
+    position: absolute;
+    bottom: -2px;
+    right: 5px;
+    background-color: ${({ theme }) => theme.colors.primaryYellow};
+  }
+`;
 
 export const StatusWrapper = styled.div`
   display: flex;
@@ -121,4 +142,27 @@ export const StatusWrapper = styled.div`
 `;
 export const TitleWrapper = styled.div`
   margin-bottom: 16px;
+`;
+
+const shakeHand = keyframes`
+  0%{
+    //transform: rotate(-30deg);
+    transform: scale(1);
+  }
+  100%{
+    //transform: rotate(30deg);
+    transform: scale(1.2);
+  }
+`;
+
+export const HandIcon = styled.div`
+  position: absolute;
+  top: 54px;
+  right: -0.5px;
+  animation-name: ${shakeHand};
+  animation-duration: 0.3s;
+  //animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
 `;

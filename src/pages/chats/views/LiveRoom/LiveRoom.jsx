@@ -29,6 +29,7 @@ import {
   CarouselWrapper,
   CircleButtons,
   FixedTop,
+  HandIcon,
   InnerWrapper,
   MyStateWrapper,
   ParticipantControlButton,
@@ -48,8 +49,9 @@ const LiveRoom = () => {
   const themeContext = useContext(ThemeContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [subscribersState, setSubscribersState] = useState([]);
+  // const [subscribersState, setSubscribersState] = useState([]);
   const [publisher, setPublisher] = useState(undefined);
+  const [publisherProfileImage, setPublisherProfileImage] = useState(undefined);
   const [myMicStatus, setMyMicStatus] = useState(false);
   const [isHandsUp, setIsHandsUp] = useState(false);
   const [myHandsUpState, setMyHandsUpState] = useState(false);
@@ -103,7 +105,6 @@ const LiveRoom = () => {
   useEffect(() => {
     window.addEventListener('beforeunload', onbeforeunload);
     joinSession().then((r) => r);
-    console.log('useEffect useEffect useEffect useEffect useEffect');
     return () => window.removeEventListener('beforeunload', onbeforeunload);
   }, []);
 
@@ -142,7 +143,9 @@ const LiveRoom = () => {
         //!Todo 주석 풀 것!
         // alert('방장 방 종료하기 성공!');
         roomSubscribers.forEach((sub) =>
-          session.forceDisconnect(sub.stream.connection.connectionId),
+          session.forceDisconnect(
+            sub.subscriber.stream.connection.connectionId,
+          ),
         );
       })
       .catch(() => alert('방장 방 종료하기 실패!'));
@@ -195,7 +198,6 @@ const LiveRoom = () => {
       console.warn(exception);
     });
     await connectToSession();
-    console.log('🔫 🔫 🔫 subscribersState: ', subscribersState);
   };
 
   const deleteSubscriber = (streamManager) => {
@@ -208,37 +210,51 @@ const LiveRoom = () => {
     if (session !== null) {
       session.on('streamCreated', (event) => {
         let subscriber = session.subscribe(event.stream, undefined);
-        let subscribers = subscribersState;
-        subscribers.push(subscriber);
-        setSubscribersState(subscribers);
+        // let subscribers = subscribersState;
+        // subscribers.push(subscriber);
+        // setSubscribersState(subscribers);
 
         // 전역으로 관리하지 않으면 갱신된 정보를 시각적으로 받아 볼 수 없다!!!! 으아!!!!! 짜증나!!!!
-        dispatch(setRoomSubscribers(subscriber));
+        const data = subscriber.stream.connection.data.split('%')[0];
+        const imageUrl = JSON.parse(data).profileImageUrl;
+        dispatch(
+          setRoomSubscribers({
+            subscriber: subscriber,
+            profileImageUrl: imageUrl,
+          }),
+        );
       });
     }
   };
+
+  // 이름 변환 함수
+  const convertStreamData = (target) => {
+    const data = target.stream.connection.data.split('%');
+    const UserName = data[data.length - 1];
+    return UserName;
+  };
+
   const connectToSession = () => {
     getToken()
       .then((token) => {
-        console.log(token);
         connect(token);
+        // console.log(token);
       })
       .catch((error) => {
-        console.log(
-          'There was an error getting the token:',
-          error.code,
-          error.message,
-        );
+        // console.log(
+        //   'There was an error getting the token:',
+        //   error.code,
+        //   error.message,
+        // );
         alert(`There was an error getting the token: ${error.message}`);
       });
   };
 
   const connect = (token) => {
     session
-      .connect(
-        token,
-        // { clientData: this.state.myUserName },
-      )
+      .connect(token, {
+        profileImageUrl: localStorage.getItem('profileImageUrl'),
+      })
       .then(() => {
         connectVoice().then((r) => r);
       })
@@ -282,6 +298,7 @@ const LiveRoom = () => {
 
     await session.publish(initPublisher);
     await setPublisher(initPublisher);
+    await setPublisherProfileImage(localStorage.getItem('profileImageUrl'));
   };
 
   const getToken = async () => {
@@ -291,7 +308,6 @@ const LiveRoom = () => {
       role: joinRoomStatus.role,
       participantCount: joinRoomStatus.maxParticipantCount,
     };
-    console.log('data', data);
     return await dispatch(ovGetTokenAsync(data))
       .then((res) => {
         localStorage.setItem('OVAccessToken', res.payload.data.token);
@@ -467,13 +483,6 @@ const LiveRoom = () => {
       session.on('signal:handsUp', (event) => {
         const data = JSON.parse(event.data);
         const remoteTarget = event.from.connectionId;
-        // setRemoteHandsUpStatus([
-        //   ...remoteHandsUpStatus,
-        //   {
-        //     remoteTarget: remoteTarget,
-        //     isHandsUp: data,
-        //   },
-        // ]);
 
         // 전역에서 관리해야 발언권 요청자 모두를 보여줄 수 있다.
         dispatch(
@@ -490,7 +499,6 @@ const LiveRoom = () => {
         );
         console.log('💎💎 remotePermissionStatus', remotePermissionStatus);
         console.log('발언 요청을 받았습니다!');
-        // console.log('퍼블리셔 핸즈업 리시브 :: ', publisher);
       });
     }
   };
@@ -676,6 +684,7 @@ const LiveRoom = () => {
                 <>
                   <MyStateWrapper>
                     <Text size={'small'}>발언권 요청!</Text>
+                    <div />
                   </MyStateWrapper>
                   <img src={'/asset/icons/raisehand_active.svg'} alt="icon" />
                 </>
@@ -701,21 +710,8 @@ const LiveRoom = () => {
         라이브를 종료했습니다.
       </BasicModal>
       <>
-        {/*<BackDrop className={(showUserRoom || showChatRoom) && 'active'} />*/}
-        {/*<Button*/}
-        {/*  small*/}
-        {/*  shape={'rounded'}*/}
-        {/*  style={{ minWidth: 'auto', position: 'fixed', zIndex: 99 }}*/}
-        {/*  onClick={handleHideChatRoom}*/}
-        {/*>*/}
-        {/*  채팅방 숨기기*/}
-        {/*</Button>*/}
         <FixedTop>
           <TopButtonGroup>
-            {/*<IconButton*/}
-            {/*  onClick={handleHideUserRoom}*/}
-            {/*  src={'/asset/icons/Down_arrow.svg'}*/}
-            {/*/>*/}
             {publisher && isPublisher(publisher) && (
               <Button
                 size={'small'}
@@ -746,9 +742,9 @@ const LiveRoom = () => {
             </Text>
             <StatusWrapperChat>
               <StatusBox
-                icon={'/asset/icons/Join.svg'}
+                live
+                liveBackgroundColor={themeContext.colors.blue}
                 count={roomSubscribers.length + 1}
-                // backgroundColor={themeContext.colors.white}
               />
               <StatusBox
                 label={'hosted by'}
@@ -776,7 +772,7 @@ const LiveRoom = () => {
               {publisher && (
                 <TextChatView
                   roomId={joinRoomStatus.roomId}
-                  memberName={publisher.session.connection.data}
+                  memberName={convertStreamData(publisher)}
                   stompClient={messageStomp}
                   sock={messageSock}
                   unsubscribe={unsubscribe}
@@ -785,14 +781,12 @@ const LiveRoom = () => {
               )}
             </>
             <RoomWrapper>
-              {/*<RoomWrapper className={showUserRoom && 'active'}>*/}
-
               <InnerWrapper>
                 {publisher && (
                   <ChatUser
                     streamManager={publisher}
                     moderator={joinRoomStatus.moderatorNickname}
-                    memberName={publisher.stream.connection.data}
+                    memberName={convertStreamData(publisher)}
                     isMute={
                       (isModerator(publisher) ||
                         (isPublisher(publisher) && myMutMute)) &&
@@ -800,54 +794,55 @@ const LiveRoom = () => {
                     }
                     detectSpeaking={detectSpeaking}
                     myHandsUpState={myHandsUpState}
+                    profileImageUrl={publisherProfileImage}
                   />
                 )}
                 {roomSubscribers.map((sub, i) => {
-                  subscriberDetectSpeaking(sub);
+                  subscriberDetectSpeaking(sub.subscriber);
                   return (
                     <>
                       <div style={{ position: 'relative' }}>
                         <ChatUser
                           key={i}
-                          streamManager={sub}
+                          streamManager={sub.subscriber}
                           moderator={joinRoomStatus.moderatorNickname}
-                          memberName={sub.stream.connection.data}
+                          memberName={convertStreamData(sub.subscriber)}
                           isMute={
-                            sub.stream.connection.connectionId ===
+                            sub.subscriber.stream.connection.connectionId ===
                               remoteMicStatus.remoteTarget &&
                             remoteMicStatus.isAudioActive
                           }
                           detectSpeaking={subDetectSpeaking}
+                          profileImageUrl={sub.profileImageUrl}
                         />
                         {publisher &&
                           isModerator(publisher) &&
-                          remoteTarget(sub) &&
-                          remoteTargetForceMuteStatus(sub) && (
+                          remoteTarget(sub.subscriber) &&
+                          remoteTargetForceMuteStatus(sub.subscriber) && (
                             <ParticipantControlButton
-                              onClick={() => sendForceMute(sub)}
+                              onClick={() => sendForceMute(sub.subscriber)}
                             >
                               마이크 off
                             </ParticipantControlButton>
                           )}
                         {publisher &&
                           isModerator(publisher) &&
-                          remoteTarget(sub) &&
-                          !remoteTargetPermissionStatus(sub) && (
+                          remoteTarget(sub.subscriber) &&
+                          !remoteTargetPermissionStatus(sub.subscriber) && (
                             <>
                               <ParticipantControlButton
-                                onClick={() => sendPermitSpeaking(sub)}
+                                onClick={() =>
+                                  sendPermitSpeaking(sub.subscriber)
+                                }
                               >
                                 수락하기
                               </ParticipantControlButton>
-                              <img
-                                src={'/asset/icons/raisehand_active_mini.svg'}
-                                alt="icon"
-                                style={{
-                                  position: 'absolute',
-                                  top: '54px',
-                                  right: '-0.5px',
-                                }}
-                              />
+                              <HandIcon>
+                                <img
+                                  src={'/asset/icons/raisehand_active_mini.svg'}
+                                  alt="icon"
+                                />
+                              </HandIcon>
                             </>
                           )}
                       </div>
@@ -857,27 +852,6 @@ const LiveRoom = () => {
               </InnerWrapper>
             </RoomWrapper>
             <BoardWrapper>
-              {/*<Grid padding="8px 24px">*/}
-              {/*  /!*<Header label={joinRoomStatus.category} leftArrow />*!/*/}
-              {/*  <TitleWrapper>*/}
-              {/*    <Text semiBold large>*/}
-              {/*      {joinRoomStatus.roomName}*/}
-              {/*    </Text>*/}
-              {/*  </TitleWrapper>*/}
-              {/*  <StatusWrapper>*/}
-              {/*    <StatusBox icon={'/asset/icons/Join.svg'} count={5} />*/}
-              {/*    <StatusBox*/}
-              {/*      label={'hosted by'}*/}
-              {/*      text={joinRoomStatus.moderatorNickname}*/}
-              {/*      gap={'3px'}*/}
-              {/*    />*/}
-              {/*  </StatusWrapper>*/}
-              {/*</Grid>*/}
-              {/*<div>*/}
-              {/*  <p>{joinRoomStatus.roomName}</p>*/}
-              {/*  <p>{joinRoomStatus.role}</p>*/}
-              {/*</div>*/}
-              {/*<Divider />*/}
               <BoardContentWrapper padding="16px 24px">
                 <Text lineHeight={'22px'} preWrap>
                   {joinRoomStatus.content}

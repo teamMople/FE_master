@@ -35,6 +35,7 @@ import {
   StatusBox,
   SearchInput,
   BasicModal,
+  LiveAnimation,
 } from './molecules';
 import {
   BoardList,
@@ -84,4 +85,5 @@ export {
   StandardInput,
   IconButton,
   BasicModal,
+  LiveAnimation,
 };

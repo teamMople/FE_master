@@ -18,10 +18,9 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
   const [userData, setUserData] = useState({
     sender: '',
     // connected: false,
-    message: null,
+    message: '',
     sentAt: 0,
-    profileUrl:
-      'https://devmaya--resources.s3.ap-northeast-2.amazonaws.com/profile/img-4045676583',
+    profileUrl: localStorage.getItem('profileImageUrl'),
   });
   useEffect(() => {
     connect();
@@ -130,8 +129,7 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
         type: 'CHAT',
         roomId: roomId,
         sentAt: today.toString(),
-        profileUrl:
-          'https://devmaya--resources.s3.ap-northeast-2.amazonaws.com/profile/img-4045676583',
+        profileUrl: localStorage.getItem('profileImageUrl'),
       };
       // console.log('👍 내가 보낸 메시지 ==>', chatMessage);
       stompClient.send('/pub/chat/message', {}, JSON.stringify(chatMessage));

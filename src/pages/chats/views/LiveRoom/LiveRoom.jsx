@@ -20,9 +20,10 @@ import TextChatView from '../../TextChatView';
 import VoteView from '../../VoteView';
 import SockJS from 'sockjs-client';
 import { over } from 'stompjs';
-import { Button, Grid, StatusBox, Text } from 'components';
+import { BasicModal, Button, StatusBox, Text } from 'components';
 import { ChatUser } from '../../component';
 import {
+  BoardContentWrapper,
   BoardWrapper,
   BottomButtonGroup,
   CarouselWrapper,
@@ -39,6 +40,7 @@ import {
 } from './style';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { setModalOpen } from '../../../../modules/modal';
 
 //!Todo 마이크 선택 가능하도록!!
 
@@ -151,6 +153,7 @@ const LiveRoom = () => {
     }
   }, []);
   // 방 종료 시 참여자들에게 메세지 보내기
+  const [closeState, setCloseState] = useState(false);
   const sendForceLeave = async () => {
     const options = {
       data: JSON.stringify({ noModerator: true }),
@@ -160,18 +163,18 @@ const LiveRoom = () => {
       .signal(options)
       .then(() => console.log('(SEND) 방장이 존재하지 않습니다!'))
       .catch((error) => console.error(error));
+    setCloseState(true); // 방 종료 상태 관리
   };
   const receiveForceLeave = () => {
     if (session !== null && joinRoomStatus.role !== 'MODERATOR') {
       session.on('signal:forceLeave', (event) => {
+        dispatch(setModalOpen(true)); // 참여자에게 라이브 종료 팝업창 띄우기
         leaveRoom().then((r) => r);
         console.log('(RECEIVE) 방장이 존재하지 않습니다!');
       });
     }
-    if (session !== null && joinRoomStatus.role === 'MODERATOR') {
-      setTimeout(() => leaveRoom(), 500);
-    }
   };
+
   useEffect(() => {
     subscribeToStreamDestroyed();
   }, []);
@@ -334,7 +337,7 @@ const LiveRoom = () => {
         // 4. 로컬 저장소에 저장한 openvidu token 을 제거한다.
         await localStorage.removeItem('OVAccessToken');
         // 5. 페이지를 이동시킨다.
-        await navigate('/room', { replace: true });
+        await navigate('/home', { replace: true });
       })
       .catch(() => alert('퇴장 토큰 삭제 실패!'));
   };
@@ -587,6 +590,7 @@ const LiveRoom = () => {
         if (publisher && publisher.stream.audioActive) {
           setIsHandsUp(true);
           setMyMicMute(true);
+          setMyHandsUpState(false); // 나의 프로필 손든 상태 관리
         }
       });
     }
@@ -687,6 +691,15 @@ const LiveRoom = () => {
 
   return (
     <>
+      <BasicModal
+        open={closeState}
+        onConfirm={() => {
+          setCloseState(false);
+          leaveRoom().then((r) => r);
+        }}
+      >
+        라이브를 종료했습니다.
+      </BasicModal>
       <>
         {/*<BackDrop className={(showUserRoom || showChatRoom) && 'active'} />*/}
         {/*<Button*/}
@@ -703,18 +716,17 @@ const LiveRoom = () => {
             {/*  onClick={handleHideUserRoom}*/}
             {/*  src={'/asset/icons/Down_arrow.svg'}*/}
             {/*/>*/}
-            <Button
-              // style={{ minWidth: '30px' }}
-              size={'small'}
-              shape={'rounded'}
-              backgroundColor={themeContext.colors.lightGray}
-              color={themeContext.colors.black}
-              onClick={leaveRoom}
-            >
-              {publisher && isModerator(publisher)
-                ? '방 종료하기'
-                : '방 나기기'}
-            </Button>
+            {publisher && isPublisher(publisher) && (
+              <Button
+                size={'small'}
+                shape={'rounded'}
+                backgroundColor={themeContext.colors.lightGray}
+                color={themeContext.colors.black}
+                onClick={leaveRoom}
+              >
+                방 나기기
+              </Button>
+            )}
             {publisher && isModerator(publisher) && (
               <Button
                 style={{ minWidth: '30px' }}
@@ -724,7 +736,7 @@ const LiveRoom = () => {
                 color={themeContext.colors.black}
                 onClick={sendForceLeave}
               >
-                종료 메시지 전송
+                방 종료하기
               </Button>
             )}
           </TopButtonGroup>
@@ -735,7 +747,7 @@ const LiveRoom = () => {
             <StatusWrapperChat>
               <StatusBox
                 icon={'/asset/icons/Join.svg'}
-                count={5}
+                count={roomSubscribers.length + 1}
                 // backgroundColor={themeContext.colors.white}
               />
               <StatusBox
@@ -779,6 +791,7 @@ const LiveRoom = () => {
                 {publisher && (
                   <ChatUser
                     streamManager={publisher}
+                    moderator={joinRoomStatus.moderatorNickname}
                     memberName={publisher.stream.connection.data}
                     isMute={
                       (isModerator(publisher) ||
@@ -786,6 +799,7 @@ const LiveRoom = () => {
                       publisher.stream.audioActive
                     }
                     detectSpeaking={detectSpeaking}
+                    myHandsUpState={myHandsUpState}
                   />
                 )}
                 {roomSubscribers.map((sub, i) => {
@@ -796,6 +810,7 @@ const LiveRoom = () => {
                         <ChatUser
                           key={i}
                           streamManager={sub}
+                          moderator={joinRoomStatus.moderatorNickname}
                           memberName={sub.stream.connection.data}
                           isMute={
                             sub.stream.connection.connectionId ===
@@ -863,9 +878,11 @@ const LiveRoom = () => {
               {/*  <p>{joinRoomStatus.role}</p>*/}
               {/*</div>*/}
               {/*<Divider />*/}
-              <Grid padding="16px 24px">
-                <Text lineHeight={'22px'}>{joinRoomStatus.content}</Text>
-              </Grid>
+              <BoardContentWrapper padding="16px 24px">
+                <Text lineHeight={'22px'} preWrap>
+                  {joinRoomStatus.content}
+                </Text>
+              </BoardContentWrapper>
               {publisher && (
                 <VoteView
                   roomId={joinRoomStatus.roomId}

@@ -3,7 +3,14 @@ import styled, { ThemeContext } from 'styled-components';
 import { Text } from 'components';
 import PropTypes from 'prop-types';
 
-const ChatUser = ({ streamManager, isMute, memberName, detectSpeaking }) => {
+const ChatUser = ({
+  streamManager,
+  isMute,
+  memberName,
+  detectSpeaking,
+  moderator,
+  myHandsUpState,
+}) => {
   const themeContext = useContext(ThemeContext);
   const videoRef = useRef();
 
@@ -28,7 +35,14 @@ const ChatUser = ({ streamManager, isMute, memberName, detectSpeaking }) => {
                 transition: detectSpeaking && 'all 0.2s ease',
               }}
             />
-            {isMute ? (
+            {myHandsUpState ? (
+              <MicIcon>
+                <img
+                  src={'/asset/icons/raisehand_active_mini.svg'}
+                  alt="icon"
+                />
+              </MicIcon>
+            ) : !myHandsUpState && isMute ? (
               <MicIcon>
                 <img src={'/asset/icons/microphone_active.svg'} alt="user" />
               </MicIcon>
@@ -39,7 +53,8 @@ const ChatUser = ({ streamManager, isMute, memberName, detectSpeaking }) => {
             )}
           </ImageWrapper>
           <Text small center color={themeContext.colors.gray2}>
-            {memberName ? memberName : 'null'}(방장)
+            {memberName ? memberName : 'null'}
+            {moderator === memberName && '(방장)'}
           </Text>
         </UserWrapper>
       )}
@@ -54,6 +69,8 @@ ChatUser.propTypes = {
   onClickSendForceMuteBool: PropTypes.bool,
   onClickSendForceMute: PropTypes.func,
   detectSpeaking: PropTypes.any,
+  moderator: PropTypes.string,
+  myHandsUpState: PropTypes.bool,
 };
 const UserVideo = styled.video`
   width: 0;

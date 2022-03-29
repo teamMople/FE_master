@@ -14,12 +14,6 @@ jobs:
       - run: yarn && yarn build
         env:
           CI: ""
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_BOILERPLATE_1C14B }}'
-          channelId: live
-          projectId: boilerplate-1c14b
       - name: Setting .env
         run: |
           echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
@@ -33,3 +27,9 @@ jobs:
           echo "REACT_APP_SOCKET_MESSAGE_URL=${{ secrets.REACT_APP_SOCKET_MESSAGE_URL }}" >> .env
           echo "REACT_APP_SOCKET_VOTE_URL=${{ secrets.REACT_APP_SOCKET_VOTE_URL }}" >> .env
           cat .env
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_BOILERPLATE_1C14B }}'
+          channelId: live
+          projectId: boilerplate-1c14b

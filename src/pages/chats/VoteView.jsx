@@ -84,9 +84,9 @@ const VoteView = ({
         type: 'AGREE',
         roomId: roomId,
         sender: userId,
-        message: null,
+        agreedBefore: agree,
+        disagreedBefore: disagree,
       };
-      console.log('🫖 찬성 ==>', message);
       stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setAgree(true);
       setDisagree(false);
@@ -100,9 +100,9 @@ const VoteView = ({
         type: 'DISAGREE',
         roomId: roomId,
         sender: userId,
-        message: null,
+        agreedBefore: agree,
+        disagreedBefore: disagree,
       };
-      console.log('🫖 반대 ==>', message);
       stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setDisagree(true);
       setAgree(false);
@@ -116,12 +116,11 @@ const VoteView = ({
         type: 'CANCEL_AGREE',
         roomId: roomId,
         sender: userId,
-        message: null,
+        agreedBefore: agree,
+        disagreedBefore: disagree,
       };
-      console.log('🫖 찬성 ==>', message);
       stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setAgree(false);
-      setDisagree(false);
     }
   };
 
@@ -132,11 +131,10 @@ const VoteView = ({
         type: 'CANCEL_DISAGREE',
         roomId: roomId,
         sender: userId,
-        message: null,
+        agreedBefore: agree,
+        disagreedBefore: disagree,
       };
-      console.log('🫖 찬성 ==>', message);
       stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
-      setAgree(false);
       setDisagree(false);
     }
   };

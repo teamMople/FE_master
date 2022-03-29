@@ -29,7 +29,7 @@ import history from '../utils/history';
 import { ThemeProvider } from 'styled-components';
 
 import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
-import LiveRoom from '../../pages/chats/LiveRoom';
+import LiveRoom from '../../pages/chats/views/LiveRoom/LiveRoom';
 import RoomList from '../../pages/chats/RoomList';
 
 function App() {

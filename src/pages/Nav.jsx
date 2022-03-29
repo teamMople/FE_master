@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   selectCreateRoomState,
   selectOpenRoomState,
+  selectRoomState,
   setCreateRoomNextStep,
   setCreateRoomSetting,
   setOpenCreateRoom,
@@ -38,6 +39,8 @@ const Nav = (props) => {
 
   let location = useLocation();
 
+  const roomState = useSelector(selectRoomState);
+
   const locationArray = [
     '/',
     '/login',
@@ -47,6 +50,7 @@ const Nav = (props) => {
     '/settings',
     '/editmyprofile',
     '/createboard',
+    `/room/${roomState.roomId}`,
   ];
 
   useEffect(() => {

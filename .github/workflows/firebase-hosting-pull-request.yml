@@ -29,3 +29,4 @@ jobs:
               echo "REACT_APP_OPENVIDU_URL=${{ secrets.REACT_APP_OPENVIDU_URL }}" >> .env
               echo "REACT_APP_SOCKET_MESSAGE_URL=${{ secrets.REACT_APP_SOCKET_MESSAGE_URL }}" >> .env
               echo "REACT_APP_SOCKET_VOTE_URL=${{ secrets.REACT_APP_SOCKET_VOTE_URL }}" >> .env
+              cat .env

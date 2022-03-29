@@ -3,7 +3,7 @@ import styled, { ThemeContext } from 'styled-components';
 import { Text } from 'components';
 import PropTypes from 'prop-types';
 
-const ChatUser = ({ streamManager, isMute, memberName }) => {
+const ChatUser = ({ streamManager, isMute, memberName, detectSpeaking }) => {
   const themeContext = useContext(ThemeContext);
   const videoRef = useRef();
 
@@ -18,8 +18,16 @@ const ChatUser = ({ streamManager, isMute, memberName }) => {
         <UserWrapper>
           <ImageWrapper>
             <UserVideo autoPlay={true} ref={videoRef} />
-            <UserImage src={'/asset/image/users/test.png'} alt="user" />
-
+            <UserImage
+              src={'/asset/image/users/test.png'}
+              alt="user"
+              style={{
+                outline: detectSpeaking
+                  ? `1.5px solid ${themeContext.colors.blue}`
+                  : 'none',
+                transition: detectSpeaking && 'all 0.2s ease',
+              }}
+            />
             {isMute ? (
               <MicIcon>
                 <img src={'/asset/icons/microphone_active.svg'} alt="user" />
@@ -45,6 +53,7 @@ ChatUser.propTypes = {
   memberName: PropTypes.string,
   onClickSendForceMuteBool: PropTypes.bool,
   onClickSendForceMute: PropTypes.func,
+  detectSpeaking: PropTypes.any,
 };
 const UserVideo = styled.video`
   width: 0;
@@ -68,7 +77,6 @@ const UserImage = styled.img`
   overflow: hidden;
   border-radius: 10em;
   outline-offset: 5px;
-  outline: 1.5px solid ${({ theme }) => theme.colors.blue};
   box-sizing: border-box;
 `;
 const MicIcon = styled.div`

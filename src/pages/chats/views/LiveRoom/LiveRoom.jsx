@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import styled, { ThemeContext } from 'styled-components';
+import { ThemeContext } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { Wrapper } from 'components/atoms';
 import { useDispatch, useSelector } from 'react-redux';
 import { OpenVidu } from 'openvidu-browser';
 import {
@@ -11,21 +10,35 @@ import {
   ovGetTokenAsync,
   removeAllRoomSubscribers,
   removeRoomSubscriber,
-  selectChatHideState,
   selectRoomState,
   setRemoteForceMuteStatus,
   setRemoteHandsUpStatus,
   setRemotePermissionStatus,
   setRoomSubscribers,
-} from '../../modules/chat';
-import TextChatView from './TextChatView';
-import VoteView from './VoteView';
+} from '../../../../modules/chat';
+import TextChatView from '../../TextChatView';
+import VoteView from '../../VoteView';
 import SockJS from 'sockjs-client';
 import { over } from 'stompjs';
-import ChatUserProfile from '../../components/molecules/ChatUserProfile';
-import { Button, Divider, Grid, Header, StatusBox, Text } from 'components';
-import { ChatUser, UserRoom } from './component';
-import IconButton from '../../components/atoms/buttons/IconButton';
+import { Button, Grid, StatusBox, Text } from 'components';
+import { ChatUser } from '../../component';
+import {
+  BoardWrapper,
+  BottomButtonGroup,
+  CarouselWrapper,
+  CircleButtons,
+  FixedTop,
+  InnerWrapper,
+  MyStateWrapper,
+  ParticipantControlButton,
+  RoomInfoWrapper,
+  RoomInnerButton,
+  RoomWrapper,
+  StatusWrapperChat,
+  TopButtonGroup,
+} from './style';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 //!Todo 마이크 선택 가능하도록!!
 
@@ -37,8 +50,8 @@ const LiveRoom = () => {
   const [publisher, setPublisher] = useState(undefined);
   const [myMicStatus, setMyMicStatus] = useState(false);
   const [isHandsUp, setIsHandsUp] = useState(false);
+  const [myHandsUpState, setMyHandsUpState] = useState(false);
   const [myMutMute, setMyMicMute] = useState(false);
-  const [currentMic, setCurrentMic] = useState(false);
   const [unsubscribe, setUnsubscribe] = useState(false);
   const [remoteMicStatus, setRemoteMicStatus] = useState({
     remoteTarget: undefined,
@@ -156,7 +169,7 @@ const LiveRoom = () => {
       });
     }
     if (session !== null && joinRoomStatus.role === 'MODERATOR') {
-      setTimeout(() => leaveRoom(), 3000);
+      setTimeout(() => leaveRoom(), 500);
     }
   };
   useEffect(() => {
@@ -418,6 +431,7 @@ const LiveRoom = () => {
         );
         setIsHandsUp(false);
         setMyMicMute(false);
+        setMyHandsUpState(false);
       });
     }
   };
@@ -441,6 +455,7 @@ const LiveRoom = () => {
     // setIsHandsUp(true);
     console.log('remoteHandsUpStatus :: ', remoteHandsUpStatus);
     console.log('퍼블리셔 핸즈업 :: ', publisher);
+    setMyHandsUpState(true);
   };
 
   // 발언권 요청자를 받을 때
@@ -579,52 +594,118 @@ const LiveRoom = () => {
 
   console.log('💌 roomSubscribers :', roomSubscribers);
 
-  const [showUserRoom, setShowUserRoom] = useState(false);
-  const [showChatRoom, setShowChatRoom] = useState(false);
-  const hideChatState = useSelector(selectChatHideState);
-  const handleShowUserRoom = () => {
-    setShowUserRoom(true);
+  const [pageIndex, setPageIndex] = useState(1);
+  const handleClickMoveVotePage = () => {
+    setPageIndex(2);
   };
-  const handleHideUserRoom = () => {
-    setShowUserRoom(false);
+  const handleChangePageIndex = (index) => {
+    setPageIndex(index);
   };
-  const handleMoveChatRoom = () => {
-    setShowUserRoom(false);
-    setShowChatRoom(true);
+
+  // publisher 음성인식
+  useEffect(() => {
+    publisherDetectSpeaking();
+  }, [publisher]);
+  const [detectSpeaking, setDetectSpeaking] = useState(false);
+  const publisherDetectSpeaking = () => {
+    if (publisher) {
+      publisher.on('publisherStartSpeaking', (event) => {
+        console.log('The local user start speaking');
+        setDetectSpeaking(true);
+      });
+      publisher.on('publisherStopSpeaking', (event) => {
+        console.log('The local user stop speaking');
+        setDetectSpeaking(false);
+      });
+    }
   };
-  const handleMoveUserRoom = () => {
-    setShowUserRoom(true);
-    setShowChatRoom(false);
+
+  //!FixMe 이 부분 리랜더링이 된다...
+  const [subDetectSpeaking, setSubDetectSpeaking] = useState(false);
+  const subscriberDetectSpeaking = (subscriber) => {
+    subscriber.on('publisherStartSpeaking', (event) => {
+      console.log('User ' + event.connection.connectionId + ' stop speaking');
+      setSubDetectSpeaking(true);
+    });
+    subscriber.on('publisherStopSpeaking', (event) => {
+      console.log('User ' + event.connection.connectionId + ' stop speaking');
+      setSubDetectSpeaking(false);
+    });
   };
-  const handleShowChatRoom = () => {
-    setShowChatRoom(true);
-  };
-  const handleHideChatRoom = () => {
-    setShowChatRoom(false);
+
+  const BottomFunctionalButtons = () => {
+    return (
+      <BottomButtonGroup>
+        <RoomInnerButton onClick={() => setPageIndex(0)}>
+          <img src={'/asset/icons/paper-plane.svg'} alt="icon" />
+          <Text>채팅방</Text>
+        </RoomInnerButton>
+
+        <CircleButtons>
+          {/* 투표 페이지로 이동 */}
+          <img
+            src={
+              pageIndex === 2
+                ? '/asset/icons/vote_normal_active.svg'
+                : '/asset/icons/vote_normal.svg'
+            }
+            alt="icon"
+            onClick={handleClickMoveVotePage}
+          />
+          {publisher &&
+            (isModerator(publisher) ||
+              (isPublisher(publisher) && myMutMute)) && (
+              <div onClick={sendChangeMicStatus}>
+                {myMicStatus ? (
+                  <img src={'/asset/icons/microphone_normal.svg'} alt="icon" />
+                ) : (
+                  <img
+                    src={'/asset/icons/microphone_normal_active.svg'}
+                    alt="icon"
+                  />
+                )}
+              </div>
+            )}
+          {publisher && isPublisher(publisher) && !isHandsUp && (
+            <div onClick={() => sendHandsUp(publisher)}>
+              {myHandsUpState ? (
+                <>
+                  <MyStateWrapper>
+                    <Text size={'small'}>발언권 요청!</Text>
+                  </MyStateWrapper>
+                  <img src={'/asset/icons/raisehand_active.svg'} alt="icon" />
+                </>
+              ) : (
+                <img src={'/asset/icons/raisehand.svg'} alt="icon" />
+              )}
+            </div>
+          )}
+        </CircleButtons>
+      </BottomButtonGroup>
+    );
   };
 
   return (
     <>
       <>
-        <BackDrop className={(showUserRoom || showChatRoom) && 'active'} />
-        <Button
-          small
-          shape={'rounded'}
-          style={{ minWidth: 'auto', position: 'fixed', zIndex: 99 }}
-          onClick={handleHideChatRoom}
-        >
-          채팅방 숨기기
-        </Button>
-        <RoomWrapper className={showUserRoom && 'active'}>
+        {/*<BackDrop className={(showUserRoom || showChatRoom) && 'active'} />*/}
+        {/*<Button*/}
+        {/*  small*/}
+        {/*  shape={'rounded'}*/}
+        {/*  style={{ minWidth: 'auto', position: 'fixed', zIndex: 99 }}*/}
+        {/*  onClick={handleHideChatRoom}*/}
+        {/*>*/}
+        {/*  채팅방 숨기기*/}
+        {/*</Button>*/}
+        <FixedTop>
           <TopButtonGroup>
-            <IconButton
-              onClick={handleHideUserRoom}
-              src={'/asset/icons/Down_arrow.svg'}
-            />
-
+            {/*<IconButton*/}
+            {/*  onClick={handleHideUserRoom}*/}
+            {/*  src={'/asset/icons/Down_arrow.svg'}*/}
+            {/*/>*/}
             <Button
-              style={{ minWidth: '30px' }}
-              small
+              // style={{ minWidth: '30px' }}
+              size={'small'}
               shape={'rounded'}
               backgroundColor={themeContext.colors.lightGray}
               color={themeContext.colors.black}
@@ -637,7 +718,7 @@ const LiveRoom = () => {
             {publisher && isModerator(publisher) && (
               <Button
                 style={{ minWidth: '30px' }}
-                small
+                size={'small'}
                 shape={'rounded'}
                 backgroundColor={themeContext.colors.lightGray}
                 color={themeContext.colors.black}
@@ -655,276 +736,155 @@ const LiveRoom = () => {
               <StatusBox
                 icon={'/asset/icons/Join.svg'}
                 count={5}
-                backgroundColor={themeContext.colors.white}
+                // backgroundColor={themeContext.colors.white}
               />
               <StatusBox
                 label={'hosted by'}
                 text={joinRoomStatus.moderatorNickname}
                 gap={'3px'}
-                backgroundColor={themeContext.colors.white}
+                // backgroundColor={themeContext.colors.white}
               />
             </StatusWrapperChat>
           </RoomInfoWrapper>
-          <InnerWrapper>
-            {publisher && (
-              <ChatUser
-                streamManager={publisher}
-                memberName={publisher.stream.connection.data}
-                isMute={
-                  (isModerator(publisher) ||
-                    (isPublisher(publisher) && myMutMute)) &&
-                  publisher.stream.audioActive
-                }
-              />
-            )}
-            {roomSubscribers.map((sub, i) => (
-              <>
-                <div style={{ position: 'relative' }}>
-                  <ChatUser
-                    key={i}
-                    streamManager={sub}
-                    memberName={sub.stream.connection.data}
-                    isMute={
-                      sub.stream.connection.connectionId ===
-                        remoteMicStatus.remoteTarget &&
-                      remoteMicStatus.isAudioActive
-                    }
-                  />
-                  {publisher &&
-                    isModerator(publisher) &&
-                    remoteTarget(sub) &&
-                    remoteTargetForceMuteStatus(sub) && (
-                      <button
-                        onClick={() => sendForceMute(sub)}
-                        style={{
-                          position: 'absolute',
-                          background: `${themeContext.colors.blue}`,
-                          fontSize: '10px',
-                          borderRadius: '10em',
-                          padding: '4px 10px',
-                          top: '68px',
-                          left: '-3px',
-                          border: 'none',
-                          color: `${themeContext.colors.white}`,
-                        }}
-                      >
-                        강제음소거
-                      </button>
-                    )}
-                  {publisher &&
-                    isModerator(publisher) &&
-                    remoteTarget(sub) &&
-                    !remoteTargetPermissionStatus(sub) && (
-                      <button
-                        onClick={() => sendPermitSpeaking(sub)}
-                        style={{
-                          position: 'absolute',
-                          background: `${themeContext.colors.primaryYellow}`,
-                          fontSize: '10px',
-                          borderRadius: '10em',
-                          padding: '4px 10px',
-                          top: '68px',
-                          left: '-3px',
-                          border: 'none',
-                        }}
-                      >
-                        수락하기
-                      </button>
-                    )}
-                </div>
-              </>
-            ))}
-          </InnerWrapper>
-          <BottomButtonGroup>
-            <RoomInnerButton onClick={handleMoveChatRoom}>
-              <img src={'/asset/icons/paper-plane.svg'} alt="icon" />
-              <Text>채팅방</Text>
-            </RoomInnerButton>
-
-            {publisher &&
-              (isModerator(publisher) ||
-                (isPublisher(publisher) && myMutMute)) && (
-                <div onClick={sendChangeMicStatus}>
-                  {myMicStatus ? (
-                    <img src={'/asset/icons/microphone.svg'} alt="icon" />
-                  ) : (
-                    <img
-                      src={'/asset/icons/microphone_active.svg'}
-                      alt="icon"
-                    />
-                  )}
-                </div>
+        </FixedTop>
+        <CarouselWrapper>
+          <Carousel
+            showIndicators={false}
+            axis={'horizontal'}
+            emulateTouch
+            showArrows={false}
+            showStatus={false}
+            preventMovementUntilSwipeScrollTolerance
+            swipeScrollTolerance={100}
+            selectedItem={pageIndex}
+            onChange={handleChangePageIndex}
+            showThumbs={false}
+          >
+            <>
+              {publisher && (
+                <TextChatView
+                  roomId={joinRoomStatus.roomId}
+                  memberName={publisher.session.connection.data}
+                  stompClient={messageStomp}
+                  sock={messageSock}
+                  unsubscribe={unsubscribe}
+                  moderator={joinRoomStatus.moderatorNickname}
+                />
               )}
-            {publisher && isPublisher(publisher) && !isHandsUp && (
-              <RoomInnerButton onClick={() => sendHandsUp(publisher)}>
-                <img src={'/asset/icons/flag.svg'} alt="icon" />
-                <Text>손들기</Text>
-              </RoomInnerButton>
-            )}
-          </BottomButtonGroup>
-        </RoomWrapper>
-        <Wrapper padding="0 0px 0px 0px">
-          <Grid padding="8px 24px">
-            <Header label={joinRoomStatus.category} leftArrow />
-            <TitleWrapper>
-              <Text semiBold large>
-                {joinRoomStatus.roomName}
-              </Text>
-            </TitleWrapper>
-            <StatusWrapper>
-              <StatusBox icon={'/asset/icons/Join.svg'} count={5} />
-              <StatusBox
-                label={'hosted by'}
-                text={joinRoomStatus.moderatorNickname}
-                gap={'3px'}
-              />
-            </StatusWrapper>
-          </Grid>
-          {/*<div>*/}
-          {/*  <p>{joinRoomStatus.roomName}</p>*/}
-          {/*  <p>{joinRoomStatus.role}</p>*/}
-          {/*</div>*/}
-          <Divider />
-          <Grid padding="16px 24px">
-            <Text lineHeight={'22px'}>{joinRoomStatus.content}</Text>
-          </Grid>
-          {publisher && (
-            <VoteView
-              roomId={joinRoomStatus.roomId}
-              userId={publisher.session.connection.data}
-              memberAgreed={joinRoomStatus.memberAgreed}
-              memberDisagreed={joinRoomStatus.memberDisagreed}
-              stompClient={voteStomp}
-              sock={voteSock}
-            />
-          )}
-          <Button
-            secondary
-            style={{
-              borderRadius: '10em',
-              width: '50px',
-              height: '50px',
-              minWidth: 'auto',
-              position: 'absolute',
-              bottom: '50px',
-              right: '24px',
-            }}
-            onClick={handleShowUserRoom}
-          >
-            Live
-          </Button>
-          <Button
-            secondary
-            style={{
-              borderRadius: '10em',
-              width: '50px',
-              height: '50px',
-              minWidth: 'auto',
-              position: 'absolute',
-              bottom: '50px',
-              left: '24px',
-            }}
-            onClick={handleShowChatRoom}
-          >
-            Chat
-          </Button>
-        </Wrapper>
+            </>
+            <RoomWrapper>
+              {/*<RoomWrapper className={showUserRoom && 'active'}>*/}
+
+              <InnerWrapper>
+                {publisher && (
+                  <ChatUser
+                    streamManager={publisher}
+                    memberName={publisher.stream.connection.data}
+                    isMute={
+                      (isModerator(publisher) ||
+                        (isPublisher(publisher) && myMutMute)) &&
+                      publisher.stream.audioActive
+                    }
+                    detectSpeaking={detectSpeaking}
+                  />
+                )}
+                {roomSubscribers.map((sub, i) => {
+                  subscriberDetectSpeaking(sub);
+                  return (
+                    <>
+                      <div style={{ position: 'relative' }}>
+                        <ChatUser
+                          key={i}
+                          streamManager={sub}
+                          memberName={sub.stream.connection.data}
+                          isMute={
+                            sub.stream.connection.connectionId ===
+                              remoteMicStatus.remoteTarget &&
+                            remoteMicStatus.isAudioActive
+                          }
+                          detectSpeaking={subDetectSpeaking}
+                        />
+                        {publisher &&
+                          isModerator(publisher) &&
+                          remoteTarget(sub) &&
+                          remoteTargetForceMuteStatus(sub) && (
+                            <ParticipantControlButton
+                              onClick={() => sendForceMute(sub)}
+                            >
+                              마이크 off
+                            </ParticipantControlButton>
+                          )}
+                        {publisher &&
+                          isModerator(publisher) &&
+                          remoteTarget(sub) &&
+                          !remoteTargetPermissionStatus(sub) && (
+                            <>
+                              <ParticipantControlButton
+                                onClick={() => sendPermitSpeaking(sub)}
+                              >
+                                수락하기
+                              </ParticipantControlButton>
+                              <img
+                                src={'/asset/icons/raisehand_active_mini.svg'}
+                                alt="icon"
+                                style={{
+                                  position: 'absolute',
+                                  top: '54px',
+                                  right: '-0.5px',
+                                }}
+                              />
+                            </>
+                          )}
+                      </div>
+                    </>
+                  );
+                })}
+              </InnerWrapper>
+            </RoomWrapper>
+            <BoardWrapper>
+              {/*<Grid padding="8px 24px">*/}
+              {/*  /!*<Header label={joinRoomStatus.category} leftArrow />*!/*/}
+              {/*  <TitleWrapper>*/}
+              {/*    <Text semiBold large>*/}
+              {/*      {joinRoomStatus.roomName}*/}
+              {/*    </Text>*/}
+              {/*  </TitleWrapper>*/}
+              {/*  <StatusWrapper>*/}
+              {/*    <StatusBox icon={'/asset/icons/Join.svg'} count={5} />*/}
+              {/*    <StatusBox*/}
+              {/*      label={'hosted by'}*/}
+              {/*      text={joinRoomStatus.moderatorNickname}*/}
+              {/*      gap={'3px'}*/}
+              {/*    />*/}
+              {/*  </StatusWrapper>*/}
+              {/*</Grid>*/}
+              {/*<div>*/}
+              {/*  <p>{joinRoomStatus.roomName}</p>*/}
+              {/*  <p>{joinRoomStatus.role}</p>*/}
+              {/*</div>*/}
+              {/*<Divider />*/}
+              <Grid padding="16px 24px">
+                <Text lineHeight={'22px'}>{joinRoomStatus.content}</Text>
+              </Grid>
+              {publisher && (
+                <VoteView
+                  roomId={joinRoomStatus.roomId}
+                  userId={publisher.session.connection.data}
+                  memberAgreed={joinRoomStatus.memberAgreed}
+                  memberDisagreed={joinRoomStatus.memberDisagreed}
+                  stompClient={voteStomp}
+                  sock={voteSock}
+                />
+              )}
+            </BoardWrapper>
+          </Carousel>
+        </CarouselWrapper>
+
+        {/* 하단 기능 버튼 모음 */}
+        {pageIndex !== 0 && <BottomFunctionalButtons />}
       </>
-      {/*============*/}
-      {publisher && showChatRoom && (
-        <TextChatView
-          roomId={joinRoomStatus.roomId}
-          memberName={publisher.session.connection.data}
-          stompClient={messageStomp}
-          sock={messageSock}
-          unsubscribe={unsubscribe}
-          moderator={joinRoomStatus.moderatorNickname}
-          active={showChatRoom}
-          onClickMoveUserRoom={handleMoveUserRoom}
-        />
-      )}
     </>
   );
 };
-
-const BackDrop = styled.div`
-  position: fixed;
-  height: 100%;
-  z-index: 11;
-  width: 100%;
-  background-color: ${({ theme }) => theme.colors.black};
-  transition: all 0.3s ease;
-  opacity: 0;
-  visibility: hidden;
-
-  &.active {
-  opacity: 0.5;
-  visibility: visible;
-`;
-const RoomWrapper = styled.div`
-  position: fixed;
-  bottom: 0;
-  z-index: 12;
-  width: 100%;
-  height: 90%;
-  background-color: ${({ theme }) => theme.colors.backgroundGray};
-  border-radius: 20px 20px 0 0;
-  transition: all 0.3s ease;
-  transform: translateY(100%);
-
-  &.active {
-    transform: translateY(0);
-  }
-`;
-const InnerWrapper = styled.div`
-  margin: 20px 24px;
-  padding: 10px 0;
-  display: grid;
-  grid-column-gap: 10px;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr;
-  grid-row-gap: 13px;
-  justify-items: center;
-  height: calc(100% - 230px);
-  overflow-y: auto;
-`;
-const TopButtonGroup = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: 20px 24px;
-`;
-const RoomInfoWrapper = styled.div`
-  margin: 20px 24px;
-`;
-const StatusWrapperChat = styled.div`
-  display: flex;
-  column-gap: 8px;
-  margin: 8px 0;
-`;
-const BottomButtonGroup = styled.div`
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 21px 24px;
-`;
-const RoomInnerButton = styled.div`
-  background-color: ${({ theme }) => theme.colors.white};
-  border-radius: 10em;
-  padding: 7.5px 10px;
-  display: flex;
-  align-items: center;
-  column-gap: 5px;
-`;
-
-const StatusWrapper = styled.div`
-  display: flex;
-  column-gap: 8px;
-`;
-const TitleWrapper = styled.div`
-  margin-bottom: 16px;
-`;
 
 export default LiveRoom;

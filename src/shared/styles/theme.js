@@ -70,7 +70,7 @@ const lightThemeColors = {
   black: '#282828',
   gray: '#D5D8DB',
   gray2: '#718096',
-  lightGray: '#E5E5E5',
+  lightGray: '#f1f1f1',
   darkGray: '#718096',
   backgroundGray: '#F8F8F8',
   primaryYellow: '#FADE86',

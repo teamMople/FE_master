@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { setMemberVoteStatus } from '../../modules/chat';
 import { VoteResultBar } from '../../components';
+import { VoteResultBarWrapper } from './views/LiveRoom/style';
 
 const VoteView = ({
   roomId,
@@ -139,7 +140,7 @@ const VoteView = ({
     }
   };
   return (
-    <div className="container">
+    <VoteResultBarWrapper>
       <VoteResultBar
         agreeCount={agreeCount}
         disagreeCount={disagreeCount}
@@ -156,7 +157,7 @@ const VoteView = ({
       ) : (
         <button onClick={sendAddDisagree}>반대</button>
       )}*/}
-    </div>
+    </VoteResultBarWrapper>
   );
 };
 

@@ -29,7 +29,7 @@ const BasicModal = ({
             />
           </ModalHeader>
           <ModalContent>
-            <Text tiny lineHeight={'16px'}>
+            <Text tiny lineHeight={'16px'} center>
               {children}
             </Text>
             {warning}

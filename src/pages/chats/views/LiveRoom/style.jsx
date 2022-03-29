@@ -5,7 +5,8 @@ export const FixedTop = styled.div`
   top: 0;
   z-index: 15;
   width: 100%;
-  background-color: #61dafb;
+  //background-color: #61dafb;
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 export const CarouselWrapper = styled.div`
   padding-top: 148px;
@@ -27,7 +28,15 @@ export const BackDrop = styled.div`
   visibility: visible;
 `;
 export const BoardWrapper = styled.div`
-  //position: fixed;
+  height: calc(100% - 78px);
+  overflow-y: auto;
+`;
+export const BoardContentWrapper = styled.div`
+  margin: 16px 24px;
+  min-height: 200px;
+`;
+export const VoteResultBarWrapper = styled.div`
+  margin: 16px 24px;
 `;
 export const RoomWrapper = styled.div`
   //position: fixed;
@@ -59,7 +68,7 @@ export const InnerWrapper = styled.div`
 `;
 export const TopButtonGroup = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin: 20px 24px;
 `;
 export const RoomInfoWrapper = styled.div`
@@ -68,7 +77,7 @@ export const RoomInfoWrapper = styled.div`
 export const StatusWrapperChat = styled.div`
   display: flex;
   column-gap: 8px;
-  margin: 8px 0;
+  margin: 16px 0 8px 0;
 `;
 export const BottomButtonGroup = styled.div`
   position: absolute;

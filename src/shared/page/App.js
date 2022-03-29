@@ -21,6 +21,8 @@ import {
   LiveBoardList,
   Settings,
   NotFound,
+  CombinedBoardList,
+  Loading,
 } from '../../pages';
 import '../styles/App.css';
 
@@ -64,9 +66,9 @@ function App() {
           <Route path={'/room/:roomId'} element={<LiveRoom />} />
           <Route path="/home" element={<Home />} />
           <Route path="/search" element={<SearchBoard />}>
-            <Route path="result" element={<BoardList />} />
-            <Route path="result/general" element={<BoardList />} />
-            <Route path="result/live" element={<BoardList />} />
+            <Route path="result" element={<CombinedBoardList />} />
+            <Route path="result/general" element={<CombinedBoardList />} />
+            <Route path="result/live" element={<CombinedBoardList />} />
           </Route>
           <Route path="/list" element={<BoardList />}>
             <Route path=":categoryName" element={<BoardList />} />
@@ -90,6 +92,7 @@ function App() {
           <Route path="/findpassword" element={<FindPassword />} />
           <Route path="/alarm" element={<AlarmList />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/loading" element={<Loading />} />
           <Route path={'*'} element={<NotFound />} />
         </Routes>
         <Nav />

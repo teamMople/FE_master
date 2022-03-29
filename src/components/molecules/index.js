@@ -18,3 +18,4 @@ export { default as ReplyCommentBox } from './ReplyCommentBox';
 export { default as StatusBox } from './StatusBox';
 export { default as SearchInput } from './SearchInput';
 export { default as BasicModal } from './modal/BasicModal';
+export { default as KebabMenu } from './KebabMenu';

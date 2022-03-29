@@ -1,6 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './users';
-import { boardListSlice, liveBoardListSlice, detailSlice } from './boards';
+import {
+  boardListSlice,
+  liveBoardListSlice,
+  combinedBoardListSlice,
+  detailSlice,
+} from './boards';
 import { commentListSlice, replyCommentListSlice } from './comments';
 import chatReducer from './chat';
 import modalReducer from './modal';
@@ -10,6 +15,7 @@ const store = configureStore({
     users: userReducer,
     boards: boardListSlice.reducer,
     liveBoards: liveBoardListSlice.reducer,
+    combinedBoards: combinedBoardListSlice.reducer,
     detail: detailSlice.reducer,
     comments: commentListSlice.reducer,
     replyComments: replyCommentListSlice.reducer,

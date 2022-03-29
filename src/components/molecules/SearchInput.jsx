@@ -3,7 +3,7 @@ import { Grid, Input } from '../atoms';
 import styled, { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
 
-const SearchInput = ({ iconButtonClick, onChange }) => {
+const SearchInput = ({ backgroundColor, iconButtonClick, onChange }) => {
   const themeContext = useContext(ThemeContext);
   const [active, setActive] = useState(false);
   const handleFocus = () => {
@@ -22,6 +22,7 @@ const SearchInput = ({ iconButtonClick, onChange }) => {
           onChange={onChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          backgroundColor={backgroundColor}
         />
       </SearchInputWrapper>
       <CustomIconButton onClick={iconButtonClick}>
@@ -59,6 +60,7 @@ const SearchInput = ({ iconButtonClick, onChange }) => {
 SearchInput.propTypes = {
   iconButtonClick: PropTypes.func,
   onChange: PropTypes.func,
+  backgroundColor: PropTypes.string,
 };
 const SearchInputWrapper = styled.div`
   width: 100%;

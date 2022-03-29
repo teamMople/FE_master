@@ -53,9 +53,9 @@ const apis = {
   editMyInfo: (email, profileImageUrl, nickname, password) =>
     api.put('/api/user/update', { email, profileImageUrl, nickname, password }),
   findMyPassword: (email) => api.post('/api/user/mypw', { email }),
-  verifyEmail: (email) => api.get('/api/user/check/Email', { email }),
+  verifyEmail: (email) => api.post('/api/user/check/Email', { email }),
   verifyNickname: (nickname) =>
-    api.get('/api/user/check/Nickname', { nickname }),
+    api.post('/api/user/check/Nickname', { nickname }),
 
   // 게시물
   createBoard: (title, content, imageUrl, category) =>
@@ -68,6 +68,8 @@ const apis = {
         categoryName,
       },
     ),
+  getMyBoardList: () => authApi.get('/auth/api/board/myboard'),
+  getMyCommentList: () => authApi.get('/auth/api/board/mycomments'),
   getDetail: (boardId) =>
     authApi.get(`/auth/api/board/${boardId}`, { boardId }),
   deleteBoard: (boardId) =>
@@ -93,7 +95,7 @@ const apis = {
     authApi.delete(`/auth/api/comment/${commentId}`),
   recommendComment: (commentId) =>
     authApi.get(`/auth/api/comment/recommend/${commentId}`),
-  searchBoard: (search) => authApi.get(`/auth/api/comment/search/${search}`),
+  searchBoard: (search) => authApi.get(`/auth/api/board/search/${search}`),
 
   // 알람
   pushAlarm: (targetToken) =>
@@ -113,7 +115,8 @@ const apis = {
   getLiveRoomList: () => authApi.get('/api/chat/rooms/onair'),
   getLiveRoomListByCategory: (categoryName) =>
     authApi.get(`/api/chat/rooms/${categoryName}`),
-  searchLiveRoom: (keyword) => authApi.get(`/api/chat/rooms/${keyword}`),
+  searchLiveRoom: (search) =>
+    authApi.get(`/api/chat/rooms/onair/keyword/${search}`),
 
   createRoom: (data) => authApi.post('/auth/api/chat/room', data),
   joinRoom: (data) => authApi.post('/auth/api/chat/room/join', data),

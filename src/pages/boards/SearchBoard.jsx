@@ -17,7 +17,6 @@ import { Loading } from 'pages';
 function SearchBoard(props) {
   const { search } = useLocation();
   const { keyword } = queryString.parse(search);
-  console.log(keyword);
 
   const themeContext = useContext(ThemeContext);
   const navigate = useNavigate();

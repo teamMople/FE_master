@@ -115,7 +115,6 @@ export const searchBoardAsync = createAsyncThunk(
   'boards/searchBoard',
   async (search, thunkAPI) => {
     const response = await apis.searchBoard(search);
-    console.log(response);
     return response.data;
   },
 );
@@ -123,8 +122,7 @@ export const searchBoardAsync = createAsyncThunk(
 export const searchLiveBoardAsync = createAsyncThunk(
   'boards/searchLiveBoard',
   async (search, thunkAPI) => {
-    const response = await apis.searchLiveBoard(search);
-    console.log(response);
+    const response = await apis.searchLiveRoom(search);
     return response.data;
   },
 );

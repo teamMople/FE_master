@@ -57,9 +57,11 @@ function CombinedBoardList(props) {
                     </Grid>
                   );
                 } else if (board.type === 'live') {
-                  <Grid key={index} padding="0px 0px 16px 0px">
-                    <Tile type="live" board={board} />
-                  </Grid>;
+                  return (
+                    <Grid key={index} padding="0px 0px 16px 0px">
+                      <Tile type="live" board={board} />
+                    </Grid>
+                  );
                 } else {
                   return;
                 }

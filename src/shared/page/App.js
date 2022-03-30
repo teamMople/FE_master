@@ -32,8 +32,9 @@ import { ThemeProvider } from 'styled-components';
 
 import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
 import LiveRoom from '../../pages/chats/views/LiveRoom/LiveRoom';
-import PageLoading from '../../components/molecules/PageLoading';
 import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
+import GlobalStyle from '../styles/globalStyles';
+import { PageLoading } from 'components';
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
@@ -48,8 +49,9 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <GlobalStyle />
       <BrowserRouter history={history}>
-        {/* 잠시 임시로 넣어놓았습니다. */}
+        {/*잠시 임시로 넣어놓았습니다.*/}
         {/*<button style={{ position: 'fixed', right: 0 }} onClick={changeTheme}>*/}
         {/*  테마변경*/}
         {/*</button>*/}

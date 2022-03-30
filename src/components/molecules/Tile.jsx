@@ -234,7 +234,7 @@ const LiveTileWrapper = styled.div`
 
 const BasicTileWrapper = styled.div`
   position: relative;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colors.white};
   display: flex;
   flex-direction: column;
   border-radius: 20px;

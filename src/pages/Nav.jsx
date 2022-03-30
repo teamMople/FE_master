@@ -280,7 +280,8 @@ const SpeedDialMenu = styled.div`
 `;
 
 const NavWrapper = styled.div`
-  position: fixed;
+  //position: fixed;
+  position: relative;
   z-index: 11;
   //z-index: 99;
   width: 100%;

@@ -77,8 +77,9 @@ function SearchBoard(props) {
 }
 
 const CategoryWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  //flex-wrap: wrap;
   row-gap: 18px;
   column-gap: 18px;
 `;

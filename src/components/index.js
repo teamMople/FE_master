@@ -38,6 +38,7 @@ import {
   LiveAnimation,
   KebabMenu,
   PageLoading,
+  DeviceDetector,
 } from './molecules';
 import {
   BoardList,
@@ -90,4 +91,5 @@ export {
   LiveAnimation,
   KebabMenu,
   PageLoading,
+  DeviceDetector,
 };

@@ -3,19 +3,56 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { ThemeContext } from 'styled-components';
-import { Grid, Text, Button, ProfileImageStack, ProfileBox } from 'components';
+import { Grid, Text, ProfileImageStack, ProfileBox } from 'components';
 import { useNavigate } from 'react-router-dom';
 import StatusBox from './StatusBox';
+import { joinRoomAsync } from '../../modules/chat';
+import { useDispatch } from 'react-redux';
 
 const Tile = (props) => {
   const { type, board } = props;
   const themeContext = useContext(ThemeContext);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  const handleEnterRoom = async (
+    roomId,
+    roomName,
+    moderatorNickname,
+    participantCount,
+    role,
+  ) => {
+    const nickname = localStorage.getItem('nickname');
+    const data = {
+      roomId: roomId,
+      memberName: nickname,
+      role: role,
+      participantCount: participantCount,
+    };
+    await dispatch(
+      joinRoomAsync({
+        data,
+        memberName: nickname,
+        role: role,
+      }),
+    )
+      .then((res) => navigate(`/room/${res.payload.roomId}`))
+      .catch((error) => console.error(error));
+  };
   switch (type) {
     case 'live':
       return (
-        <LiveTileWrapper>
+        <LiveTileWrapper
+          onClick={() =>
+            handleEnterRoom(
+              board.roomId,
+              board.roomName,
+              board.moderatorNickname,
+              board.maxParticipantCount,
+              'PUBLISHER',
+            )
+          }
+        >
           <Grid margin="0px 0px 18px 0px">
             <ProfileImageStack
               nicknames={board.participantsNicknames}
@@ -155,6 +192,9 @@ Tile.propTypes = {
     disagreeCount: PropTypes.number,
     category: PropTypes.string,
     createdAt: PropTypes.array,
+    roomId: PropTypes.number,
+    maxParticipantCount: PropTypes.number,
+    moderatorNickname: PropTypes.string,
   }),
 };
 
@@ -210,7 +250,5 @@ const BasicTileWrapper = styled.div`
     justify-content: space-between;
   }
 `;
-
-const CategoryTileWrapper = styled.div``;
 
 export default Tile;

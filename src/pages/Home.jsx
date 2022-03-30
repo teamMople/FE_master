@@ -1,29 +1,24 @@
 import React, { useContext } from 'react';
 
 import { ThemeContext } from 'styled-components';
-import { Wrapper, Grid, Loader, Button, BasicModal } from 'components';
-import Nav from './Nav';
+import { Wrapper, Grid, Loader, BasicModal } from 'components';
 import {
   CardCarousel,
   CategoryCarousel,
   BoardList,
 } from '../components/organisms';
 import {
-  clearBoardList,
   getBoardListAsync,
   getLiveBoardListAsync,
   selectedBoardList,
   selectedLiveBoardList,
 } from 'modules/boards';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCommentListAsync } from 'modules/comments';
-import { useNavigate } from 'react-router-dom';
 import { selectModalOpen, setModalOpen } from 'modules/modal';
 
-const Home = (props) => {
+const Home = () => {
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const { data: basicBoards, status: basicBoardsStatus } =
     useSelector(selectedBoardList);
@@ -56,17 +51,6 @@ const Home = (props) => {
         </BasicModal>
         {/* 라이브 종료 팝업 ::end:: */}
         <Wrapper backgroundColor={themeContext.colors.backgroundGray}>
-          <Button
-            style={{
-              width: 'auto',
-              fontSize: '10px',
-              position: 'absolute',
-              right: 0,
-            }}
-            onClick={() => navigate('/room')}
-          >
-            라이브 방 리스트로 가기(임시)
-          </Button>
           <Grid padding="45px 0px 30px 0px">
             <CardCarousel
               label="실시간 HOT 라이브"

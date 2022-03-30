@@ -1,9 +1,8 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Carousel } from '@trendyol-js/react-carousel';
 
-import { Wrapper, Grid, Text, CategoryTile } from 'components';
+import { Grid, Text, CategoryTile } from 'components';
 import { useNavigate } from 'react-router-dom';
 
 const CategoryCarousel = (props) => {
@@ -23,6 +22,15 @@ const CategoryCarousel = (props) => {
         swiping={true}
         leftArrow={false}
         rightArrow={false}
+        // showIndicators={false}
+        // emulateTouch
+        // showArrows={false}
+        // showStatus={false}
+        // preventMovementUntilSwipeScrollTolerance
+        // centerMode
+        // showThumbs={false}
+        // transitionTime={300}
+        // centerSlidePercentage={45}
       >
         {categories.map((cat, index) => {
           return (

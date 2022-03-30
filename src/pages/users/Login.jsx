@@ -97,7 +97,7 @@ function Login(props) {
         동의해주세요
       </BasicModal>
       <Wrapper backgroundColor={themeContext.colors.white}>
-        <Header label="" leftArrow={true} rightArrow={false} fixedTop />
+        <Header label="" leftArrow={false} rightArrow={false} fixedTop />
         <SectionWrapper>
           <Grid margin="0px 0px 8px 0px">
             <Input

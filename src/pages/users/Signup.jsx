@@ -1,19 +1,21 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, {
+  useEffect,
+  useContext,
+  useState,
+  useCallback,
+  createRef,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   BUCKET,
   awsS3Bucket,
   BASE_S3_URL,
 } from '../../shared/utils/awsBucketConfig';
-import styled from 'styled-components';
-import axios from 'axios';
-import {
-  signupAsync,
-  verifyEmailAsync,
-  verifyNicknameAsync,
-} from '../../modules/users';
 
-import { ThemeContext } from 'styled-components';
+import axios from 'axios';
+import lo, { debounce } from 'lodash';
+
+import styled, { ThemeContext } from 'styled-components';
 import {
   Wrapper,
   Grid,
@@ -29,45 +31,35 @@ import {
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
 import apis from 'apis/apis';
+import { useRef } from 'react';
 
 function Signup(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
 
+  // Sign-up Process Step
   const [step, setStep] = useState(0);
-  const [email, setEmail] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [previewProfileImage, setPreviewProfileImage] = useState(
-    '/asset/icons/Image_white.svg',
-  );
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [profileImageUrl, setProfileImageUrl] = useState(null);
-  const [isOpenModal, setIsOpenModal] = useState(false);
-
-  const userInfo = { email, profileImageUrl, nickname, password };
 
   useEffect(() => {
     setStep(0);
   }, []);
 
-  const hiddenProfileImageInput = React.useRef(null);
-  const handleProfileImageClick = (e) => {
-    hiddenProfileImageInput.current.click();
-  };
+  // Email, Password Validation
+  const [email, setEmail] = useState('');
+  const [emailCheckMessage, setEmailCheckMessage] = useState();
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isValidEmailByRegex, setIsValidEmailByRegex] = useState(false);
+  const [isValidEmailByNotDuplicated, setIsValidEmailByNotDuplicated] =
+    useState(false);
+  const [isValidPassword, setIsValidPassword] = useState(false);
+
+  const emailDebounce = lo.debounce((k) => setEmail(k), 500);
+  const emailKeyPress = useCallback(emailDebounce, []);
 
   const changeEmail = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const validateEmail = () => {
-    const regEmail = /^((\w|[\-\.])+)@((\w|[\-\.])+)\.([A-Za-z]+){2,3}$/;
-
-    if (email && !regEmail.test(email)) {
-      return '이메일 형식이 틀렸습니다. 올바른 이메일을 입력해주세요.';
-    }
+    emailKeyPress(e.target.value);
   };
 
   const changePassword = (e) => {
@@ -78,39 +70,65 @@ function Signup(props) {
     setConfirmPassword(e.target.value);
   };
 
-  const changeNickname = (e) => {
-    setNickname(e.target.value);
+  useEffect(() => {
+    checkEmailByRegex(email);
+  }, [email]);
+
+  const checkEmailByRegex = (email) => {
+    const regEmail = /^((\w|[\-\.])+)@((\w|[\-\.])+)\.([A-Za-z]+){2,3}$/;
+
+    if (email && !regEmail.test(email)) {
+      setEmailCheckMessage('이메일을 다시 확인해주세요');
+      setIsValidEmailByRegex(false);
+    } else if (email && regEmail.test(email)) {
+      setEmailCheckMessage('올바른 이메일 형식입니다');
+      setIsValidEmailByRegex(true);
+    } else {
+      setEmailCheckMessage();
+      setIsValidEmailByRegex(false);
+    }
   };
 
-  const checkEmail = (email) => {
-    const regEmail =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (email && regEmail.test(regEmail)) {
-      return true;
+  const checkDuplicateEmail = async (email) => {
+    if (isValidEmailByRegex) {
+      const response = await apis.verifyEmail(email);
+      if (response.data.message === 'true') {
+        setEmailCheckMessage('이미 사용 중인 이메일입니다');
+      } else if (response.data.message === 'false') {
+        setEmailCheckMessage('사용하실 수 있는 이메일입니다');
+        setIsValidEmailByNotDuplicated(true);
+      } else {
+        setEmailCheckMessage();
+      }
     } else {
-      return false;
+      return;
     }
   };
 
   const checkPassword = (password, confirmPassword) => {
     const regPassword = /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[.!@#$%])/;
 
-    if (password && !regPassword.test(password)) {
-      return '잘못된 비밀번호 양식입니다.영문 대소문자, 숫자, 특수문자(.!@#$%)를 넣어주세요.';
-    } else if (password && (password.length < 8 || password.length > 20)) {
-      return '비밀번호는 8-20자로 입력해주세요.';
-    } else if (password && !confirmPassword) {
-      return '올바른 비밀번호입니다.확인 비밀번호를 입력해주세요.';
-    } else if (confirmPassword && password !== confirmPassword) {
-      return '비밀번호와 확인 비밀번호가 일치하지 않아요.';
+    if (!password) {
+      return;
     } else {
-      return '비밀번호와 확인 비밀번호가 일치합니다.';
+      if (!regPassword.test(password)) {
+        return '잘못된 비밀번호 양식입니다.영문 대소문자, 숫자, 특수문자(.!@#$%)를 넣어주세요';
+      } else if (password.length < 8 || password.length > 20) {
+        return '비밀번호는 8-20자로 입력해주세요';
+      } else if (!confirmPassword) {
+        return '올바른 비밀번호입니다.확인 비밀번호를 입력해주세요';
+      } else if (password !== confirmPassword) {
+        return '비밀번호와 확인 비밀번호가 일치하지 않아요';
+      } else {
+        return '비밀번호와 확인 비밀번호가 일치합니다';
+      }
     }
   };
 
-  const checkEmailPassword = (email, password, confirmPassword) => {
+  const checkValidEmailPassword = () => {
     if (
-      checkEmail(email) &&
+      isValidEmailByRegex &&
+      isValidEmailByNotDuplicated &&
       checkPassword(password, confirmPassword) ===
         '비밀번호와 확인 비밀번호가 일치합니다'
     ) {
@@ -120,12 +138,47 @@ function Signup(props) {
     }
   };
 
-  const checkNickname = (props) => {
-    if (!nickname) {
-      return '닉네임을 입력해주세요.';
+  // Nickname Validation
+  const [nickname, setNickname] = useState('');
+  const [nicknameCheckMessage, setNicknameCheckMessage] = useState();
+
+  const nicknameDebounce = lo.debounce((k) => setNickname(k), 1000);
+  const nicknameKeyPress = useCallback(nicknameDebounce, []);
+
+  const changeNickname = (e) => {
+    nicknameKeyPress(e.target.value);
+  };
+
+  const checkDuplicateNickname = async () => {
+    const response = await apis.verifyNickname(email);
+    console.log(response);
+    if (response.data.message === 'true') {
+      setNicknameCheckMessage('이미 존재하는 닉네임입니다');
+    } else if (response.data.message === 'false') {
+      setNicknameCheckMessage('사용하실 수 있습니다');
     } else {
-      return '이미 존재하는 닉네임입니다.';
+      setNicknameCheckMessage();
     }
+  };
+
+  const checkValidNickname = () => {
+    if (nicknameCheckMessage === '사용하실 수 있습니다') {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  // Image Uploader
+  const [previewProfileImage, setPreviewProfileImage] = useState(
+    '/asset/icons/Image_white.svg',
+  );
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [profileImageUrl, setProfileImageUrl] = useState(null);
+
+  const hiddenProfileImageInput = React.useRef(null);
+  const handleProfileImageClick = (e) => {
+    hiddenProfileImageInput.current.click();
   };
 
   const onImageChange = (e) => {
@@ -158,6 +211,7 @@ function Signup(props) {
     });
   };
 
+  // Survey
   const labels = [
     '심한 욕설 또는 저속한 표현으로 이용자 다수에게 불쾌감을 주는 경우는 이용이 제한될 수 있습니다.',
     '타인의 신체, 외모, 취향 등에 대해 경멸의 의미를 담아 비하하는 게시물은 제한될 수 있습니다.',
@@ -170,6 +224,10 @@ function Signup(props) {
     setCheckList((checks) => checks.map((c, i) => (i === index ? !c : c)));
   };
   const isAllChecked = checkList.every((x) => x);
+
+  // Submit
+  const userInfo = { email, profileImageUrl, nickname, password };
+
   return (
     <Wrapper
       backgroundColor={themeContext.colors.white}
@@ -239,7 +297,7 @@ function Signup(props) {
                       color={themeContext.colors.red}
                       style={{ flex: 0.8, padding: '8px 17.5px 8px 17.5px' }}
                     >
-                      {validateEmail(email)}
+                      {emailCheckMessage}
                     </Text>
                     <div
                       style={{
@@ -251,7 +309,10 @@ function Signup(props) {
                     >
                       <Grid
                         onClick={() => {
-                          dispatch(verifyEmailAsync(email));
+                          checkDuplicateEmail(email);
+                        }}
+                        style={{
+                          cursor: 'pointer',
                         }}
                       >
                         <Text small color={themeContext.colors.blue} right>
@@ -266,7 +327,9 @@ function Signup(props) {
                     margin="16px 0px 8px 0px"
                     onChange={changePassword}
                     placeholder="비밀번호"
-                    disabled={email === ''}
+                    disabled={
+                      !(isValidEmailByRegex && isValidEmailByNotDuplicated)
+                    }
                   />
                   <Input
                     fluid
@@ -295,9 +358,7 @@ function Signup(props) {
                     }}
                     secondary
                     size={'large'}
-                    disabled={
-                      email === '' || password === '' || confirmPassword === ''
-                    }
+                    disabled={!checkValidEmailPassword()}
                   >
                     다음으로
                   </Button>
@@ -344,7 +405,7 @@ function Signup(props) {
                       color={themeContext.colors.blue}
                       style={{ flex: 0.8, padding: '8px 17.5px 8px 17.5px' }}
                     >
-                      이미 존재하는 닉네임입니다
+                      {nicknameCheckMessage}
                     </Text>
                     <div
                       style={{
@@ -356,7 +417,7 @@ function Signup(props) {
                     >
                       <Grid
                         onClick={() => {
-                          dispatch(verifyNicknameAsync(nickname));
+                          checkDuplicateNickname(nickname);
                         }}
                       >
                         <Text small color={themeContext.colors.blue}>
@@ -374,7 +435,7 @@ function Signup(props) {
                     }}
                     secondary
                     size={'large'}
-                    disabled={nickname === ''}
+                    disabled={!checkValidNickname}
                   >
                     다음으로
                   </Button>

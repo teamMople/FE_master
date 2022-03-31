@@ -100,10 +100,11 @@ export const logoutAsync = createAsyncThunk('users/logout', async () => {
   await apis
     .logout()
     .then((response) => {
-      console.log(response);
       if (response.status === '200') {
         deleteCookie('token');
-        localStorage.removeItem('loginUser');
+        localStorage.removeItem('email');
+        localStorage.removeItem('nickname');
+        localStorage.removeItem('profileImageUrl');
         navigate('/');
       }
     })

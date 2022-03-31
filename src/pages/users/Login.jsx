@@ -62,6 +62,8 @@ function Login(props) {
               response.data.profileImageUrl,
             );
             navigate('/home');
+          } else {
+            setShowMessage(true);
           }
         })
         .catch((e) => {

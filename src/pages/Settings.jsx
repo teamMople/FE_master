@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { logout } from 'modules/users';
+import { logout, logoutAsync } from 'modules/users';
+import { deleteCookie, setCookie } from '../shared/utils/Cookie';
 
 import { ThemeContext } from 'styled-components';
 import { Wrapper, Grid, Text, RightArrow, Header } from 'components';
@@ -56,7 +57,14 @@ function Settings(props) {
           <RightArrow
             active
             rightArrowOnClick={() => {
-              dispatch(logout());
+              // dispatch(logoutAsync());
+
+              // 서버 쪽 로그아웃 응답 추가되면 삭제
+              deleteCookie('token');
+              localStorage.removeItem('email');
+              localStorage.removeItem('nickname');
+              localStorage.removeItem('profileImageUrl');
+              navigate('/');
             }}
           />
         </Grid>

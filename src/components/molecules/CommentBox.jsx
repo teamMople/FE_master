@@ -45,6 +45,9 @@ const CommentBox = (props) => {
   const kebabMenuLabels = ['댓글 삭제하기', '댓글 신고하기'];
   const kebabMenuOnClicks = [deleteComment, showReportModal];
 
+  const replyCommentInfo = { commentId, replyContent };
+  console.log(replyCommentInfo);
+
   useEffect(() => {
     dispatch(getReplyCommentListAsync(commentId));
   }, [dispatch]);
@@ -102,7 +105,6 @@ const CommentBox = (props) => {
               margin="0px 0px 0px 8px"
               backgroundColor={themeContext.colors.lightGray}
               onClick={(e) => {
-                e.preventDefault();
                 dispatch(recommendCommentAsync(commentId));
               }}
             >
@@ -136,7 +138,6 @@ const CommentBox = (props) => {
               margin="0px 0px 0px 8px"
               onClick={(e) => {
                 e.preventDefault();
-                const replyCommentInfo = { commentId, replyContent };
                 dispatch(createReplyCommentAsync(replyCommentInfo));
               }}
             >

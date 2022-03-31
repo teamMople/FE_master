@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import apis from 'apis/apis';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 import {
   Splash,
@@ -33,6 +35,28 @@ import { ThemeProvider } from 'styled-components';
 import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
 import LiveRoom from '../../pages/chats/LiveRoom';
 import RoomList from '../../pages/chats/RoomList';
+import firebaseApp from 'shared/utils/firebase';
+
+const firebaseMessaging = getMessaging();
+getToken(firebaseMessaging, {
+  vapidKey: process.env.REACT_APP_VAPID_KEY,
+})
+  .then((currentToken) => {
+    console.log(currentToken);
+    if (currentToken) {
+      apis.pushAlarm(currentToken).then((response) => {
+        console.log(response);
+      });
+    } else {
+      console.log('not alarm registered');
+    }
+  })
+  .catch((error) => console.log(error));
+
+onMessage((payload) => {
+  console.log('foregroundMessage');
+  console.log(payload);
+});
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);

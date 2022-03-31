@@ -61,16 +61,13 @@ export const createCommentAsync = createAsyncThunk(
 export const createReplyCommentAsync = createAsyncThunk(
   'comments/createComment',
   async (replyCommentInfo, thunkAPI) => {
-    const { id, replyContent } = replyCommentInfo;
-    await apis
-      .createReplyComment(id, replyContent)
-      .then((response) => thunkAPI.addReplyComment(response.data))
-      .catch((error) => {
-        if (error) {
-          window.alert('잘못된 생성 요청입니다.');
-        }
-        return thunkAPI.rejectWithValue();
-      });
+    console.log(replyCommentInfo);
+    const { commentId, replyContent } = replyCommentInfo;
+    console.log(commentId);
+    await apis.createReplyComment(commentId, replyContent).then((response) => {
+      console.log(response);
+      thunkAPI.addReplyComment(response.data);
+    });
   },
 );
 
@@ -191,10 +188,10 @@ export const replyCommentListSlice = createSlice({
       state.data.push(action.payload);
     },
     increaseReplyRecommendCount: (state, action) => {
-      const commentIndex = state.data.findIndex((d) => {
-        return d.commentId === action.payload;
+      const replyIndex = state.data.findIndex((d) => {
+        return d.replyId === action.payload;
       });
-      state.data[commentIndex].recommendCount += 1;
+      state.data[replyIndex].recommendCount += 1;
     },
     decreaseReplyRecommendCount: (state, action) => {
       const commentIndex = state.data.findIndex((d) => {

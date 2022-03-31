@@ -11,6 +11,8 @@ import {
   selectedUserVoteStatus,
 } from 'modules/boards';
 import { clearCommentList } from 'modules/comments';
+import apis from 'apis/apis';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 import { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
@@ -61,6 +63,27 @@ const BoardDetail = (props, ref) => {
   const isPrivateKebabMenu = [true, false];
   const kebabMenuLabels = ['글 삭제하기', '글 신고하기'];
   const kebabMenuOnClicks = [deleteBoard, showReportModal];
+
+  const firebaseMessaging = getMessaging();
+  getToken(firebaseMessaging, {
+    vapidKey: process.env.REACT_APP_VAPID_KEY,
+  })
+    .then((currentToken) => {
+      console.log(currentToken);
+      if (currentToken) {
+        apis.pushAlarm(currentToken).then((response) => {
+          console.log(response);
+        });
+      } else {
+        console.log('not alarm registered');
+      }
+    })
+    .catch((error) => console.log(error));
+
+  onMessage((payload) => {
+    console.log('foregroundMessage');
+    console.log(payload);
+  });
 
   useEffect(() => {
     dispatch(getDetailAsync(params.boardId));

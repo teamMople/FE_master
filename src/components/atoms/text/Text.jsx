@@ -70,8 +70,18 @@ Text.defaultProps = {
 const P = styled.div`
   color: ${({ color, theme }) => (color ? color : theme.colors.black)};
   font-family: ${(props) => props.font};
-  font-size: ${({ small, size, large, tiny }) =>
-    size ? size : tiny ? '10px' : small ? '12px' : large ? '16px' : '14px'};
+  font-size: ${({ small, size, large, huge, tiny }) =>
+    size
+      ? size
+      : tiny
+      ? '10px'
+      : small
+      ? '12px'
+      : large
+      ? '16px'
+      : huge
+      ? '20px'
+      : '14px'};
   font-weight: ${(props) =>
     props.bold
       ? '700'

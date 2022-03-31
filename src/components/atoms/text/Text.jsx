@@ -18,6 +18,7 @@ const Text = ({
   small,
   large,
   preWrap,
+  noWrap,
   ...props
 }) => {
   return (
@@ -37,6 +38,7 @@ const Text = ({
       small={small}
       large={large}
       preWrap={preWrap}
+      noWrap={noWrap}
       {...props}
     >
       {props.children}
@@ -61,6 +63,7 @@ Text.propTypes = {
   tiny: PropTypes.bool,
   large: PropTypes.bool,
   preWrap: PropTypes.bool,
+  noWrap: PropTypes.bool,
 };
 
 Text.defaultProps = {
@@ -89,7 +92,8 @@ const P = styled.div`
     center ? 'center' : right ? 'right' : 'left'};
   cursor: ${({ onClick }) => onClick && 'pointer'};
   word-break: break-all;
-  white-space: ${({ preWrap }) => preWrap && 'pre-wrap'};
+  white-space: ${({ preWrap, noWrap }) =>
+    preWrap ? 'pre-wrap' : noWrap ? 'no-wrap' : 'nomral'};
 `;
 
 export default Text;

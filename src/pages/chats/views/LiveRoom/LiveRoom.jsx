@@ -260,14 +260,15 @@ const LiveRoom = () => {
       })
       .catch((error) => {
         //!Todo 나중에 무조건 Alert 삭제해야함! 그래야 페이지 이동 바로됨!
-        alert(`There was an error connecting to the session: ${error.message}`);
+        // alert(`There was an error connecting to the session: ${error.message}`);
+        alert('이미 종료된 방입니다!');
         console.log(
           'There was an error connecting to the session:',
           error.code,
           error.message,
         );
         localStorage.removeItem('OVAccessToken');
-        navigate('/room', { replace: true });
+        navigate('/home', { replace: true });
       });
   };
 
@@ -801,7 +802,7 @@ const LiveRoom = () => {
                   subscriberDetectSpeaking(sub.subscriber);
                   return (
                     <>
-                      <div style={{ position: 'relative' }}>
+                      <div style={{ position: 'relative', maxWidth: '75px' }}>
                         <ChatUser
                           key={i}
                           streamManager={sub.subscriber}

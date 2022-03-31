@@ -1,12 +1,13 @@
 import React, { useEffect, useContext } from 'react';
-import styled, { ThemeContext } from 'styled-components';
+import { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Wrapper, Grid, Image, Text, MenuTab } from 'components';
 
 const MyAccount = (props) => {
   const themeContext = useContext(ThemeContext);
   const nickname = localStorage.getItem('nickname');
+  const email = localStorage.getItem('email');
   const profileImageUrl = localStorage.getItem('profileImageUrl');
   const navigate = useNavigate();
 
@@ -41,14 +42,19 @@ const MyAccount = (props) => {
                 window.location.assign('/settings');
               }}
             >
-              <img src="/asset/icons/Settings.svg" />
+              <img src="/asset/icons/Settings.svg" alt="setting" />
             </Grid>
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Image shape="circle" size={108} src={profileImageUrl} />
             <Grid margin="0px 0px 0px 23px">
-              <Text bold size="14px" lineHeight="18px">
-                {nickname}
+              <Text semiBold>{nickname}</Text>
+              <Text
+                small
+                color={themeContext.colors.gray2}
+                style={{ marginTop: '8px' }}
+              >
+                {email}
               </Text>
             </Grid>
           </div>
@@ -60,7 +66,7 @@ const MyAccount = (props) => {
           backgroundColor={themeContext.colors.white}
         />
       </Grid>
-      <Grid width="100%" style={{ position: 'absolute' }}>
+      <Grid width="100%" style={{ position: 'absolute', height: '100%' }}>
         <Outlet />
       </Grid>
     </Wrapper>

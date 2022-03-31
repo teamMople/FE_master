@@ -9,23 +9,19 @@ const ProfileImageStack = (props) => {
   let concatedNicknames = '';
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}
-    >
+    <StackWrapper>
       <Stack>
-        {imageUrls.length < 3 && (
+        {imageUrls.length < 4 && (
           <>
             {imageUrls.map((image, idx) => (
               <div
                 key={idx}
                 style={{
-                  position: idx >= 1 ? 'absolute' : 'unset',
-                  top: '0px',
-                  left: idx === 1 ? '20px' : idx === 2 ? '40px' : 'unset',
+                  // position: idx >= 1 ? 'absolute' : 'unset',
+                  // top: '0px',
+                  // left: idx === 1 ? '20px' : idx === 2 ? '40px' : 'unset',
+                  marginLeft:
+                    idx === 1 ? '-10px' : idx === 2 ? '-10px' : 'unset',
                 }}
               >
                 <Image
@@ -40,17 +36,29 @@ const ProfileImageStack = (props) => {
           </>
         )}
       </Stack>
-      <div>
-        <Text bold color={themeContext.colors.black} size="12px">
+      <UsersWrapper>
+        <Text semiBold color={themeContext.colors.black} small>
           {nicknames.slice(0, 3).map((name, index) => {
-            return index === 0
-              ? concatedNicknames.concat(name)
-              : concatedNicknames.concat(', ' + name);
+            if (name.length > 5) {
+              const slicedName = name.slice(0, 4) + '...';
+              return index === 0
+                ? concatedNicknames.concat(slicedName)
+                : concatedNicknames.concat(', ' + slicedName);
+            } else {
+              return index === 0
+                ? concatedNicknames.concat(name)
+                : concatedNicknames.concat(', ' + name);
+            }
           })}
-          {nicknames.length > 3 && <span> 외 {nicknames.length - 3}명</span>}
+          {nicknames.length > 3 && (
+            <Text semiBold small>
+              {' '}
+              외 {nicknames.length - 3}명
+            </Text>
+          )}
         </Text>
-      </div>
-    </div>
+      </UsersWrapper>
+    </StackWrapper>
   );
 };
 
@@ -63,11 +71,27 @@ ProfileImageStack.defaultProps = {
   imageUrls: [null, null, null],
 };
 
+const StackWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const UsersWrapper = styled.div`
+  margin-left: 8px;
+`;
 const Stack = styled.div`
   position: relative;
   align-items: center;
-  margin-right: 8px;
   box-sizing: border-box;
+  display: flex;
+
+  > div {
+    &:nth-child(1) {
+      z-index: 2;
+    }
+    &:nth-child(2) {
+      z-index: 1;
+    }
+  }
 `;
 
 export default ProfileImageStack;

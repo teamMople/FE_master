@@ -52,7 +52,19 @@ const Tile = (props) => {
               'PUBLISHER',
             )
           }
+          style={{
+            pointerEvents:
+              board.maxParticipantCount ===
+                board.participantsNicknames.length && 'none',
+          }}
         >
+          {board.maxParticipantCount === board.participantsNicknames.length && (
+            <WarningJoinRoomBox>
+              <Text bold color={themeContext.colors.white}>
+                인원이 꽉 찼습니다!
+              </Text>
+            </WarningJoinRoomBox>
+          )}
           <Grid margin="0px 0px 18px 0px">
             <ProfileImageStack
               nicknames={board.participantsNicknames}
@@ -155,12 +167,22 @@ const Tile = (props) => {
             <Grid isFlex>
               <Grid margin="0px 8px 0px 0px">
                 <StatusBox
+                  backgroundColor={
+                    board.userStatus === '찬성'
+                      ? themeContext.colors.lightGreen
+                      : themeContext.colors.lightGray
+                  }
                   icon={'/asset/icons/Agreed.svg'}
                   count={board.agreeCount}
                 />
               </Grid>
               <Grid>
                 <StatusBox
+                  backgroundColor={
+                    board.userStatus === '반대'
+                      ? themeContext.colors.orange
+                      : themeContext.colors.lightGray
+                  }
                   icon={'/asset/icons/Disagreed.svg'}
                   count={board.disagreeCount}
                 />
@@ -195,6 +217,7 @@ Tile.propTypes = {
     roomId: PropTypes.number,
     maxParticipantCount: PropTypes.number,
     moderatorNickname: PropTypes.string,
+    userStatus: PropTypes.string,
   }),
 };
 
@@ -224,12 +247,31 @@ const LiveTileWrapper = styled.div`
   padding: 20px 24px 20px 24px;
   width: 300px;
   height: 218px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+
+  &:active {
+    background-color: ${({ theme }) => theme.colors.gray};
+    //background-color: rgba(0, 0, 0, 0.1);
+  }
 
   > .buttonGroup {
     position: absolute;
     bottom: 20px;
     justify-content: space-between;
   }
+`;
+const WarningJoinRoomBox = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const BasicTileWrapper = styled.div`

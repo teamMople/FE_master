@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { useNavigate } from 'react-router-dom';
 import apis from '../apis/apis';
 
 const boardListInitialState = {
@@ -39,6 +38,7 @@ export const getBoardListAsync = createAsyncThunk(
   async (thunkAPI) => {
     try {
       const response = await apis.getBoardList();
+      console.log(response.data);
       return response.data;
     } catch (e) {
       return thunkAPI.rejectWithValue(await e.response.data);

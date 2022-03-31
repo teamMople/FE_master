@@ -42,7 +42,7 @@ function BoardList(props) {
       {data.length !== 0 ? (
         <Grid
           backgroundColor={themeContext.colors.backgroundGray}
-          style={{ minHeight: '100vh' }}
+          style={{ minHeight: '100%' }}
         >
           <Grid
             center
@@ -62,7 +62,7 @@ function BoardList(props) {
         <Grid
           backgroundColor={themeContext.colors.backgroundGray}
           style={{
-            height: '100vh',
+            height: '100%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

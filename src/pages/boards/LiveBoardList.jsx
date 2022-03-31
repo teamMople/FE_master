@@ -45,7 +45,7 @@ function LiveBoardList(props) {
         <Grid
           backgroundColor={themeContext.colors.backgroundGray}
           style={{
-            height: '100vh',
+            height: '100%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

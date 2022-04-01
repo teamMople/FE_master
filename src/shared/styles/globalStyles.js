@@ -4,8 +4,10 @@ import SuitRegular from '../assets/font/SUIT-Regular.otf';
 import SuitBold from '../assets/font/SUIT-Bold.otf';
 import SuitMedium from '../assets/font/SUIT-Medium.otf';
 import SuitLight from '../assets/font/SUIT-Light.otf';
+import { isBrowser } from 'react-device-detect';
 
 // 위에서 받은 `normalize`로 기본 css가 초기화 합니다.
+// eslint-disable-next-line react-hooks/rules-of-hooks
 const GlobalStyle = createGlobalStyle`
   ${normalize}
 
@@ -16,7 +18,10 @@ const GlobalStyle = createGlobalStyle`
   body {
     height: inherit;
     //overflow: hidden;
-    //background-color: #ddd;
+    // background-color: ${({ theme }) => theme.colors.blue};
+    background-image: ${isBrowser && `url('/asset/image/test-back.webp')`} ;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
   #root {
     height: inherit;

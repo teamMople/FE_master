@@ -57,7 +57,7 @@ const device = {
 
 const style = {
   header: {
-    height: '42px',
+    height: '50px',
   },
   borderRadius: {
     rounded: '20px',
@@ -79,7 +79,7 @@ const lightThemeColors = {
   lightBlue: '#CCE5FC',
   lightPink: '#F6CAF2',
   orange: '#F29E3B',
-  lightGreen: '#BFEA94',
+  lightGreen: '#D9F3C0',
 };
 
 const darkThemeColors = {

@@ -45,7 +45,7 @@ function BoardByCategoryList(props) {
         highlightColor={themeContext.colors.blue}
         backgroundColor={themeContext.colors.backgroundGray}
       />
-      <Grid width="100%" style={{ position: 'absolute' }}>
+      <Grid width="100%" style={{ height: '100%' }}>
         <Outlet />
       </Grid>
     </Wrapper>

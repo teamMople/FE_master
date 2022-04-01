@@ -62,15 +62,10 @@ const Nav = (props) => {
     return;
   }, [location]);
 
-  // const [openCreateRoom, setOpenCreateRoom] = useState(false);
-  const [openSetting, setOpenSetting] = useState(false);
-  const [openNextStep, setOpenNextStep] = useState(false);
   const createRoomState = useSelector(selectCreateRoomState);
   const handleOpenCreateRoom = () => {
     dispatch(setOpenRoomState(false));
     if (!openRoomState) {
-      setOpenNextStep(false);
-      setOpenSetting(false);
       setOpenCreateRoom(false);
     }
     if (createRoomState.openCreateRoom) {
@@ -83,40 +78,27 @@ const Nav = (props) => {
     dispatch(setCreateRoomNextStep(true));
     dispatch(setOpenCreateRoom(false));
     dispatch(setCreateRoomSetting(false));
-    // setOpenNextStep(true);
-    // setOpenCreateRoom(false);
     setShowMenu(false);
-    // setOpenSetting(false);
   };
   const handleSetting = () => {
     dispatch(setOpenCreateRoom(true));
     dispatch(setCreateRoomSetting(true));
-    // setOpenCreateRoom(true);
-    // setOpenSetting(true);
     setShowMenu(false);
   };
   const handleClickLeftArrow = () => {
     dispatch(setCreateRoomNextStep(false));
     dispatch(setOpenCreateRoom(false));
     dispatch(setCreateRoomSetting(false));
-    // setOpenNextStep(false);
-    // setOpenCreateRoom(false);
     setShowMenu(false);
-    // setOpenSetting(false);
   };
 
   const showSpeedDialMenu = () => {
     setShowMenu(!showMenu);
-    // setRot(!rot);
-    // setOpenCreateRoom(false);
-    // setOpenSetting(false);
     dispatch(setOpenCreateRoom(false));
     dispatch(setCreateRoomSetting(false));
   };
   const handleClickHeaderSubLeft = () => {
     setShowMenu(false);
-    // setOpenCreateRoom(false);
-    // setOpenSetting(false);
     dispatch(setOpenCreateRoom(false));
     dispatch(setCreateRoomSetting(false));
   };
@@ -174,12 +156,9 @@ const Nav = (props) => {
         </MenuWrapper>
       </NavWrapper>
       <CreateRoom
-        // show={openCreateRoom}
         show={createRoomState.openCreateRoom}
-        // openSetting={openSetting}
         openSetting={createRoomState.createRoomSetting}
         onClickNextStep={handleNextStep}
-        // nextStep={openNextStep}
         nextStep={createRoomState.createRoomNextStep}
         onClickSetting={handleSetting}
         leftArrowOnClick={handleClickLeftArrow}
@@ -280,7 +259,8 @@ const SpeedDialMenu = styled.div`
 `;
 
 const NavWrapper = styled.div`
-  position: fixed;
+  //position: fixed;
+  position: relative;
   z-index: 11;
   //z-index: 99;
   width: 100%;

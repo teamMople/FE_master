@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
-import styled from 'styled-components';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Carousel } from '@trendyol-js/react-carousel';
 
 import { Grid, Text, Tile } from 'components';
+import { Carousel } from 'react-responsive-carousel';
 
 const CardCarousel = (props) => {
   const { label, type, boards } = props;
@@ -16,19 +15,35 @@ const CardCarousel = (props) => {
         </Text>
       </Grid>
       <Carousel
-        show={1.2}
-        slide={1}
-        swiping={true}
-        leftArrow={false}
-        rightArrow={false}
+        showIndicators={false}
+        emulateTouch
+        showArrows={false}
+        showStatus={false}
+        preventMovementUntilSwipeScrollTolerance
+        centerMode
+        showThumbs={false}
+        transitionTime={100}
+        // show={1.2}
+        // slide={1}
+        // swiping={true}
+        // leftArrow={false}
+        // rightArrow={false}
       >
-        {boards.map((board, index) => {
-          return (
-            <div key={index}>
-              <Tile type={type} board={board} />
-            </div>
-          );
-        })}
+        {type === 'live'
+          ? boards.slice(0, 11).map((board, index) => {
+              return (
+                <div key={index}>
+                  <Tile type={type} board={board} />
+                </div>
+              );
+            })
+          : boards.map((board, index) => {
+              return (
+                <div key={index}>
+                  <Tile type={type} board={board} />
+                </div>
+              );
+            })}
       </Carousel>
     </Grid>
   );

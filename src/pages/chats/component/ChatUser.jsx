@@ -20,6 +20,7 @@ const ChatUser = ({
       streamManager.addVideoElement(videoRef.current);
     }
   }, [streamManager]);
+
   return (
     <>
       {streamManager && (
@@ -58,7 +59,10 @@ const ChatUser = ({
             )}
           </ImageWrapper>
           <Text small center color={themeContext.colors.gray2}>
-            {memberName ? memberName : 'null'}
+            {memberName && memberName.length > 10
+              ? memberName.slice(0, 10) + '...'
+              : memberName}
+            {localStorage.getItem('nickname') === memberName && '(나)'}
             {moderator === memberName && '(방장)'}
           </Text>
         </UserWrapper>

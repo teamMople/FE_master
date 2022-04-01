@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import {
   Splash,
-  Home,
+  // Home,
   Nav,
-  Login,
+  // Login,
   MyAccount,
   AlarmList,
   OAuthRedirectHandler,
   FindPassword,
-  Signup,
+  // Signup,
   Welcome,
   EditUserProfile,
-  SearchBoard,
+  // SearchBoard,
   BoardByCategoryList,
   CreateBoard,
   BoardDetail,
@@ -32,7 +32,9 @@ import { ThemeProvider } from 'styled-components';
 
 import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
 import LiveRoom from '../../pages/chats/views/LiveRoom/LiveRoom';
-import RoomList from '../../pages/chats/RoomList';
+import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
+import GlobalStyle from '../styles/globalStyles';
+import { PageLoading } from 'components';
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
@@ -45,56 +47,64 @@ function App() {
     }
   };
 
+  if (process.env.NODE_ENV === 'production') {
+    console.log = function no_console() {};
+    console.warn = function no_console() {};
+  }
   return (
     <ThemeProvider theme={theme}>
+      <GlobalStyle />
       <BrowserRouter history={history}>
-        {/* 잠시 임시로 넣어놓았습니다. */}
+        {/*잠시 임시로 넣어놓았습니다.*/}
         {/*<button style={{ position: 'fixed', right: 0 }} onClick={changeTheme}>*/}
         {/*  테마변경*/}
         {/*</button>*/}
-        <Routes>
-          <Route path="/" element={<Splash />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/api/kakao/login"
-            element={<OAuthRedirectHandler provider={'kakao'} />}
-          />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/welcome" element={<Welcome />} />
-          <Route path={'/room'} element={<RoomList />} />
-          <Route path={'/room/create'} element={<CreateRoom />} />
-          <Route path={'/room/:roomId'} element={<LiveRoom />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/search" element={<SearchBoard />}>
-            <Route path="result" element={<CombinedBoardList />} />
-            <Route path="result/general" element={<CombinedBoardList />} />
-            <Route path="result/live" element={<CombinedBoardList />} />
-          </Route>
-          <Route path="/list" element={<BoardList />}>
-            <Route path=":categoryName" element={<BoardList />} />
-          </Route>
-          <Route path="/livelist" element={<LiveBoardList />}>
-            <Route path=":categoryName" element={<LiveBoardList />} />
-          </Route>
-          <Route path="/category">
-            <Route path=":categoryName" element={<BoardByCategoryList />}>
-              <Route path="live" element={<LiveBoardList />} />
-              <Route path="general" element={<BoardList />} />
+        <Suspense fallback={<PageLoading />}>
+          <Routes>
+            <Route path="/" element={<Splash />} />
+            <Route path="/page-loading" element={<PageLoading />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/api/kakao/login"
+              element={<OAuthRedirectHandler provider={'kakao'} />}
+            />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/welcome" element={<Welcome />} />
+            <Route path={'/room'} element={<RoomList />} />
+            <Route path={'/room/create'} element={<CreateRoom />} />
+            <Route path={'/room/:roomId'} element={<LiveRoom />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/search" element={<SearchBoard />}>
+              <Route path="result" element={<CombinedBoardList />} />
+              <Route path="result/general" element={<CombinedBoardList />} />
+              <Route path="result/live" element={<CombinedBoardList />} />
             </Route>
-          </Route>
-          <Route path="/board/:boardId" element={<BoardDetail />} />
-          <Route path="/createboard" element={<CreateBoard />} />
-          <Route path="/myaccount" element={<MyAccount />}>
-            <Route path="boards" element={<BoardList />} />
-            <Route path="comments" element={<BoardList />} />
-          </Route>
-          <Route path="/editmyprofile" element={<EditUserProfile />} />
-          <Route path="/findpassword" element={<FindPassword />} />
-          <Route path="/alarm" element={<AlarmList />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/loading" element={<Loading />} />
-          <Route path={'*'} element={<NotFound />} />
-        </Routes>
+            <Route path="/list" element={<BoardList />}>
+              <Route path=":categoryName" element={<BoardList />} />
+            </Route>
+            <Route path="/livelist" element={<LiveBoardList />}>
+              <Route path=":categoryName" element={<LiveBoardList />} />
+            </Route>
+            <Route path="/category">
+              <Route path=":categoryName" element={<BoardByCategoryList />}>
+                <Route path="live" element={<LiveBoardList />} />
+                <Route path="general" element={<BoardList />} />
+              </Route>
+            </Route>
+            <Route path="/board/:boardId" element={<BoardDetail />} />
+            <Route path="/createboard" element={<CreateBoard />} />
+            <Route path="/myaccount" element={<MyAccount />}>
+              <Route path="boards" element={<BoardList />} />
+              <Route path="comments" element={<BoardList />} />
+            </Route>
+            <Route path="/editmyprofile" element={<EditUserProfile />} />
+            <Route path="/findpassword" element={<FindPassword />} />
+            <Route path="/alarm" element={<AlarmList />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/loading" element={<Loading />} />
+            <Route path={'*'} element={<NotFound />} />
+          </Routes>
+        </Suspense>
         <Nav />
       </BrowserRouter>
     </ThemeProvider>

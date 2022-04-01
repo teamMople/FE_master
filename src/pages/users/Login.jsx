@@ -86,7 +86,7 @@ function Login(props) {
   };
   return (
     <>
-      <button onClick={handleOpen}>open modal</button>
+      {/*<button onClick={handleOpen}>open modal</button>*/}
       <BasicModal
         open={isOpened}
         close={isOpened}
@@ -96,8 +96,8 @@ function Login(props) {
         보일러 플레이트에서 보다 건강한 토론 문화를 즐기시려면 유의사항에 모두
         동의해주세요
       </BasicModal>
-      <Wrapper backgroundColor={themeContext.colors.white}>
-        <Header label="" leftArrow={true} rightArrow={false} fixedTop />
+      <Wrapper backgroundColor={themeContext.colors.white} full>
+        <Header label="" leftArrow={false} rightArrow={false} fixedTop />
         <SectionWrapper>
           <Grid margin="0px 0px 8px 0px">
             <Input

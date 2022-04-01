@@ -37,6 +37,8 @@ import {
   BasicModal,
   LiveAnimation,
   KebabMenu,
+  PageLoading,
+  DeviceDetector,
 } from './molecules';
 import {
   BoardList,
@@ -88,4 +90,6 @@ export {
   BasicModal,
   LiveAnimation,
   KebabMenu,
+  PageLoading,
+  DeviceDetector,
 };

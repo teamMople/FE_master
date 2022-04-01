@@ -6,12 +6,13 @@ import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux';
 import store from './modules/configStore';
-import GlobalStyle from './shared/styles/globalStyles';
+import { DeviceDetector } from './components';
 
 ReactDOM.render(
   <Provider store={store}>
-    <GlobalStyle />
-    <App />
+    <DeviceDetector>
+      <App />
+    </DeviceDetector>
   </Provider>,
   document.getElementById('root'),
 );

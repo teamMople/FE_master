@@ -193,7 +193,7 @@ export const findMyPassword = createAsyncThunk(
 export const verifyEmailAsync = createAsyncThunk(
   'users/verifyEmail',
   async (email) => {
-    await apis.verifyEmail(email).then((response) => console.log(response));
+    await apis.verifyEmail(email).then((response) => response.data);
   },
 );
 

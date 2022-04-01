@@ -42,8 +42,9 @@ const roomInitialState = {
   },
 };
 
-const sessionInit = {
-  mySession: undefined,
+const sessionInitialState = {
+  // OV: new OpenVidu(),
+  // session: new OpenVidu().initSession(),
 };
 
 const voteInitialState = {
@@ -81,7 +82,7 @@ export const closeRoomAsync = createAsyncThunk(
 
 export const sessionSlice = createSlice({
   name: 'session',
-  initialState: sessionInit,
+  initialState: sessionInitialState,
   reducers: {
     setSession: (state, action) => {
       state.mySession = action.payload;
@@ -114,7 +115,6 @@ export const createRoomAsync = createAsyncThunk(
           memberName: memberName,
           accessToken: undefined,
         };
-        console.log('res :::::>>>>>>', res);
 
         return status;
       })
@@ -147,7 +147,6 @@ export const joinRoomAsync = createAsyncThunk(
           memberName: memberName,
           // accessToken: undefined,
         };
-        console.log('joinRoom : ', status);
         return status;
       })
       .catch((err) => console.log(err));

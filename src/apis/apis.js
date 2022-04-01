@@ -51,7 +51,10 @@ const apis = {
   logout: () => api.post('/api/logout'),
   // to-dos
   editMyInfo: (email, profileImageUrl, nickname, password) =>
-    api.put('/api/user/update', { email, profileImageUrl, nickname, password }),
+    api.put('/auth/api/user/update', {
+      nickname,
+      profileImageUrl,
+    }),
   findMyPassword: (email) => api.post('/api/user/mypw', { email }),
   verifyEmail: (email) => api.post('/api/user/check/Email', { email }),
   verifyNickname: (nickname) =>

@@ -20,3 +20,5 @@ export { default as SearchInput } from './SearchInput';
 export { default as BasicModal } from './modal/BasicModal';
 export { default as LiveAnimation } from './LiveAnimation';
 export { default as KebabMenu } from './KebabMenu';
+export { default as PageLoading } from './PageLoading';
+export { default as DeviceDetector } from './DeviceDetector';

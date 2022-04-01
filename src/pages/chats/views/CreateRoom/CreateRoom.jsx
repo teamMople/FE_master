@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import styled, { ThemeContext } from 'styled-components';
+import React, { useContext, useEffect, useState } from 'react';
+import { ThemeContext } from 'styled-components';
 import {
   Textarea,
   Header,
@@ -60,6 +60,8 @@ const CreateRoom = ({
 
   const [value, setValue] = useState(options[0].value);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {}, [openSetting]);
 
   const handleClickOption = (index) => {
     setCurrentIndex(index);
@@ -148,7 +150,7 @@ const CreateRoom = ({
     console.log(e.target.value);
   };
 
-  console.log(openSetting);
+  console.log('openSetting', openSetting);
   return (
     <>
       <>

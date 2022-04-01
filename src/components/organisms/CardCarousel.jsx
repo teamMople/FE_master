@@ -29,13 +29,21 @@ const CardCarousel = (props) => {
         // leftArrow={false}
         // rightArrow={false}
       >
-        {boards.map((board, index) => {
-          return (
-            <div key={index}>
-              <Tile type={type} board={board} />
-            </div>
-          );
-        })}
+        {type === 'live'
+          ? boards.slice(0, 11).map((board, index) => {
+              return (
+                <div key={index}>
+                  <Tile type={type} board={board} />
+                </div>
+              );
+            })
+          : boards.map((board, index) => {
+              return (
+                <div key={index}>
+                  <Tile type={type} board={board} />
+                </div>
+              );
+            })}
       </Carousel>
     </Grid>
   );

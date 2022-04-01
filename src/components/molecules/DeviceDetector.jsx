@@ -3,10 +3,10 @@ import { isMobile } from 'react-device-detect';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-export const setVh = () => {
-  const vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
-};
+// export const setVh = () => {
+//   const vh = window.innerHeight * 0.01;
+//   document.documentElement.style.setProperty('--vh', `${vh}px`);
+// };
 
 const DeviceDetector = ({ children }) => {
   return isMobile ? (

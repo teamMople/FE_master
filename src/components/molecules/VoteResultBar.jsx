@@ -120,7 +120,7 @@ const Background = styled.div`
       ? theme.colors.lightGray
       : theme.colors.orange};
   box-shadow: inset 0 3px 3px rgba(255, 255, 255, 0.25);
-  transition: 1s ease-in;
+  transition: 0.3s ease-in;
 `;
 const Highlight = styled.div`
   position: relative;
@@ -138,7 +138,7 @@ const Highlight = styled.div`
       ? theme.colors.lightGray
       : theme.colors.lightGreen};
   box-shadow: inset 3px 2px 3px rgba(255, 255, 255, 0.15);
-  transition: 1s ease-in;
+  transition: 0.3s ease-in;
 `;
 
 export default VoteResultBar;

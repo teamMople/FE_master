@@ -37,7 +37,7 @@ const BasicModal = ({
             {warning}
           </ModalContent>
           <ModalActions>
-            {onClose && (
+            {onClose && closeMessage && (
               <Button size="tiny" onClick={onClose}>
                 {closeMessage ? closeMessage : '취소'}
               </Button>

@@ -68,8 +68,8 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
   const onMessageReceived = (payload) => {
     let payloadData = JSON.parse(payload.body);
     const messageTime = calcTime(payloadData.sentAt);
-    console.log('messageTime :::', messageTime);
-    console.log('👺payloadData ====>', payloadData);
+    // console.log('messageTime :::', messageTime);
+    // console.log('👺payloadData ====>', payloadData);
     setPublicChats((prevPublicChats) => [
       ...prevPublicChats,
       {
@@ -82,7 +82,7 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
     ]);
     // chat.scrollTop = chat.scrollHeight;
   };
-  console.log(publicChats);
+  // console.log(publicChats);
 
   const onError = (err) => {
     console.log(err);
@@ -121,7 +121,6 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
     // return `${Math.floor(resultTimeDay / 365)}년전`;
   };
   const sendMessage = () => {
-    // console.log('👍 메시지 보내기 클릭!');
     if (stompClient) {
       let chatMessage = {
         sender: memberName,
@@ -131,7 +130,6 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
         sentAt: today.toString(),
         profileUrl: localStorage.getItem('profileImageUrl'),
       };
-      // console.log('👍 내가 보낸 메시지 ==>', chatMessage);
       stompClient.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
       setUserData({ ...userData, message: '' });
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 // export const setVh = () => {
@@ -13,7 +13,7 @@ const DeviceDetector = ({ children }) => {
 
   useEffect(() => {
     setActive(true);
-  });
+  }, []);
   return isMobile ? (
     <>{children}</>
   ) : (
@@ -22,6 +22,9 @@ const DeviceDetector = ({ children }) => {
         <InnerWrapper className={active && 'active'}>
           <SubTitle className={active && 'active'}>일상적 토론의 시작</SubTitle>
           <MainTitle className={active && 'active'}>보일러 플레이트</MainTitle>
+          <DownloadButton className={active && 'active'}>
+            <div>다운로드</div>
+          </DownloadButton>
         </InnerWrapper>
       </TitleWrapper>
       <WebViewWrapper>
@@ -38,6 +41,30 @@ DeviceDetector.propTypes = {
 const InnerWrapper = styled.div`
   overflow: hidden;
   margin-left: 17px;
+`;
+const DownloadButton = styled.div`
+  color: #fff;
+  width: 100%;
+  background-color: #6e6bf0;
+  border-radius: 10px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  transition: all 0.5s ease-in-out 2.2s;
+  opacity: 0;
+
+  > div {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  &.active {
+    opacity: 1;
+  }
 `;
 const SubTitle = styled.div`
   font-size: 23px;

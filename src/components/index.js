@@ -39,6 +39,7 @@ import {
   KebabMenu,
   PageLoading,
   DeviceDetector,
+  Report,
 } from './molecules';
 import {
   BoardList,
@@ -92,4 +93,5 @@ export {
   KebabMenu,
   PageLoading,
   DeviceDetector,
+  Report,
 };

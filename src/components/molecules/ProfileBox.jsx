@@ -4,27 +4,31 @@ import PropTypes from 'prop-types';
 import { Grid, Image, Text } from 'components';
 
 const getDateString = (dateArray) => {
-  const now = new Date();
-  const nowTime = parseInt(now.getTime()) / 1000;
-  let regDt = new Date(
-    Date.UTC(
-      dateArray[0],
-      dateArray[1] - 1,
-      dateArray[2],
-      dateArray[3],
-      dateArray[4],
-      dateArray[5],
-    ),
-  );
-  const regDtTime = parseInt(regDt.getTime()) / 1000;
-  const result = (nowTime - regDtTime) / 3600;
+  if (dateArray) {
+    const now = new Date();
+    const nowTime = parseInt(now.getTime()) / 1000;
+    let regDt = new Date(
+      Date.UTC(
+        dateArray[0],
+        dateArray[1] - 1,
+        dateArray[2],
+        dateArray[3],
+        dateArray[4],
+        dateArray[5],
+      ),
+    );
+    const regDtTime = parseInt(regDt.getTime()) / 1000;
+    const result = (nowTime - regDtTime) / 3600;
 
-  if (result > 24) {
-    return parseInt(result / 24) + '일 전';
-  } else if (result < 1) {
-    return parseInt(result * 60) + '분 전';
+    if (result > 24) {
+      return parseInt(result / 24) + '일 전';
+    } else if (result < 1) {
+      return parseInt(result * 60) + '분 전';
+    } else {
+      return parseInt(result) + '시간 전';
+    }
   } else {
-    return parseInt(result) + '시간 전';
+    return;
   }
 };
 

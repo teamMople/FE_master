@@ -1,5 +1,6 @@
 import React, { useState, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import apis from 'apis/apis';
 
 import {
   Splash,
@@ -7,7 +8,7 @@ import {
   Nav,
   // Login,
   MyAccount,
-  AlarmList,
+  NotificationList,
   OAuthRedirectHandler,
   FindPassword,
   // Signup,
@@ -36,7 +37,16 @@ import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
 import GlobalStyle from '../styles/globalStyles';
 import { PageLoading, Report } from 'components';
 
+import { initializeApp } from 'firebase/app';
+import { firebaseConfig } from 'shared/utils/firebase';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { useDispatch } from 'react-redux';
+import { addAlarmList } from 'modules/alarms';
+
 function App() {
+  const dispatch = useDispatch();
+
+  // Theme
   const [theme, setTheme] = useState(lightTheme);
 
   // 테마 변경 값 로컬 스토리지에 저장해야함!
@@ -47,10 +57,38 @@ function App() {
     }
   };
 
+  // Firebase Cloud Messaging
+  const firebaseApp = initializeApp(firebaseConfig);
+  const firebaseMessaging = getMessaging(firebaseApp);
+
+  getToken(firebaseMessaging, {
+    vapidKey: process.env.REACT_APP_VAPID_KEY,
+  })
+    .then((currentToken) => {
+      console.log(currentToken);
+      if (currentToken) {
+        apis.pushAlarm(currentToken).then((response) => {
+          console.log(response);
+        });
+      } else {
+        console.log('not alarm registered');
+      }
+    })
+    .catch((error) => console.log(error));
+
+  onMessage(firebaseMessaging, (payload) => {
+    console.log('foregroundMessage');
+    console.log(payload);
+    if (payload) {
+      dispatch(addAlarmList(payload.notification));
+    }
+  });
+
   if (process.env.NODE_ENV === 'production') {
     console.log = function no_console() {};
     console.warn = function no_console() {};
   }
+  
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
@@ -99,7 +137,7 @@ function App() {
             </Route>
             <Route path="/editmyprofile" element={<EditUserProfile />} />
             <Route path="/findpassword" element={<FindPassword />} />
-            <Route path="/alarm" element={<AlarmList />} />
+            <Route path="/noti" element={<NotificationList />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/loading" element={<Loading />} />
             <Route path={'*'} element={<NotFound />} />

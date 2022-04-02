@@ -151,7 +151,11 @@ export const joinRoomAsync = createAsyncThunk(
         };
         return status;
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.error(err);
+        // navigate('/home', { replace: true });
+        window.location.href = `/home`;
+      });
   },
 );
 
@@ -188,7 +192,7 @@ export const roomSlice = createSlice({
         state.subscribers.splice(index, 1);
       }
     },
-    removeAllRoomSubscribers: (state, action) => {
+    removeAllRoomSubscribers: (state) => {
       state.subscribers = [];
     },
     setRemoteHandsUpStatus: (state, action) => {

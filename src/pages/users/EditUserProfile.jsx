@@ -1,10 +1,13 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import {
   BUCKET,
   awsS3Bucket,
   BASE_S3_URL,
 } from '../../shared/utils/awsBucketConfig';
+import apis from 'apis/apis';
+import lo from 'lodash';
 
 import { ThemeContext } from 'styled-components';
 import {
@@ -20,74 +23,51 @@ import {
   Survey,
 } from 'components';
 import { useDispatch } from 'react-redux';
+import { editMyInfo } from 'modules/users';
 
 function EditUserProfile(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
 
-  const [step, setStep] = useState(0);
-  const [email, setEmail] = useState('');
-  const [nickname, setNickname] = useState('noname');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [previewProfileImage, setPreviewProfileImage] = useState(
-    'http://localhost:3001/asset/icons/Image.svg',
-  );
+  const prevNickname = localStorage.getItem('nickname');
+  const prevProfileImageUrl = localStorage.getItem('profileImageUrl');
+
+  // Nickname
+  const [nickname, setNickname] = useState(prevNickname);
+  const [nicknameCheckMessage, setNicknameCheckMessage] = useState();
+
+  const nicknameDebounce = lo.debounce((k) => setNickname(k), 1000);
+  const nicknameKeyPress = useCallback(nicknameDebounce, []);
+
+  const changeNickname = (e) => {
+    nicknameKeyPress(e.target.value);
+  };
+
+  const checkDuplicateNickname = async () => {
+    if (nickname === prevNickname) {
+      setNicknameCheckMessage('이전과 동일한 닉네임입니다.');
+    } else {
+      const response = await apis.verifyNickname(nickname);
+      if (response.data.message === 'true') {
+        setNicknameCheckMessage('이미 존재하는 닉네임입니다');
+      } else if (response.data.message === 'false') {
+        setNicknameCheckMessage('사용하실 수 있습니다');
+      } else {
+        setNicknameCheckMessage();
+      }
+    }
+  };
+
+  // Image Uploader
+  const [previewProfileImage, setPreviewProfileImage] =
+    useState(prevProfileImageUrl);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [profileImageUrl, setProfileImageUrl] = useState(null);
-
-  const userInfo = { email, profileImageUrl, nickname, password };
-
-  useEffect(() => {
-    setStep(0);
-  }, []);
+  const [profileImageUrl, setProfileImageUrl] = useState(prevProfileImageUrl);
 
   const hiddenProfileImageInput = React.useRef(null);
   const handleProfileImageClick = (e) => {
     hiddenProfileImageInput.current.click();
-  };
-
-  const changeEmail = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const changePassword = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const changeConfirmPassword = (e) => {
-    setConfirmPassword(e.target.value);
-  };
-
-  const changeNickname = (e) => {
-    setNickname(e.target.value);
-  };
-
-  const checkPassword = (password, confirmPassword) => {
-    const regPassword = /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[.!@#$%])/;
-
-    if (!password) {
-      return '비밀번호는 영문 대소문자, 숫자, 특수문자(.!@#$%)를 혼합하여 8-20자로 입력해주세요.';
-    } else if (password && !regPassword.test(password)) {
-      return '잘못된 비밀번호 양식입니다.영문 대소문자, 숫자, 특수문자(.!@#$%)를 넣어주세요.';
-    } else if (password && (password.length < 8 || password.length > 20)) {
-      return '비밀번호는 8-20자로 입력해주세요.';
-    } else if (password && !confirmPassword) {
-      return '올바른 비밀번호입니다.확인 비밀번호를 입력해주세요.';
-    } else if (confirmPassword && password !== confirmPassword) {
-      return '비밀번호와 확인 비밀번호가 일치하지 않아요.';
-    } else {
-      return '비밀번호와 확인 비밀번호가 일치합니다.';
-    }
-  };
-
-  const checkNickname = (props) => {
-    if (!nickname) {
-      return '닉네임을 입력해주세요.';
-    } else {
-      return '이미 존재하는 닉네임입니다.';
-    }
   };
 
   const onImageChange = (e) => {
@@ -118,10 +98,12 @@ function EditUserProfile(props) {
     await awsS3Bucket.putObject(params).send((response) => {
       const signedUrl = BASE_S3_URL + folderName + '/' + urlIdentifier;
       console.log(signedUrl);
-      console.log(response);
       setProfileImageUrl(signedUrl);
     });
   };
+
+  // Submit
+  const userInfo = { nickname, profileImageUrl };
 
   return (
     <Wrapper
@@ -153,16 +135,22 @@ function EditUserProfile(props) {
             width="100%"
             type="text"
             onChange={changeNickname}
-            placeholder="닉네임"
+            placeholder={prevNickname}
           />
         </Grid>
-        <Grid isFlex>
+        <Grid isFlex padding="0px 17.5px 0px 17.5px">
           <Text size="10px" color={themeContext.colors.blue}>
-            이미 존재하는 닉네임입니다
+            {nicknameCheckMessage}
           </Text>
-          <Text size="10px" color={themeContext.colors.blue}>
-            중복확인
-          </Text>
+          <Grid
+            onClick={() => {
+              checkDuplicateNickname(nickname);
+            }}
+          >
+            <Text size="10px" color={themeContext.colors.blue}>
+              중복확인
+            </Text>
+          </Grid>
         </Grid>
         <div
           style={{
@@ -177,7 +165,11 @@ function EditUserProfile(props) {
         >
           <Button
             onClick={() => {
-              handleUpload('profile', selectedFile);
+              // if (selectedFile !== null) {
+              //   handleUpload('profile', selectedFile);
+              // }
+              console.log(userInfo);
+              dispatch(editMyInfo(userInfo));
             }}
             secondary
           >

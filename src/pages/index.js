@@ -1,11 +1,11 @@
 // boards
-import AlarmList from './boards/AlarmList';
 import BoardByCategoryList from './boards/BoardByCategoryList';
 import BoardDetail from './boards/BoardDetail';
 import BoardList from './boards/BoardList';
 import CombinedBoardList from './boards/CombinedBoardList';
 import CreateBoard from './boards/CreateBoard';
 import LiveBoardList from './boards/LiveBoardList';
+import NotificationList from './boards/NotificationList';
 import SearchBoard from './boards/SearchBoard';
 
 // users
@@ -30,13 +30,13 @@ import Splash from './Splash';
 
 export {
   // boards
-  AlarmList,
   BoardByCategoryList,
   BoardDetail,
   BoardList,
   CombinedBoardList,
   CreateBoard,
   LiveBoardList,
+  NotificationList,
   SearchBoard,
   // users
   EditUserProfile,

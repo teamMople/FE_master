@@ -144,7 +144,7 @@ const Nav = (props) => {
             </Link>
           </div>
           <div>
-            <Link to="/alarm">
+            <Link to="/noti">
               <Icon src="/asset/icons/Bell.svg" />
             </Link>
           </div>

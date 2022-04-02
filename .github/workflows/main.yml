@@ -1,4 +1,4 @@
-name: backtest-front
+name: boiler-plate-front
 on:
   push:
     branches:
@@ -30,6 +30,12 @@ jobs:
           echo "REACT_APP_OPENVIDU_URL=${{ secrets.REACT_APP_OPENVIDU_URL }}" >> .env
           echo "REACT_APP_SOCKET_MESSAGE_URL=${{ secrets.REACT_APP_SOCKET_MESSAGE_URL }}" >> .env
           echo "REACT_APP_SOCKET_VOTE_URL=${{ secrets.REACT_APP_SOCKET_VOTE_URL }}" >> .env
+          echo "REACT_APP_FIREBASE_API_KEY=${{ secrets.REACT_APP_FIREBASE_API_KEY }}" >> .env
+          echo "REACT_APP_FIREBASE_AUTH_DOMAIN=${{ secrets.REACT_APP_FIREBASE_AUTH_DOMAIN }}" >> .env
+          echo "REACT_APP_FIREBASE_PROJECT_ID=${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}" >> .env
+          echo "REACT_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.REACT_APP_FIREBASE_STORAGE_BUCKET }}" >> .env
+          echo "REACT_APP_FIREBASE_APP_ID=${{ secrets.REACT_APP_FIREBASE_APP_ID }}" >> .env
+          echo "REACT_APP_FIREBASE_MEASUREMENT_ID=${{ secrets.REACT_APP_FIREBASE_MEASUREMENT_ID }}" >> .env
           cat .env
 
       - name: yarn install

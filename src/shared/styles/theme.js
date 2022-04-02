@@ -57,7 +57,7 @@ const device = {
 
 const style = {
   header: {
-    height: '50px',
+    height: '60px',
   },
   borderRadius: {
     halfRounded: '20px 20px 0px 0px',

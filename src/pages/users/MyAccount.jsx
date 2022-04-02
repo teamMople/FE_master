@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { ThemeContext } from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Wrapper, Grid, Image, Text, MenuTab } from 'components';
@@ -21,7 +21,6 @@ const MyAccount = (props) => {
   return (
     <Wrapper backgroundColor={themeContext.colors.backgroundGray}>
       <Grid
-        padding="51px 0px 0px 0px"
         backgroundColor={themeContext.colors.white}
         width="100%"
         style={{
@@ -30,13 +29,7 @@ const MyAccount = (props) => {
         }}
       >
         <Grid padding="0px 24px 30px 24px">
-          <div
-            style={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}
-          >
+          <HeaderWrapper>
             <Grid
               onClick={() => {
                 window.location.assign('/settings');
@@ -44,7 +37,7 @@ const MyAccount = (props) => {
             >
               <img src="/asset/icons/Settings.svg" alt="setting" />
             </Grid>
-          </div>
+          </HeaderWrapper>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Image shape="circle" size={108} src={profileImageUrl} />
             <Grid margin="0px 0px 0px 23px">
@@ -76,5 +69,13 @@ const MyAccount = (props) => {
 MyAccount.propTypes = {
   nickname: PropTypes.string,
 };
+
+const HeaderWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: ${({ theme }) => theme.style.header.height};
+`;
 
 export default MyAccount;

@@ -5,6 +5,7 @@ import { getCookie } from '../shared/utils/Cookie';
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: {
+    'Access-Control-Allow-Origin': 'https://api.www.boiler-plate.org',
     'content-type': 'application/json;charset=UTF-8',
     accept: 'application/json',
   },
@@ -15,6 +16,7 @@ const api = axios.create({
 const authApi = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: {
+    'Access-Control-Allow-Origin': 'https://api.www.boiler-plate.org',
     'content-type': 'application/json;charset=UTF-8',
     accept: 'application/json',
   },

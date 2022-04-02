@@ -23,6 +23,7 @@ import {
   Header,
   ProgressStepper,
   Survey,
+  BasicModal,
 } from 'components';
 
 function Signup(props) {
@@ -42,6 +43,7 @@ function Signup(props) {
   const [emailCheckMessage, setEmailCheckMessage] = useState();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [textColor, setTextColor] = useState('error');
   const [isValidEmailByRegex, setIsValidEmailByRegex] = useState(false);
   const [isValidEmailByNotDuplicated, setIsValidEmailByNotDuplicated] =
     useState(false);
@@ -132,21 +134,28 @@ function Signup(props) {
 
   // Nickname Validation
   const [nickname, setNickname] = useState('');
-  const [nicknameCheckMessage, setNicknameCheckMessage] = useState();
+  const [nicknameCheckMessage, setNicknameCheckMessage] =
+    useState('최대 10글자 까지 가능합니다');
 
-  const nicknameDebounce = lo.debounce((k) => setNickname(k), 1000);
-  const nicknameKeyPress = useCallback(nicknameDebounce, []);
+  // const nicknameDebounce = lo.debounce((k) => setNickname(k), 1000);
+  // const nicknameKeyPress = useCallback(nicknameDebounce, []);
 
   const changeNickname = (e) => {
-    nicknameKeyPress(e.target.value);
+    setNickname(e.target.value);
+    if (nickname === '') {
+      setNicknameCheckMessage('최대 10글자 까지 가능합니다');
+    }
   };
 
   const checkDuplicateNickname = async () => {
+    if (nickname === '') {
+      return setNicknameCheckMessage('닉네임을 먼저 입력해주세요');
+    }
     const response = await apis.verifyNickname(nickname);
     console.log(response);
-    if (response.data.message === 'true') {
+    if (nickname && response.data.message === 'true') {
       setNicknameCheckMessage('이미 존재하는 닉네임입니다');
-    } else if (response.data.message === 'false') {
+    } else if (nickname && response.data.message === 'false') {
       setNicknameCheckMessage('사용하실 수 있습니다');
     } else {
       setNicknameCheckMessage();
@@ -220,277 +229,278 @@ function Signup(props) {
   // Submit
   const userInfo = { email, profileImageUrl, nickname, password };
 
+  const [openModal, setOpenModal] = useState(false);
   return (
-    <Wrapper
-      backgroundColor={themeContext.colors.white}
-      style={{ overflow: 'hidden', height: '100%' }}
-    >
-      <FixedHeader>
-        <Grid padding="0px 24px 0px 24px">
-          {(() => {
-            switch (step) {
-              case 0:
-                return <Header label="회원가입" leftArrow />;
-              case 1:
-                return (
-                  <Header
-                    label="회원가입"
-                    leftArrow
-                    leftArrowOnClick={() => {
-                      setStep(0);
-                    }}
-                  />
-                );
-              case 2:
-                return (
-                  <Header
-                    label="회원가입"
-                    leftArrow
-                    leftArrowOnClick={() => {
-                      setStep(1);
-                    }}
-                  />
-                );
-              default:
-                return;
-            }
-          })()}
-        </Grid>
-        <ProgressStepper
-          steps={3}
-          currentStep={step}
-          backgroundColor={themeContext.colors.white}
-          highlightColor={themeContext.colors.blue}
-        />
-      </FixedHeader>
-      {(() => {
-        switch (step) {
-          case 0:
-            return (
-              <SectionWrapper>
-                <InnerWrapper>
-                  <Text
-                    color={themeContext.colors.darkGray}
-                    lineHeight={'22px'}
-                  >
-                    반가워요 !<br /> 이메일, 비밀번호를 입력해주세요 :)
+    <>
+      <BasicModal
+        open={openModal}
+        onConfirm={() => navigate('/login', { replace: true })}
+      >
+        Boiler Plate의 회원이 되신 것을 축하합니다!
+      </BasicModal>
+      <Wrapper
+        backgroundColor={themeContext.colors.white}
+        style={{ overflow: 'hidden', height: '100%' }}
+      >
+        <FixedHeader>
+          <Grid padding="0px 24px 0px 24px">
+            {(() => {
+              switch (step) {
+                case 0:
+                  return <Header label="회원가입" leftArrow />;
+                case 1:
+                  return (
+                    <Header
+                      label="회원가입"
+                      leftArrow
+                      leftArrowOnClick={() => {
+                        setStep(0);
+                      }}
+                    />
+                  );
+                case 2:
+                  return (
+                    <Header
+                      label="회원가입"
+                      leftArrow
+                      leftArrowOnClick={() => {
+                        setStep(1);
+                      }}
+                    />
+                  );
+                default:
+                  return;
+              }
+            })()}
+          </Grid>
+          <ProgressStepper
+            steps={3}
+            currentStep={step}
+            backgroundColor={themeContext.colors.white}
+            highlightColor={themeContext.colors.blue}
+          />
+        </FixedHeader>
+        <SectionWrapper style={{ display: step === 0 ? 'block' : 'none' }}>
+          <InnerWrapper>
+            <Text color={themeContext.colors.darkGray} lineHeight={'22px'}>
+              반가워요 !<br /> 이메일, 비밀번호를 입력해주세요 :)
+            </Text>
+            <Input
+              fluid
+              type="text"
+              onChange={changeEmail}
+              placeholder="이메일(아이디)"
+              margin="19px 0 0 0"
+              autoFocus
+            />
+            <Grid isFlex>
+              <Text
+                small
+                color={
+                  isValidEmailByRegex
+                    ? themeContext.colors.blue
+                    : themeContext.colors.red
+                }
+                style={{ flex: 0.8, padding: '8px 17.5px 8px 17.5px' }}
+              >
+                {emailCheckMessage}
+              </Text>
+              <div
+                style={{
+                  alignItems: 'flex-end',
+                  width: '100%',
+                  padding: '8px 17.5px 8px 17.5px',
+                  flex: 0.2,
+                }}
+              >
+                <Grid
+                  onClick={() => {
+                    checkDuplicateEmail(email);
+                  }}
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Text small color={themeContext.colors.blue} right>
+                    중복확인
                   </Text>
-                  <Input
-                    fluid
-                    type="text"
-                    onChange={changeEmail}
-                    placeholder="이메일(아이디)"
-                    margin="19px 0 0 0"
-                    autoFocus
-                  />
-                  <Grid isFlex>
-                    <Text
-                      small
-                      color={themeContext.colors.red}
-                      style={{ flex: 0.8, padding: '8px 17.5px 8px 17.5px' }}
-                    >
-                      {emailCheckMessage}
-                    </Text>
-                    <div
-                      style={{
-                        alignItems: 'flex-end',
-                        width: '100%',
-                        padding: '8px 17.5px 8px 17.5px',
-                        flex: 0.2,
-                      }}
-                    >
-                      <Grid
-                        onClick={() => {
-                          checkDuplicateEmail(email);
-                        }}
-                        style={{
-                          cursor: 'pointer',
-                        }}
-                      >
-                        <Text small color={themeContext.colors.blue} right>
-                          중복확인
-                        </Text>
-                      </Grid>
-                    </div>
-                  </Grid>
-                  <Input
-                    fluid
-                    type="password"
-                    margin="16px 0px 8px 0px"
-                    onChange={changePassword}
-                    placeholder="비밀번호"
-                    disabled={
-                      !(isValidEmailByRegex && isValidEmailByNotDuplicated)
-                    }
-                  />
-                  <Input
-                    fluid
-                    type="password"
-                    onChange={changeConfirmPassword}
-                    placeholder="비밀번호 확인"
-                    disabled={email === '' || password === ''}
-                  />
-                  <Grid margin="16px 17.5px">
-                    {!password ? (
-                      <Text small color={themeContext.colors.blue}>
-                        비밀번호는 영문 대소문자, 숫자, 특수문자(.!@#$%)를
-                        혼합하여 8-20자로 입력해주세요.
-                      </Text>
-                    ) : (
-                      <Text small color={themeContext.colors.red}>
-                        {checkPassword(password, confirmPassword)}
-                      </Text>
-                    )}
-                  </Grid>
-                </InnerWrapper>
-                <NextButtonWrapper>
-                  <Button
-                    onClick={() => {
-                      setStep(1);
-                    }}
-                    secondary
-                    size={'large'}
-                    disabled={!checkValidEmailPassword()}
-                  >
-                    다음으로
-                  </Button>
-                </NextButtonWrapper>
-              </SectionWrapper>
-            );
-          case 1:
-            return (
-              <SectionWrapper>
-                <InnerWrapper>
-                  <Grid padding="0px 0px 38px 0px">
-                    <Text color={themeContext.colors.darkGray}>
-                      사용하실 닉네임과 프로필이미지를 설정해주세요 :)
-                    </Text>
-                  </Grid>
-                  <Grid center width="100%" margin="0px 0px 18px 0px">
-                    <Image
-                      shape="circle"
-                      size={134}
-                      src={previewProfileImage}
-                      onClick={handleProfileImageClick}
-                    />
-                    <input
-                      type="file"
-                      style={{ display: 'none' }}
-                      accept=".jpg,.jpeg,.png"
-                      ref={hiddenProfileImageInput}
-                      onChange={onImageChange}
-                    />
-                  </Grid>
-                  <Grid>
-                    <Input
-                      fluid
-                      type="text"
-                      onChange={changeNickname}
-                      placeholder="닉네임"
-                      margin="8px 0 0 0"
-                      autoFocus
-                    />
-                  </Grid>
-                  <Grid isFlex>
-                    <Text
-                      small
-                      color={themeContext.colors.blue}
-                      style={{ flex: 0.8, padding: '8px 17.5px 8px 17.5px' }}
-                    >
-                      {nicknameCheckMessage}
-                    </Text>
-                    <div
-                      style={{
-                        alignItems: 'flex-end',
-                        width: '100%',
-                        padding: '8px 17.5px 8px 17.5px',
-                        flex: 0.2,
-                      }}
-                    >
-                      <Grid
-                        onClick={() => {
-                          checkDuplicateNickname(nickname);
-                        }}
-                      >
-                        <Text small color={themeContext.colors.blue}>
-                          중복확인
-                        </Text>
-                      </Grid>
-                    </div>
-                  </Grid>
-                </InnerWrapper>
-                <NextButtonWrapper>
-                  <Button
-                    onClick={() => {
-                      setStep(2);
-                      handleUpload('profile', selectedFile);
-                    }}
-                    secondary
-                    size={'large'}
-                    disabled={!checkValidNickname}
-                  >
-                    다음으로
-                  </Button>
-                </NextButtonWrapper>
-              </SectionWrapper>
-            );
-          case 2:
-            return (
-              <SectionWrapper>
-                <InnerWrapper>
-                  <Grid
-                    height="auto"
-                    padding="0px 0px 0px 0px"
-                    margin="0px 0px 38px 0px"
-                  >
-                    <Text
-                      color={themeContext.colors.darkGray}
-                      lineHeight="20px"
-                    >
-                      이제 다 왔어요!
-                      <br />
-                      보일러플레이트의 건강하고 자유로운 토론문화를 위해
-                      <br />
-                      아래 사항을 꼭 준수해주세요 :)
-                    </Text>
-                  </Grid>
-                  {labels.map((label, idx) => (
-                    <Survey
-                      key={idx}
-                      label={label}
-                      onClick={() => handleCheckClick(idx)}
-                      checked={checkList[idx]}
-                    />
-                  ))}
-                </InnerWrapper>
-                <NextButtonWrapper>
-                  <Button
-                    onClick={() => {
-                      localStorage.setItem('nickname', nickname);
-                      localStorage.setItem('profileImageUrl', profileImageUrl);
-                      axios
-                        .post(
-                          `${process.env.REACT_APP_API_URL}/api/signup`,
-                          JSON.stringify(userInfo),
-                          { headers: { 'Content-Type': 'application/json' } },
-                        )
-                        .then((response) => {
-                          navigate('/login');
-                        });
-                    }}
-                    secondary
-                    disabled={!isAllChecked}
-                  >
-                    확인
-                  </Button>
-                </NextButtonWrapper>
-              </SectionWrapper>
-            );
-          default:
-            return null;
-        }
-      })()}
-    </Wrapper>
+                </Grid>
+              </div>
+            </Grid>
+            <Input
+              fluid
+              type="password"
+              margin="16px 0px 8px 0px"
+              onChange={changePassword}
+              placeholder="비밀번호"
+              disabled={!(isValidEmailByRegex && isValidEmailByNotDuplicated)}
+            />
+            <Input
+              fluid
+              type="password"
+              onChange={changeConfirmPassword}
+              placeholder="비밀번호 확인"
+              disabled={email === '' || password === ''}
+            />
+            <Grid margin="16px 17.5px">
+              {!password ? (
+                <Text small color={themeContext.colors.blue}>
+                  비밀번호는 영문 대소문자, 숫자, 특수문자(.!@#$%)를 혼합하여
+                  8-20자로 입력해주세요.
+                </Text>
+              ) : checkPassword(password, confirmPassword) ===
+                '올바른 비밀번호입니다.확인 비밀번호를 입력해주세요' ? (
+                <Text small color={themeContext.colors.blue}>
+                  {checkPassword(password, confirmPassword)}
+                </Text>
+              ) : checkPassword(password, confirmPassword) ===
+                '비밀번호와 확인 비밀번호가 일치합니다' ? (
+                <Text small color={themeContext.colors.blue}>
+                  {checkPassword(password, confirmPassword)}
+                </Text>
+              ) : (
+                <Text small color={themeContext.colors.red}>
+                  {checkPassword(password, confirmPassword)}
+                </Text>
+              )}
+            </Grid>
+          </InnerWrapper>
+          <NextButtonWrapper>
+            <Button
+              onClick={() => {
+                setStep(1);
+              }}
+              secondary
+              size={'large'}
+              disabled={!checkValidEmailPassword()}
+            >
+              다음으로
+            </Button>
+          </NextButtonWrapper>
+        </SectionWrapper>
+        <SectionWrapper style={{ display: step === 1 ? 'block' : 'none' }}>
+          <InnerWrapper>
+            <Grid padding="0px 0px 38px 0px">
+              <Text color={themeContext.colors.darkGray}>
+                사용하실 닉네임과 프로필이미지를 설정해주세요 :)
+              </Text>
+            </Grid>
+            <Grid center width="100%" margin="0px 0px 18px 0px">
+              <Image
+                shape="circle"
+                size={134}
+                src={previewProfileImage}
+                onClick={handleProfileImageClick}
+              />
+              <input
+                type="file"
+                style={{ display: 'none' }}
+                accept=".jpg,.jpeg,.png"
+                ref={hiddenProfileImageInput}
+                onChange={onImageChange}
+              />
+            </Grid>
+            <Grid>
+              <Input
+                fluid
+                type="text"
+                onChange={changeNickname}
+                placeholder="닉네임"
+                margin="8px 0 0 0"
+                autoFocus
+                maxLength={'10'}
+              />
+            </Grid>
+            <Grid isFlex>
+              <Text
+                small
+                color={themeContext.colors.blue}
+                style={{ flex: 0.8, padding: '8px 17.5px 8px 17.5px' }}
+              >
+                {nicknameCheckMessage}
+              </Text>
+              <div
+                style={{
+                  alignItems: 'flex-end',
+                  width: '100%',
+                  padding: '8px 17.5px 8px 17.5px',
+                  flex: 0.2,
+                }}
+              >
+                <Grid
+                  onClick={() => {
+                    checkDuplicateNickname(nickname);
+                  }}
+                >
+                  <Text small color={themeContext.colors.blue}>
+                    중복확인
+                  </Text>
+                </Grid>
+              </div>
+            </Grid>
+          </InnerWrapper>
+          <NextButtonWrapper>
+            <Button
+              onClick={() => {
+                setStep(2);
+                handleUpload('profile', selectedFile);
+              }}
+              secondary
+              size={'large'}
+              disabled={!checkValidNickname() || nickname === ''}
+            >
+              다음으로
+            </Button>
+          </NextButtonWrapper>
+        </SectionWrapper>
+        <SectionWrapper style={{ display: step === 2 ? 'block' : 'none' }}>
+          <InnerWrapper>
+            <Grid
+              height="auto"
+              padding="0px 0px 0px 0px"
+              margin="0px 0px 38px 0px"
+            >
+              <Text color={themeContext.colors.darkGray} lineHeight="20px">
+                이제 다 왔어요!
+                <br />
+                보일러플레이트의 건강하고 자유로운 토론문화를 위해
+                <br />
+                아래 사항을 꼭 준수해주세요 :)
+              </Text>
+            </Grid>
+            {labels.map((label, idx) => (
+              <Survey
+                key={idx}
+                label={label}
+                onClick={() => handleCheckClick(idx)}
+                checked={checkList[idx]}
+              />
+            ))}
+          </InnerWrapper>
+          <NextButtonWrapper>
+            <Button
+              onClick={() => {
+                // localStorage.setItem('nickname', nickname);
+                // localStorage.setItem('profileImageUrl', profileImageUrl);
+                axios
+                  .post(
+                    `${process.env.REACT_APP_API_URL}/api/signup`,
+                    JSON.stringify(userInfo),
+                    { headers: { 'Content-Type': 'application/json' } },
+                  )
+                  .then((response) => {
+                    setOpenModal(true);
+                  });
+              }}
+              secondary
+              disabled={!isAllChecked}
+            >
+              확인
+            </Button>
+          </NextButtonWrapper>
+        </SectionWrapper>
+      </Wrapper>
+    </>
   );
 }
 const FixedHeader = styled.div`

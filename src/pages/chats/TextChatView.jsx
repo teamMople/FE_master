@@ -1,46 +1,33 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  BackDrop,
   ChatWrapper,
-  JoinerLeaver,
-  Receiver,
-  ReceiverInner,
-  ReceiverWrapper,
-  Sender,
-  SenderInner,
-  SenderWrapper,
+  EnterLeaveWrapper,
+  Messenger,
+  MessengerInner,
+  MessengerWrapper,
   TextInputWrapper,
+  UserProfileImage,
 } from './style';
 import { Button, Text, Textarea } from '../../components';
 import { ThemeContext } from 'styled-components';
-import { useDispatch } from 'react-redux';
-import { hideChat } from '../../modules/chat';
 
-// let stompClient = null;
-
-const TextChatView = ({
-  stompClient,
-  sock,
-  roomId,
-  memberName,
-  unsubscribe,
-  moderator,
-  className,
-  onClickShow,
-  active,
-  onClickMoveUserRoom,
-}) => {
+const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
   const themeContext = useContext(ThemeContext);
-  const dispatch = useDispatch();
   const [publicChats, setPublicChats] = useState([]);
   const [userData, setUserData] = useState({
     sender: '',
-    connected: false,
-    message: null,
+    // connected: false,
+    message: '',
+    sentAt: 0,
+    profileUrl: localStorage.getItem('profileImageUrl'),
   });
   useEffect(() => {
     connect();
+    return () => {
+      stompClient.unsubscribe();
+      stompClient.disconnect();
+    };
   }, []);
 
   const connect = () => {
@@ -56,6 +43,10 @@ const TextChatView = ({
       // console.log('Disconnected to Server😀');
     });
   };
+
+  const chat = document.getElementById('chat_content');
+
+  const today = new Date().getTime();
 
   const onConnected = () => {
     setUserData({ ...userData, connected: true });
@@ -79,10 +70,23 @@ const TextChatView = ({
   };
 
   const onMessageReceived = (payload) => {
+    // chat.scrollTop = chat.scrollHeight;
     let payloadData = JSON.parse(payload.body);
-    console.log('👺👺payloadData ====>', payloadData.agreeCount);
-    setPublicChats((prevPublicChats) => [...prevPublicChats, payloadData]);
+    const messageTime = calcTime(payloadData.sentAt);
+    // console.log('messageTime :::', messageTime);
+    // console.log('👺payloadData ====>', payloadData);
+    setPublicChats((prevPublicChats) => [
+      ...prevPublicChats,
+      {
+        type: payloadData.type,
+        sender: payloadData.sender,
+        message: payloadData.message,
+        sentAt: payloadData.sentAt,
+        profileUrl: payloadData.profileUrl,
+      },
+    ]);
   };
+  // console.log(publicChats);
 
   const onError = (err) => {
     console.log(err);
@@ -91,6 +95,7 @@ const TextChatView = ({
   const handleMessage = (event) => {
     const { value } = event.target;
     setUserData({ ...userData, message: value });
+    chat.scrollTop = chat.scrollHeight;
   };
 
   const handleKeyDownSendMessage = (e) => {
@@ -98,85 +103,114 @@ const TextChatView = ({
       sendMessage();
     }
   };
+
+  const calcTime = (sentAt) => {
+    const receivedTime = Number(sentAt);
+
+    const resultTime = Math.floor((today - receivedTime) / 1000 / 60);
+    if (resultTime < 1) {
+      return '방금';
+    }
+    if (resultTime < 60) {
+      return `${resultTime}분전`;
+    }
+    const resultTimeHour = Math.floor(resultTime / 60);
+    if (resultTimeHour < 24) {
+      return `${resultTimeHour}시간전`;
+    }
+    const resultTimeDay = Math.floor(resultTime / 60 / 24);
+    if (resultTimeDay < 365) {
+      return `${resultTimeDay}일전`;
+    }
+    // return `${Math.floor(resultTimeDay / 365)}년전`;
+  };
   const sendMessage = () => {
-    // console.log('👍 메시지 보내기 클릭!');
+    chat.scrollTop = chat.scrollHeight;
     if (stompClient) {
       let chatMessage = {
         sender: memberName,
         message: userData.message,
         type: 'CHAT',
         roomId: roomId,
+        sentAt: today.toString(),
+        profileUrl: localStorage.getItem('profileImageUrl'),
       };
-      // console.log('👍 내가 보낸 메시지 ==>', chatMessage);
       stompClient.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
       setUserData({ ...userData, message: '' });
     }
   };
-
-  // const registerUser = () => {
-  //   connect();
-  // };
-
-  // if (disconnect) {
-  //   let chatMessage = {
-  //     sender: userId,
-  //     type: 'LEAVE',
-  //     roomId: roomId,
-  //   };
-  //   stompClient.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
-  //   leaveRoom();
-  // }
   return (
     <>
       {userData.connected && (
-        <ChatWrapper className={active && 'active'}>
-          {/*<Button>숨기기</Button>*/}
-          {publicChats.map((chat, index) => (
-            <>
-              {chat.type === 'ENTER' && (
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: `${themeContext.colors.lightGray}`,
-                    margin: '10px',
-                  }}
-                >
-                  <Text key={index}>{chat.sender}님이 입장하셨습니다.</Text>
+        <>
+          <ChatWrapper id="chat_content">
+            {/*<ChatWrapper className={active && 'active'}>*/}
+            {/*<Button>숨기기</Button>*/}
+            <div>
+              {publicChats.map((chat, index) => (
+                <div key={index}>
+                  {chat.type === 'ENTER' && (
+                    <EnterLeaveWrapper key={index}>
+                      <Text>{chat.sender}님이 입장하셨습니다.</Text>
+                    </EnterLeaveWrapper>
+                  )}
+                  {chat.type === 'CHAT' && chat.sender !== memberName && (
+                    <MessengerWrapper key={index}>
+                      <UserProfileImage src={chat.profileUrl} alt="user" />
+                      <MessengerInner>
+                        <Messenger>
+                          <Text semiBold>{chat.sender}</Text>
+                          <Text
+                            tiny
+                            color={themeContext.colors.gray}
+                            style={{ marginLeft: '8px' }}
+                          >
+                            {calcTime(chat.sentAt)}
+                          </Text>
+                        </Messenger>
+                        <Text
+                          className="message-data"
+                          preWrap
+                          color={themeContext.colors.black}
+                        >
+                          {chat.message}
+                        </Text>
+                      </MessengerInner>
+                    </MessengerWrapper>
+                  )}
+                  {chat.type === 'CHAT' && chat.sender === memberName && (
+                    <MessengerWrapper key={index}>
+                      <UserProfileImage
+                        // src={'/asset/image/users/test.png'}
+                        src={chat.profileUrl}
+                        alt="user"
+                      />
+                      <MessengerInner>
+                        <Messenger>
+                          <Text semiBold>{chat.sender}(나)</Text>
+                          <Text
+                            tiny
+                            color={themeContext.colors.gray}
+                            style={{ marginLeft: '8px' }}
+                          >
+                            {calcTime(chat.sentAt)}
+                          </Text>
+                        </Messenger>
+                        <Text className="message-data" preWrap>
+                          {chat.message}
+                        </Text>
+                      </MessengerInner>
+                    </MessengerWrapper>
+                  )}
+                  {chat.type === 'LEAVE' && (
+                    <EnterLeaveWrapper key={index}>
+                      <Text>{chat.sender}님이 나가셨습니다.</Text>
+                    </EnterLeaveWrapper>
+                  )}
                 </div>
-              )}
-              {chat.type === 'CHAT' && chat.sender !== memberName && (
-                <ReceiverWrapper key={index}>
-                  <ReceiverInner>
-                    <Receiver>{chat.sender}</Receiver>
-                    <Text
-                      className="message-data"
-                      preWrap
-                      color={themeContext.colors.white}
-                    >
-                      {chat.message}
-                    </Text>
-                  </ReceiverInner>
-                </ReceiverWrapper>
-              )}
-              {chat.type === 'CHAT' && chat.sender === memberName && (
-                <SenderWrapper key={index}>
-                  <SenderInner>
-                    <Sender>{chat.sender}</Sender>
-                    <Text className="message-data" preWrap>
-                      {chat.message}
-                    </Text>
-                  </SenderInner>
-                </SenderWrapper>
-              )}
-              {chat.type === 'LEAVE' && (
-                <JoinerLeaver key={index}>
-                  {chat.sender}님이 나가셨습니다.
-                </JoinerLeaver>
-              )}
-            </>
-          ))}
+              ))}
+            </div>
+          </ChatWrapper>
 
           <TextInputWrapper>
             <Textarea
@@ -190,18 +224,23 @@ const TextChatView = ({
               value={userData.message}
               onChange={handleMessage}
               onKeyDown={handleKeyDownSendMessage}
+              onFocus={() => (chat.scrollTop = chat.scrollHeight)}
             />
             <Button
-              small
+              size={'small'}
               shape="rounded"
-              style={{ minWidth: 'auto', whiteSpace: 'nowrap' }}
+              style={{
+                minWidth: 'auto',
+                whiteSpace: 'nowrap',
+                marginLeft: '16px',
+              }}
               onClick={sendMessage}
               disabled={userData.message === ''}
             >
-              보내기
+              전송
             </Button>
           </TextInputWrapper>
-        </ChatWrapper>
+        </>
       )}
     </>
   );

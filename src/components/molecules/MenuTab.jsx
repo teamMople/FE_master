@@ -65,15 +65,16 @@ const Highlight = styled.div`
   width: ${(props) => props.width};
   height: 4px;
   background-color: ${(props) => props.highlightColor};
-  transition: 1s width;
+  transition: 0.3s width;
 `;
 
 const Hidden = styled.div`
   position: absolute;
   width: ${(props) => props.width};
-  height: 100%;
+  bottom: 0;
+  height: 4px;
   background-color: ${(props) => props.backgroundColor};
-  transition: 1s width;
+  transition: 0.3s width;
 `;
 
 const Labels = styled.div`

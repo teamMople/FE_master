@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { setMemberVoteStatus } from '../../modules/chat';
 import { VoteResultBar } from '../../components';
+import { VoteResultBarWrapper } from './views/LiveRoom/style';
 
 const VoteView = ({
   roomId,
@@ -11,15 +12,21 @@ const VoteView = ({
   memberDisagreed,
   stompClient,
   sock,
+  agreeCount,
+  disagreeCount,
 }) => {
   const dispatch = useDispatch();
   const [agree, setAgree] = useState(memberAgreed);
   const [disagree, setDisagree] = useState(memberDisagreed);
-  const [agreeCount, setAgreeCount] = useState(0);
-  const [disagreeCount, setDisagreeCount] = useState(0);
+  const [agreeCountState, setAgreeCountState] = useState(agreeCount);
+  const [disagreeCountState, setDisagreeCountState] = useState(disagreeCount);
 
   useEffect(() => {
     connect();
+    return () => {
+      stompClient.unsubscribe();
+      stompClient.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -29,10 +36,6 @@ const VoteView = ({
     };
     dispatch(setMemberVoteStatus(data));
   }, [agree, disagree]);
-
-  // useEffect(() => {
-  //   dispatch(setMemberVoteStatus(data));
-  // }, [agree, disagree]);
 
   const connect = () => {
     stompClient.connect({}, onConnected, onError);
@@ -54,22 +57,12 @@ const VoteView = ({
       onMessageReceived,
       onError,
     );
-    // userJoin();
   };
-  // const userJoin = () => {
-  //   let chatMessage = {
-  //     // sender: userData.sender,
-  //     sender: userId,
-  //     type: 'ENTER',
-  //     roomId: roomId,
-  //   };
-  //   stompClient.send('/pub/chat/vote', {}, JSON.stringify(chatMessage));
-  // };
 
   const onMessageReceived = (payload) => {
     let payloadData = JSON.parse(payload.body);
-    setAgreeCount(payloadData.agreeCount);
-    setDisagreeCount(payloadData.disagreeCount);
+    setAgreeCountState(payloadData.agreeCount);
+    setDisagreeCountState(payloadData.disagreeCount);
     console.log('👺👺payloadData ====>', payloadData);
   };
 
@@ -84,9 +77,9 @@ const VoteView = ({
         type: 'AGREE',
         roomId: roomId,
         sender: userId,
-        message: null,
+        agreedBefore: agree,
+        disagreedBefore: disagree,
       };
-      console.log('🫖 찬성 ==>', message);
       stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setAgree(true);
       setDisagree(false);
@@ -100,9 +93,9 @@ const VoteView = ({
         type: 'DISAGREE',
         roomId: roomId,
         sender: userId,
-        message: null,
+        agreedBefore: agree,
+        disagreedBefore: disagree,
       };
-      console.log('🫖 반대 ==>', message);
       stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setDisagree(true);
       setAgree(false);
@@ -116,12 +109,11 @@ const VoteView = ({
         type: 'CANCEL_AGREE',
         roomId: roomId,
         sender: userId,
-        message: null,
+        agreedBefore: agree,
+        disagreedBefore: disagree,
       };
-      console.log('🫖 찬성 ==>', message);
       stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
       setAgree(false);
-      setDisagree(false);
     }
   };
 
@@ -132,33 +124,23 @@ const VoteView = ({
         type: 'CANCEL_DISAGREE',
         roomId: roomId,
         sender: userId,
-        message: null,
+        agreedBefore: agree,
+        disagreedBefore: disagree,
       };
-      console.log('🫖 찬성 ==>', message);
       stompClient.send('/pub/chat/vote', {}, JSON.stringify(message));
-      setAgree(false);
       setDisagree(false);
     }
   };
   return (
-    <div className="container">
+    <VoteResultBarWrapper>
       <VoteResultBar
-        agreeCount={agreeCount}
-        disagreeCount={disagreeCount}
+        agreeCount={agreeCountState}
+        disagreeCount={disagreeCountState}
         onClickAgree={agree ? sendCancelAgree : sendAddAgree}
         onClickDisagree={disagree ? sendCancelDisagree : sendAddDisagree}
+        selected={agree ? '찬성' : disagree ? '반대' : '없다'}
       />
-      {/*{agree ? (
-        <button onClick={sendCancelAgree}>찬성취소</button>
-      ) : (
-        <button onClick={sendAddAgree}>찬성</button>
-      )}
-      {disagree ? (
-        <button onClick={sendCancelDisagree}>반대취소</button>
-      ) : (
-        <button onClick={sendAddDisagree}>반대</button>
-      )}*/}
-    </div>
+    </VoteResultBarWrapper>
   );
 };
 
@@ -171,6 +153,8 @@ VoteView.propTypes = {
   leave: PropTypes.any,
   memberAgreed: PropTypes.any,
   memberDisagreed: PropTypes.any,
+  agreeCount: PropTypes.number,
+  disagreeCount: PropTypes.number,
 };
 
 export default VoteView;

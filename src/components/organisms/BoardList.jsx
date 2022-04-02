@@ -20,7 +20,7 @@ const BoardList = (props) => {
         return (
           <BoardWrapper key={index}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Image shape="circle" size={32} />
+              <Image shape="circle" size={32} src={board.profileImageUrl} />
               <div
                 style={{ marginLeft: '8px' }}
                 onClick={() => {

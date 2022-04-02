@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Text } from '../atoms';
 import styled, { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
+import { LiveAnimation } from './index';
 
 const StatusBox = ({
   count,
@@ -11,10 +12,13 @@ const StatusBox = ({
   active,
   text,
   backgroundColor,
+  live,
+  liveBackgroundColor,
 }) => {
   const themeContext = useContext(ThemeContext);
   return (
     <Box active={active} backgroundColor={backgroundColor}>
+      {live && <LiveAnimation backgroundColor={liveBackgroundColor} />}
       {icon && <img src={icon} alt={'icon'} />}
       {label && (
         <Text tiny color={themeContext.colors.darkGray}>
@@ -35,6 +39,8 @@ StatusBox.propTypes = {
   text: PropTypes.string,
   active: PropTypes.bool,
   backgroundColor: PropTypes.string,
+  live: PropTypes.bool,
+  liveBackgroundColor: PropTypes.string,
 };
 
 StatusBox.defaultProps = {

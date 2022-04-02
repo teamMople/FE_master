@@ -12,6 +12,8 @@ const BasicModal = ({
   onConfirm,
   children,
   warning,
+  confirmMessage,
+  closeMessage,
 }) => {
   return createPortal(
     <>
@@ -29,20 +31,20 @@ const BasicModal = ({
             />
           </ModalHeader>
           <ModalContent>
-            <Text tiny lineHeight={'16px'}>
+            <Text tiny lineHeight={'16px'} center>
               {children}
             </Text>
             {warning}
           </ModalContent>
           <ModalActions>
-            {/* {onClose && (
+            {onClose && closeMessage && (
               <Button size="tiny" onClick={onClose}>
-                취소
+                {closeMessage ? closeMessage : '취소'}
               </Button>
-            )}*/}
+            )}
             {onConfirm && (
               <Button size="tiny" secondary onClick={onConfirm}>
-                확인
+                {confirmMessage ? confirmMessage : '확인'}
               </Button>
             )}
           </ModalActions>
@@ -63,6 +65,8 @@ BasicModal.propTypes = {
   onOpen: PropTypes.func,
   children: PropTypes.any,
   warning: PropTypes.any,
+  confirmMessage: PropTypes.string,
+  closeMessage: PropTypes.string,
 };
 
 const ModalWrapper = styled.div`

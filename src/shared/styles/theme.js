@@ -57,7 +57,7 @@ const device = {
 
 const style = {
   header: {
-    height: '42px',
+    height: '50px',
   },
   borderRadius: {
     halfRounded: '20px 20px 0px 0px',
@@ -71,7 +71,7 @@ const lightThemeColors = {
   black: '#282828',
   gray: '#D5D8DB',
   gray2: '#718096',
-  lightGray: '#E5E5E5',
+  lightGray: '#f1f1f1',
   darkGray: '#718096',
   backgroundGray: '#F8F8F8',
   primaryYellow: '#FADE86',
@@ -80,7 +80,7 @@ const lightThemeColors = {
   lightBlue: '#CCE5FC',
   lightPink: '#F6CAF2',
   orange: '#F29E3B',
-  lightGreen: '#BFEA94',
+  lightGreen: '#D9F3C0',
 };
 
 const darkThemeColors = {

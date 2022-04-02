@@ -12,6 +12,14 @@ export const CarouselWrapper = styled.div`
   padding-top: 148px;
   height: 100%;
   //height: calc(100% - 148px);
+
+  .slider-wrapper {
+    > ul {
+      > li {
+        background-color: ${({ theme }) => theme.colors.white};
+      }
+    }
+  }
 `;
 export const BackDrop = styled.div`
   position: fixed;

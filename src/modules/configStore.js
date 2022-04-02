@@ -10,6 +10,7 @@ import {
 import { commentListSlice, replyCommentListSlice } from './comments';
 import chatReducer from './chat';
 import modalReducer from './modal';
+import themeReducer from './serviceTheme';
 
 const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ const store = configureStore({
     replyComments: replyCommentListSlice.reducer,
     chats: chatReducer,
     modals: modalReducer,
+    theme: themeReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

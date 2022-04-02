@@ -142,7 +142,8 @@ function Signup(props) {
 
   // Nickname Validation
   const [nickname, setNickname] = useState('');
-  const [nicknameCheckMessage, setNicknameCheckMessage] = useState();
+  const [nicknameCheckMessage, setNicknameCheckMessage] =
+    useState('최대 10글자 까지 가능합니다');
 
   // const nicknameDebounce = lo.debounce((k) => setNickname(k), 1000);
   // const nicknameKeyPress = useCallback(nicknameDebounce, []);
@@ -150,7 +151,7 @@ function Signup(props) {
   const changeNickname = (e) => {
     setNickname(e.target.value);
     if (nickname === '') {
-      setNicknameCheckMessage('');
+      setNicknameCheckMessage('최대 10글자 까지 가능합니다');
     }
   };
 
@@ -415,6 +416,7 @@ function Signup(props) {
                 placeholder="닉네임"
                 margin="8px 0 0 0"
                 autoFocus
+                maxLength={'10'}
               />
             </Grid>
             <Grid isFlex>

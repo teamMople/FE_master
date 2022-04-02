@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { Grid, Text } from 'components';
 
-const AlarmTile = (props) => {
+const NotificationTile = (props) => {
   const { board, message } = props;
   const themeContext = useContext(ThemeContext);
 
@@ -35,9 +35,9 @@ const AlarmTile = (props) => {
   );
 };
 
-AlarmTile.propTypes = {
+NotificationTile.propTypes = {
   board: PropTypes.string,
   message: PropTypes.string,
 };
 
-export default AlarmTile;
+export default NotificationTile;

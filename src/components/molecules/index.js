@@ -9,7 +9,7 @@ export { default as Tile } from './Tile';
 export { default as Survey } from './Survey';
 export { default as Loader } from './Loader';
 export { default as MenuTab } from './MenuTab';
-export { default as AlarmTile } from './AlarmTile';
+export { default as NotificationTile } from './NotificationTile';
 export { default as ProfileBox } from './ProfileBox';
 export { default as VoteResultBar } from './VoteResultBar';
 export { default as CommentBox } from './CommentBox';

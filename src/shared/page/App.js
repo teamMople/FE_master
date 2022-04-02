@@ -8,7 +8,7 @@ import {
   Nav,
   Login,
   MyAccount,
-  AlarmList,
+  NotificationList,
   OAuthRedirectHandler,
   FindPassword,
   Signup,
@@ -127,7 +127,7 @@ function App() {
           </Route>
           <Route path="/editmyprofile" element={<EditUserProfile />} />
           <Route path="/findpassword" element={<FindPassword />} />
-          <Route path="/alarm" element={<AlarmList />} />
+          <Route path="/noti" element={<NotificationList />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/loading" element={<Loading />} />
           <Route path={'*'} element={<NotFound />} />

@@ -6,7 +6,6 @@ import { OpenVidu } from 'openvidu-browser';
 import {
   closeRoomAsync,
   leaveRoomAsync,
-  ovDeleteTokenAsync,
   ovGetTokenAsync,
   removeAllRoomSubscribers,
   removeRoomSubscriber,
@@ -72,6 +71,8 @@ const LiveRoom = () => {
   const roomSubscribers = useSelector((state) => state.chats.room.subscribers);
   const joinRoomStatus = useSelector(selectRoomState);
   const memberVoteStatus = useSelector((state) => state.chats.vote.voteStatus);
+  // const session = useSelector((state) => state.chats.session.session);
+  // const OV = useSelector((state) => state.chats.session.OV);
 
   const [OV, setOV] = useState(new OpenVidu());
   const [session, setSession] = useState(OV.initSession());
@@ -79,6 +80,10 @@ const LiveRoom = () => {
   // Socket 초기화 - 여기서 초기화 해주고...
   let messageSock = new SockJS(process.env.REACT_APP_SOCKET_MESSAGE_URL);
   let voteSock = new SockJS(process.env.REACT_APP_SOCKET_VOTE_URL);
+  // let messageStomp = Stomp.over(function () {
+  //   return messageSock;
+  // });
+  // messageStomp.reconnect_delay = 3000;
   let messageStomp = over(messageSock);
   let voteStomp = over(voteSock);
 
@@ -90,15 +95,10 @@ const LiveRoom = () => {
     };
     messageStomp.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
     // await voteStomp.send('/pub/chat/vote', {}, JSON.stringify(chatMessage));
-    await messageStomp.unsubscribe(joinRoomStatus.moderatorNickname);
-    await voteStomp.unsubscribe();
-    await messageStomp.disconnect(
-      {},
-      {
-        memberName: joinRoomStatus.memberName,
-      },
-    );
-    await voteStomp.disconnect({}, { memberName: joinRoomStatus.memberName });
+    // messageStomp.unsubscribe();
+    // voteStomp.unsubscribe();
+    // messageStomp.disconnect(() => alert('끊깄다~'));
+    // voteStomp.disconnect();
   };
 
   useEffect(() => {
@@ -189,6 +189,9 @@ const LiveRoom = () => {
     }
   };
   const joinSession = async () => {
+    // dispatch(
+    //   setInit({ OV: new OpenVidu(), session: new OpenVidu().initSession() }),
+    // );
     await subscribeToStreamCreated();
 
     // await session.on('exception', (exception) => {
@@ -302,7 +305,10 @@ const LiveRoom = () => {
         localStorage.setItem('OVAccessToken', res.payload.data.token);
         return res.payload.data.token;
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        alert('ERORORORRORO');
+      });
   };
 
   const leaveRoom = async () => {
@@ -314,9 +320,26 @@ const LiveRoom = () => {
       disagreed: memberVoteStatus.memberDisagreed,
     };
 
-    await dispatch(leaveRoomAsync(data)).then(() => deleteToken());
+    // await dispatch(leaveRoomAsync(data)).then(() => deleteToken());
+    await dispatch(leaveRoomAsync(data)).then(() => leaveRoom2());
   };
-  const deleteToken = async () => {
+  const leaveRoom2 = async () => {
+    if (joinRoomStatus.role === 'MODERATOR') {
+      await closeRoom();
+    }
+    // await setUnsubscribe(true);
+    // 2. 전역에서 관리하고 있는 Subscribers 목록을 초기화한다.
+    await dispatch(removeAllRoomSubscribers());
+    // 1. 소켓 연결을 끊는다.
+    await disconnectSocket();
+    // 3. session 연결을 끊는다.
+    await leaveSession();
+    // 4. 로컬 저장소에 저장한 openvidu token 을 제거한다.
+    await localStorage.removeItem('OVAccessToken');
+    // 5. 페이지를 이동시킨다.
+    await navigate('/home', { replace: true });
+  };
+  /*const deleteToken = async () => {
     const openviduData = {
       roomId: joinRoomStatus.roomId,
       memberName: joinRoomStatus.memberName,
@@ -344,7 +367,7 @@ const LiveRoom = () => {
         await navigate('/home', { replace: true });
       })
       .catch(() => alert('퇴장 토큰 삭제 실패!'));
-  };
+  };*/
 
   // 마이크 상태가 변할 때 메세지를 보낸다
   const sendChangeMicStatus = () => {
@@ -490,6 +513,8 @@ const LiveRoom = () => {
             isHandsUp: data.isHandsUp,
           }),
         );
+
+        // 참여자가 재요청을 할 때 손들기 보기 위함(방장)
         dispatch(
           setRemotePermissionStatus({
             remoteTarget: remoteTarget,
@@ -653,7 +678,10 @@ const LiveRoom = () => {
     }
   };
 
-  const [subDetectSpeaking, setSubDetectSpeaking] = useState(false);
+  const [subSpeaker, setSubSpeaker] = useState({
+    speaker: '',
+    activate: false,
+  });
   useEffect(() => {
     subscriberDetectSpeaking(roomSubscribers);
   }, [roomSubscribers]);
@@ -661,11 +689,17 @@ const LiveRoom = () => {
     roomSubscribers.forEach((subscriber) => {
       subscriber.subscriber.on('publisherStartSpeaking', (event) => {
         console.log('User ' + event.connection.connectionId + ' stop speaking');
-        setSubDetectSpeaking(true);
+        setSubSpeaker({
+          speaker: event.connection.connectionId,
+          activate: true,
+        });
       });
       subscriber.subscriber.on('publisherStopSpeaking', (event) => {
         console.log('User ' + event.connection.connectionId + ' stop speaking');
-        setSubDetectSpeaking(false);
+        setSubSpeaker({
+          speaker: event.connection.connectionId,
+          activate: false,
+        });
       });
     });
   };
@@ -734,7 +768,7 @@ const LiveRoom = () => {
       >
         라이브를 종료했습니다.
       </BasicModal>
-      <div id="live_room_wrapper">
+      <div id="live_room_wrapper" style={{ height: '100%' }}>
         <FixedTop>
           <TopButtonGroup>
             {publisher && isPublisher(publisher) && (
@@ -782,6 +816,7 @@ const LiveRoom = () => {
         </FixedTop>
         <CarouselWrapper>
           <Carousel
+            className="room_carousel"
             showIndicators={false}
             axis={'horizontal'}
             emulateTouch
@@ -800,7 +835,7 @@ const LiveRoom = () => {
                   memberName={convertStreamData(publisher)}
                   stompClient={messageStomp}
                   sock={messageSock}
-                  unsubscribe={unsubscribe}
+                  // unsubscribe={unsubscribe}
                   moderator={joinRoomStatus.moderatorNickname}
                 />
               )}
@@ -832,7 +867,11 @@ const LiveRoom = () => {
                           streamManager={sub.subscriber}
                           moderator={joinRoomStatus.moderatorNickname}
                           memberName={convertStreamData(sub.subscriber)}
+                          // initialMicState={sub.subscriber.stream.audioActive}
                           isMute={
+                            // 처음 접속시 참여자들 마이크 상태 확인용
+                            //
+                            // sub.subscriber.stream.audioActive ||
                             (sub.subscriber.stream.connection.connectionId ===
                               remoteMicStatus.remoteTarget &&
                               remoteMicStatus.isAudioActive) ||
@@ -840,7 +879,11 @@ const LiveRoom = () => {
                               remotePermissionStatus.remoteTarget &&
                               remotePermissionStatus.permitSpeaking)
                           }
-                          detectSpeaking={subDetectSpeaking}
+                          detectSpeaking={
+                            subSpeaker.speaker ===
+                              sub.subscriber.stream.connection.connectionId &&
+                            subSpeaker.activate
+                          }
                           profileImageUrl={sub.profileImageUrl}
                         />
                         {publisher &&

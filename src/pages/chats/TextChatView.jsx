@@ -24,6 +24,10 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
   });
   useEffect(() => {
     connect();
+    return () => {
+      stompClient.unsubscribe();
+      stompClient.disconnect();
+    };
   }, []);
 
   const connect = () => {
@@ -66,6 +70,7 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
   };
 
   const onMessageReceived = (payload) => {
+    // chat.scrollTop = chat.scrollHeight;
     let payloadData = JSON.parse(payload.body);
     const messageTime = calcTime(payloadData.sentAt);
     // console.log('messageTime :::', messageTime);
@@ -80,7 +85,6 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
         profileUrl: payloadData.profileUrl,
       },
     ]);
-    // chat.scrollTop = chat.scrollHeight;
   };
   // console.log(publicChats);
 
@@ -121,6 +125,7 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
     // return `${Math.floor(resultTimeDay / 365)}년전`;
   };
   const sendMessage = () => {
+    chat.scrollTop = chat.scrollHeight;
     if (stompClient) {
       let chatMessage = {
         sender: memberName,
@@ -132,8 +137,6 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
       };
       stompClient.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
       setUserData({ ...userData, message: '' });
-
-      chat.scrollTop = chat.scrollHeight;
     }
   };
   return (
@@ -143,68 +146,70 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
           <ChatWrapper id="chat_content">
             {/*<ChatWrapper className={active && 'active'}>*/}
             {/*<Button>숨기기</Button>*/}
-            {publicChats.map((chat, index) => (
-              <>
-                {chat.type === 'ENTER' && (
-                  <EnterLeaveWrapper>
-                    <Text key={index}>{chat.sender}님이 입장하셨습니다.</Text>
-                  </EnterLeaveWrapper>
-                )}
-                {chat.type === 'CHAT' && chat.sender !== memberName && (
-                  <MessengerWrapper key={index}>
-                    <UserProfileImage src={chat.profileUrl} alt="user" />
-                    <MessengerInner>
-                      <Messenger>
-                        <Text semiBold>{chat.sender}</Text>
+            <div>
+              {publicChats.map((chat, index) => (
+                <div key={index}>
+                  {chat.type === 'ENTER' && (
+                    <EnterLeaveWrapper key={index}>
+                      <Text>{chat.sender}님이 입장하셨습니다.</Text>
+                    </EnterLeaveWrapper>
+                  )}
+                  {chat.type === 'CHAT' && chat.sender !== memberName && (
+                    <MessengerWrapper key={index}>
+                      <UserProfileImage src={chat.profileUrl} alt="user" />
+                      <MessengerInner>
+                        <Messenger>
+                          <Text semiBold>{chat.sender}</Text>
+                          <Text
+                            tiny
+                            color={themeContext.colors.gray}
+                            style={{ marginLeft: '8px' }}
+                          >
+                            {calcTime(chat.sentAt)}
+                          </Text>
+                        </Messenger>
                         <Text
-                          tiny
-                          color={themeContext.colors.gray}
-                          style={{ marginLeft: '8px' }}
+                          className="message-data"
+                          preWrap
+                          color={themeContext.colors.black}
                         >
-                          {calcTime(chat.sentAt)}
+                          {chat.message}
                         </Text>
-                      </Messenger>
-                      <Text
-                        className="message-data"
-                        preWrap
-                        color={themeContext.colors.black}
-                      >
-                        {chat.message}
-                      </Text>
-                    </MessengerInner>
-                  </MessengerWrapper>
-                )}
-                {chat.type === 'CHAT' && chat.sender === memberName && (
-                  <MessengerWrapper key={index}>
-                    <UserProfileImage
-                      // src={'/asset/image/users/test.png'}
-                      src={chat.profileUrl}
-                      alt="user"
-                    />
-                    <MessengerInner>
-                      <Messenger>
-                        <Text semiBold>{chat.sender}(나)</Text>
-                        <Text
-                          tiny
-                          color={themeContext.colors.gray}
-                          style={{ marginLeft: '8px' }}
-                        >
-                          {calcTime(chat.sentAt)}
+                      </MessengerInner>
+                    </MessengerWrapper>
+                  )}
+                  {chat.type === 'CHAT' && chat.sender === memberName && (
+                    <MessengerWrapper key={index}>
+                      <UserProfileImage
+                        // src={'/asset/image/users/test.png'}
+                        src={chat.profileUrl}
+                        alt="user"
+                      />
+                      <MessengerInner>
+                        <Messenger>
+                          <Text semiBold>{chat.sender}(나)</Text>
+                          <Text
+                            tiny
+                            color={themeContext.colors.gray}
+                            style={{ marginLeft: '8px' }}
+                          >
+                            {calcTime(chat.sentAt)}
+                          </Text>
+                        </Messenger>
+                        <Text className="message-data" preWrap>
+                          {chat.message}
                         </Text>
-                      </Messenger>
-                      <Text className="message-data" preWrap>
-                        {chat.message}
-                      </Text>
-                    </MessengerInner>
-                  </MessengerWrapper>
-                )}
-                {chat.type === 'LEAVE' && (
-                  <EnterLeaveWrapper key={index}>
-                    {chat.sender}님이 나가셨습니다.
-                  </EnterLeaveWrapper>
-                )}
-              </>
-            ))}
+                      </MessengerInner>
+                    </MessengerWrapper>
+                  )}
+                  {chat.type === 'LEAVE' && (
+                    <EnterLeaveWrapper key={index}>
+                      <Text>{chat.sender}님이 나가셨습니다.</Text>
+                    </EnterLeaveWrapper>
+                  )}
+                </div>
+              ))}
+            </div>
           </ChatWrapper>
 
           <TextInputWrapper>
@@ -219,6 +224,7 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
               value={userData.message}
               onChange={handleMessage}
               onKeyDown={handleKeyDownSendMessage}
+              onFocus={() => (chat.scrollTop = chat.scrollHeight)}
             />
             <Button
               size={'small'}

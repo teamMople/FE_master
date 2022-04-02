@@ -4,6 +4,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import apis from '../apis/apis';
+import { OpenVidu } from 'openvidu-browser';
 
 const roomInitialState = {
   data: {
@@ -43,8 +44,8 @@ const roomInitialState = {
 };
 
 const sessionInitialState = {
-  // OV: new OpenVidu(),
-  // session: new OpenVidu().initSession(),
+  OV: new OpenVidu(),
+  session: new OpenVidu().initSession(),
 };
 
 const voteInitialState = {
@@ -84,8 +85,9 @@ export const sessionSlice = createSlice({
   name: 'session',
   initialState: sessionInitialState,
   reducers: {
-    setSession: (state, action) => {
-      state.mySession = action.payload;
+    setInit: (state, action) => {
+      state.OV = action.payload.OV;
+      state.session = action.payload.session;
     },
   },
 });
@@ -186,7 +188,7 @@ export const roomSlice = createSlice({
         state.subscribers.splice(index, 1);
       }
     },
-    removeAllRoomSubscribers: (state) => {
+    removeAllRoomSubscribers: (state, action) => {
       state.subscribers = [];
     },
     setRemoteHandsUpStatus: (state, action) => {
@@ -262,7 +264,7 @@ export const {
   setCreateRoomNextStep,
   setCreateRoomSetting,
 } = roomSlice.actions;
-export const { setSession } = sessionSlice.actions;
+export const { setInit } = sessionSlice.actions;
 export const { setMemberVoteStatus } = voteSlice.actions;
 export const { setChatContent, hideChat } = chatSlice.actions;
 

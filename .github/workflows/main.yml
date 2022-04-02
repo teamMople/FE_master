@@ -49,10 +49,3 @@ jobs:
       - name: Deploy S3 # Upload build file to S3
         run: |
           aws s3 cp --recursive --region ap-northeast-2 build s3://hanghae-boiler-plate
-
-      - name: Invalidate cache CloudFront
-        uses: chetan/invalidate-cloudfront-action@master
-        env:
-          DISTRIBUTION: ${{ secrets.DISTRIBUTION_ID }}
-          PATHS: '/index.html'
-        continue-on-error: true

@@ -19,7 +19,7 @@ const GlobalStyle = createGlobalStyle`
     height: inherit;
     //overflow: hidden;
     // background-color: ${({ theme }) => theme.colors.blue};
-    background-image: ${isBrowser && `url('/asset/image/test-back.webp')`} ;
+    background-image: ${isBrowser && `url('/asset/image/bg.png')`} ;
     background-repeat: no-repeat;
     background-size: cover;
   }

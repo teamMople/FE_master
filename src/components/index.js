@@ -41,6 +41,7 @@ import {
   PageLoading,
   DeviceDetector,
   Report,
+  ToggleButton,
 } from './molecules';
 import {
   BoardList,
@@ -96,4 +97,5 @@ export {
   PageLoading,
   DeviceDetector,
   Report,
+  ToggleButton,
 };

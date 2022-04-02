@@ -168,7 +168,10 @@ export const leaveRoomAsync = createAsyncThunk(
         //!Todo 주석 풀 것
         // return alert('방 떠나기 성공!');
       })
-      .catch(() => alert('방 떠나기 실패!'));
+      .catch(() => {
+        console.log('방 떠나기 실패!');
+        window.location.href = `/home`;
+      });
   },
 );
 

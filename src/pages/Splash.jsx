@@ -47,7 +47,7 @@ const Splash = (props) => {
         } else {
           navigate('/login');
         }
-      }, 5000);
+      }, 1200);
     }
   }, [isOpened]);
 

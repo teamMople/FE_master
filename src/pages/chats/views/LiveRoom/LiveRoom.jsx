@@ -99,6 +99,22 @@ const LiveRoom = () => {
     // messageStomp.disconnect(() => alert('끊깄다~'));
     // voteStomp.disconnect();
   };
+  window.onpopstate = function (event) {
+    // "event" object seems to contain value only when the back button is clicked
+    // and if the pop state event fires due to clicks on a button
+    // or a link it comes up as "undefined"
+
+    if (event) {
+      // Code to handle back button or prevent from navigation
+      if (joinRoomStatus.role !== 'MODERATOR') {
+        leaveRoom().then(() => navigate('/home', { replace: true }));
+      } else {
+        sendForceLeave().then(() => leaveRoom2());
+      }
+    } else {
+      // Continue user action through link or button
+    }
+  };
 
   useEffect(() => {
     window.addEventListener('beforeunload', onbeforeunload);
@@ -339,6 +355,7 @@ const LiveRoom = () => {
     await localStorage.removeItem('OVAccessToken');
     // 5. 페이지를 이동시킨다.
     await navigate('/home', { replace: true });
+    // await (window.location.href = `/home`);
   };
   /*const deleteToken = async () => {
     const openviduData = {
@@ -767,7 +784,7 @@ const LiveRoom = () => {
           leaveRoom().then((r) => r);
         }}
       >
-        라이브를 종료했습니다.
+        라이브를 종료했습니다!
       </BasicModal>
       <div id="live_room_wrapper" style={{ height: '100%' }}>
         <FixedTop>

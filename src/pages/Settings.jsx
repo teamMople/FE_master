@@ -1,10 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { logout, logoutAsync } from 'modules/users';
-import { deleteCookie, setCookie } from '../shared/utils/Cookie';
+import { logout } from 'modules/users';
 
-import { ThemeContext } from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import {
   Wrapper,
   Grid,
@@ -12,6 +11,7 @@ import {
   RightArrow,
   Header,
   BasicModal,
+  ToggleButton,
 } from 'components';
 
 function Settings(props) {
@@ -19,6 +19,25 @@ function Settings(props) {
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
   const [openModal, setOpenModal] = useState(false);
+  const [dark, setDark] = useState(false);
+
+  const changeTheme = () => {
+    if (dark) {
+      setDark(false);
+      localStorage.setItem('theme', 'light');
+    } else {
+      setDark(true);
+      localStorage.setItem('theme', 'dark');
+    }
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem('theme') === 'dark') {
+      setDark(true);
+    } else {
+      setDark(false);
+    }
+  }, []);
 
   return (
     <>
@@ -31,61 +50,78 @@ function Settings(props) {
       >
         정말 로그아웃을 하시겠습니까?
       </BasicModal>
-      <Wrapper
-        backgroundColors={themeContext.colors.white}
-        padding="42px 24px 0px 24px"
-      >
+      <Wrapper backgroundColor={themeContext.colors.white} padding="0 12px">
         <Header label="설정" leftArrow />
         <Grid margin="12px 0px 40px 0px">
-          <Grid isFlex height="40px">
+          <MenuItem onClick={() => navigate('/editmyprofile')}>
             <Text>프로필 편집</Text>
-            <RightArrow
-              active
-              rightArrowOnClick={() => navigate('/editmyprofile')}
-            />
-          </Grid>
-          <Grid isFlex height="40px">
+            <RightArrow active />
+          </MenuItem>
+          <MenuItem onClick={() => {}}>
             <Text>비밀번호 변경</Text>
-            <RightArrow active rightArrowOnClick={() => {}} />
-          </Grid>
+            <RightArrow active />
+          </MenuItem>
         </Grid>
 
         <Grid margin="0px 0px 40px 0px">
-          <Grid isFlex height="40px">
+          <MenuItem onClick={() => {}}>
             <Text>Our Team</Text>
-            <RightArrow active rightArrowOnClick={() => {}} />
-          </Grid>
-          <Grid isFlex height="40px">
+            <RightArrow active />
+          </MenuItem>
+          <MenuItem onClick={() => {}}>
             <Text>FAQ/문의사항</Text>
-            <RightArrow active rightArrowOnClick={() => {}} />
-          </Grid>
-          <Grid isFlex height="40px">
+            <RightArrow active />
+          </MenuItem>
+          <MenuItem onClick={() => {}}>
             <Text>이용약관</Text>
-            <RightArrow active rightArrowOnClick={() => {}} />
-          </Grid>
-          <Grid isFlex height="40px">
+            <RightArrow active />
+          </MenuItem>
+          <MenuItem onClick={() => {}}>
             <Text>개인정보 처리방침</Text>
-            <RightArrow active rightArrowOnClick={() => {}} />
-          </Grid>
+            <RightArrow active />
+          </MenuItem>
+        </Grid>
+        <Grid margin="0px 0px 40px 0px">
+          <MenuItem
+            onClick={() => {
+              setOpenModal(true);
+            }}
+          >
+            <Text>로그아웃</Text>
+            <RightArrow active />
+          </MenuItem>
+          <MenuItem onClick={() => {}}>
+            <Text>비활성화하기</Text>
+            <RightArrow active />
+          </MenuItem>
         </Grid>
         <Grid>
-          <Grid isFlex height="40px">
-            <Text>로그아웃</Text>
-            <RightArrow
-              active
-              rightArrowOnClick={() => {
-                setOpenModal(true);
-              }}
-            />
-          </Grid>
-          <Grid isFlex height="40px">
-            <Text>비활성화하기</Text>
-            <RightArrow active rightArrowOnClick={() => {}} />
-          </Grid>
+          <MenuItem>
+            <Text>다크 모드</Text>
+            <ToggleButton active={dark} onClick={changeTheme} />
+          </MenuItem>
+          <MenuItem>
+            <Text>버전</Text>
+            <Text small>v {process.env.REACT_APP_VERSION}</Text>
+          </MenuItem>
         </Grid>
       </Wrapper>
     </>
   );
 }
+
+const MenuItem = styled(Grid)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+
+  &:active {
+    background-color: ${({ theme }) => theme.colors.lightGray};
+  }
+`;
 
 export default Settings;

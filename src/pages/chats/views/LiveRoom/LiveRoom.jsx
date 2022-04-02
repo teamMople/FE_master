@@ -54,7 +54,6 @@ const LiveRoom = () => {
   const [isHandsUp, setIsHandsUp] = useState(false);
   const [myHandsUpState, setMyHandsUpState] = useState(false);
   const [myMicMute, setMyMicMute] = useState(false);
-  const [unsubscribe, setUnsubscribe] = useState(false);
   const [remoteMicStatus, setRemoteMicStatus] = useState({
     remoteTarget: undefined,
     isAudioActive: undefined,
@@ -118,7 +117,8 @@ const LiveRoom = () => {
       // await navigate('/room', { replace: true });
     } else {
       await sendForceLeave();
-      await leaveRoom();
+      // await leaveRoom();
+      // await closeRoom();
     }
   };
 
@@ -307,7 +307,8 @@ const LiveRoom = () => {
       })
       .catch((err) => {
         console.error(err);
-        alert('ERORORORRORO');
+        navigate('/home', { replace: true });
+        // alert('ERORORORRORO');
       });
   };
 

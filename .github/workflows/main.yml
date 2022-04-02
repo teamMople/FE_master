@@ -47,5 +47,7 @@ jobs:
           CI: "" # 경고를 에러로 보지 않게 함
 
       - name: Deploy S3 # Upload build file to S3
-        run: |
-          aws s3 cp --recursive --region ap-northeast-2 build s3://hanghae-boiler-plate
+        run: yarn deploy
+
+      - name: Invalidate cache CloudFront
+        run: yarn invalidate

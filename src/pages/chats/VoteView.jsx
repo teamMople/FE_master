@@ -23,10 +23,11 @@ const VoteView = ({
 
   useEffect(() => {
     connect();
+    return () => {
+      stompClient.unsubscribe();
+      stompClient.disconnect();
+    };
   }, []);
-
-  console.log('memberAgreed', memberAgreed);
-  console.log('memberDisagreed', memberDisagreed);
 
   useEffect(() => {
     const data = {

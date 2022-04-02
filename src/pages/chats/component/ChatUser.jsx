@@ -11,6 +11,7 @@ const ChatUser = ({
   moderator,
   myHandsUpState,
   profileImageUrl,
+  // initialMicState,
 }) => {
   const themeContext = useContext(ThemeContext);
   const videoRef = useRef();
@@ -81,6 +82,7 @@ ChatUser.propTypes = {
   moderator: PropTypes.string,
   myHandsUpState: PropTypes.bool,
   profileImageUrl: PropTypes.string,
+  initialMicState: PropTypes.bool,
 };
 const UserVideo = styled.video`
   width: 0;

@@ -62,6 +62,12 @@ const GlobalStyle = createGlobalStyle`
         }
       }
     }
+    
+    //&.room_carousel {
+    //  li:first-child{
+    //    height: calc(100vh - 156px);
+    //  }
+    //}
   }
   
   @font-face {

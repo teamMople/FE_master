@@ -34,7 +34,7 @@ import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
 import LiveRoom from '../../pages/chats/views/LiveRoom/LiveRoom';
 import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
 import GlobalStyle from '../styles/globalStyles';
-import { PageLoading } from 'components';
+import { PageLoading, Report } from 'components';
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
@@ -106,6 +106,7 @@ function App() {
           </Routes>
         </Suspense>
         <Nav />
+        <Report />
       </BrowserRouter>
     </ThemeProvider>
   );

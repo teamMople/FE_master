@@ -1,9 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
 import styled, { ThemeContext } from 'styled-components';
 import { Wrapper, Grid, Text, AlarmTile } from 'components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import apis from 'apis/apis';
+import { selectedAlarmList } from 'modules/alarms';
 
 const alarms = [
   {
@@ -22,32 +23,8 @@ const alarms = [
 
 function AlarmList(props) {
   const themeContext = useContext(ThemeContext);
-  const dispatch = useDispatch();
-
-  const [alarmList, setAlarmList] = useState(alarms);
-
-  // FCM
-  const firebaseMessaging = getMessaging();
-  getToken(firebaseMessaging, {
-    vapidKey: process.env.REACT_APP_VAPID_KEY,
-  })
-    .then((currentToken) => {
-      console.log(currentToken);
-      if (currentToken) {
-        apis.pushAlarm(currentToken).then((response) => {
-          console.log(response);
-        });
-      } else {
-        console.log('not alarm registered');
-      }
-    })
-    .catch((error) => console.log(error));
-
-  onMessage((payload) => {
-    console.log('foregroundMessage');
-    console.log(payload);
-    setAlarmList(payload);
-  });
+  const alarmList = useSelector(selectedAlarmList);
+  console.log(alarmList);
 
   useEffect(() => {}, []);
 

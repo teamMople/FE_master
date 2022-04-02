@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './users';
+import { alarmSlice } from './alarms';
 import {
   boardListSlice,
   liveBoardListSlice,
@@ -11,6 +12,7 @@ import chatReducer from './chat';
 
 const store = configureStore({
   reducer: {
+    alarms: alarmSlice.reducer,
     users: userReducer,
     boards: boardListSlice.reducer,
     liveBoards: liveBoardListSlice.reducer,

@@ -50,8 +50,8 @@ const apis = {
     api.post('/api/kakao/login', { kakaoAuthCode }),
   logout: () => api.post('/api/logout'),
   // to-dos
-  editMyInfo: (email, profileImageUrl, nickname, password) =>
-    api.put('/auth/api/user/update', {
+  editMyInfo: (nickname, profileImageUrl) =>
+    authApi.post('/auth/api/user/update', {
       nickname,
       profileImageUrl,
     }),

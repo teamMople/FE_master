@@ -1,4 +1,8 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice,
+  createSelector,
+} from '@reduxjs/toolkit';
 import apis from '../apis/apis';
 
 const commentListInitialState = {
@@ -8,16 +12,6 @@ const commentListInitialState = {
 
 const replyCommentListInitialState = {
   data: [],
-  status: 'idle',
-};
-
-const commentInitialState = {
-  data: {},
-  status: 'idle',
-};
-
-const replyCommentInitialState = {
-  data: {},
   status: 'idle',
 };
 
@@ -38,7 +32,7 @@ export const getReplyCommentListAsync = createAsyncThunk(
   async (commentId, thunkAPI) => {
     try {
       const response = await apis.getReplyCommentListByComment(commentId);
-      return response.data;
+      return { commentId: commentId, list: response.data };
     } catch (e) {
       return thunkAPI.rejectWithValue(await e.response.data);
     }
@@ -61,13 +55,15 @@ export const createCommentAsync = createAsyncThunk(
 export const createReplyCommentAsync = createAsyncThunk(
   'comments/createComment',
   async (replyCommentInfo, thunkAPI) => {
-    console.log(replyCommentInfo);
     const { commentId, replyContent } = replyCommentInfo;
     console.log(commentId);
-    await apis.createReplyComment(commentId, replyContent).then((response) => {
-      console.log(response);
-      thunkAPI.addReplyComment(response.data);
-    });
+    await apis
+      .createReplyComment(commentId, replyContent)
+      .then((response) =>
+        thunkAPI.dispatch(
+          addReplyComment({ commentId: commentId, list: response.data }),
+        ),
+      );
   },
 );
 
@@ -114,16 +110,18 @@ export const recommendCommentAsync = createAsyncThunk(
 );
 
 export const recommendReplyCommentAsync = createAsyncThunk(
-  'comments/increaseRecommendCount',
-  async (replyId, thunkAPI) => {
-    if (replyId) {
+  'comments/recommendReplyCommentCount',
+  async (ids, thunkAPI) => {
+    const { commentId, replyId } = ids;
+    if (commentId && replyId) {
       await apis
-        .recommendReplyComment(replyId)
+        .recommendReplyComment(commentId, replyId)
         .then((response) => {
+          console.log(response.data);
           if (response.data.clicked) {
-            thunkAPI.dispatch();
+            thunkAPI.dispatch(increaseReplyRecommendCount(replyId));
           } else {
-            thunkAPI.dispatch();
+            thunkAPI.dispatch(decreaseReplyRecommendCount(replyId));
           }
         })
         .catch((error) => {
@@ -132,8 +130,6 @@ export const recommendReplyCommentAsync = createAsyncThunk(
           }
           return thunkAPI.rejectWithValue();
         });
-    } else {
-      window.alert('잘못된 추천 요청입니다.');
     }
   },
 );
@@ -185,6 +181,7 @@ export const replyCommentListSlice = createSlice({
       state.data = [];
     },
     addReplyComment: (state, action) => {
+      console.log(action.payload);
       state.data.push(action.payload);
     },
     increaseReplyRecommendCount: (state, action) => {
@@ -194,16 +191,16 @@ export const replyCommentListSlice = createSlice({
       state.data[replyIndex].recommendCount += 1;
     },
     decreaseReplyRecommendCount: (state, action) => {
-      const commentIndex = state.data.findIndex((d) => {
-        return d.commentId === action.payload;
+      const replyIndex = state.data.findIndex((d) => {
+        return d.replyId === action.payload;
       });
-      state.data[commentIndex].recommendCount -= 1;
+      state.data[replyIndex].recommendCount -= 1;
     },
   },
   extraReducers: {
     [getReplyCommentListAsync.fulfilled]: (state, action) => {
       state.status = 'success';
-      state.data = action.payload;
+      state.data.push(action.payload);
     },
     [getReplyCommentListAsync.pending]: (state) => {
       state.status = 'loading';
@@ -228,4 +225,4 @@ export const {
   decreaseReplyRecommendCount,
 } = replyCommentListSlice.actions;
 export const selectedCommentList = (state) => state.comments.data;
-export const selectedReplyCommentList = (state) => state.replyComments.data;
+export const selectedReplyCommentList = (state) => state.replyComments;

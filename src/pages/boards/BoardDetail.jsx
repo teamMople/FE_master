@@ -1,8 +1,15 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+  useRef,
+} from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   agreeBoardAsync,
+  clearDetail,
   disagreeBoardAsync,
   getDetailAsync,
   selectedAgreeCount,
@@ -10,9 +17,12 @@ import {
   selectedDisagreeCount,
   selectedUserVoteStatus,
 } from 'modules/boards';
-import { clearCommentList } from 'modules/comments';
-import apis from 'apis/apis';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import {
+  clearCommentList,
+  clearReplyCommentList,
+  getReplyCommentListAsync,
+  selectedReplyCommentList,
+} from 'modules/comments';
 
 import { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
@@ -29,7 +39,6 @@ import {
   KebabMenu,
 } from 'components';
 import { getCommentListAsync, selectedCommentList } from 'modules/comments';
-import { forwardRef } from 'react';
 
 const BoardDetail = (props, ref) => {
   const params = useParams();
@@ -42,7 +51,6 @@ const BoardDetail = (props, ref) => {
 
   const detail = useSelector(selectedDetail);
   const comments = useSelector(selectedCommentList);
-
   const userVoteStatus = useSelector(selectedUserVoteStatus);
   const agreeCount = useSelector(selectedAgreeCount);
   const disagreeCount = useSelector(selectedDisagreeCount);
@@ -64,31 +72,12 @@ const BoardDetail = (props, ref) => {
   const kebabMenuLabels = ['글 삭제하기', '글 신고하기'];
   const kebabMenuOnClicks = [deleteBoard, showReportModal];
 
-  const firebaseMessaging = getMessaging();
-  getToken(firebaseMessaging, {
-    vapidKey: process.env.REACT_APP_VAPID_KEY,
-  })
-    .then((currentToken) => {
-      console.log(currentToken);
-      if (currentToken) {
-        apis.pushAlarm(currentToken).then((response) => {
-          console.log(response);
-        });
-      } else {
-        console.log('not alarm registered');
-      }
-    })
-    .catch((error) => console.log(error));
-
-  onMessage((payload) => {
-    console.log('foregroundMessage');
-    console.log(payload);
-  });
-
   useEffect(() => {
     dispatch(getDetailAsync(params.boardId));
     dispatch(getCommentListAsync(params.boardId));
+
     return () => {
+      dispatch(clearDetail());
       dispatch(clearCommentList());
     };
   }, [dispatch]);

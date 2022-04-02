@@ -35,6 +35,7 @@ import {
   StatusBox,
   SearchInput,
   BasicModal,
+  FullModal,
   KebabMenu,
 } from './molecules';
 import {
@@ -85,5 +86,6 @@ export {
   StandardInput,
   IconButton,
   BasicModal,
+  FullModal,
   KebabMenu,
 };

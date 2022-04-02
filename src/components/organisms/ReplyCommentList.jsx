@@ -9,9 +9,10 @@ const ReplyCommentList = (props) => {
 
   return (
     <Grid width="100%">
-      {replyComments.map((reply, index) => {
-        <ReplyCommentBox key={index} replyComment={reply} />;
-      })}
+      {replyComments.length !== 0 &&
+        replyComments.map((reply, index) => {
+          return <ReplyCommentBox key={index} replyComment={reply} />;
+        })}
     </Grid>
   );
 };

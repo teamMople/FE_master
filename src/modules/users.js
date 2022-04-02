@@ -147,25 +147,19 @@ export const signupAsync = createAsyncThunk(
 
 export const editMyInfo = createAsyncThunk(
   'users/editUserInfo',
-  async ({ email, name, nickname, password }, thunkAPI) => {
-    if (email === '' || name === '' || nickname === '' || password === '') {
-      window.alert('모든 항목들을 기입해주세요');
-    } else if (isRightEmailType === false) {
-      window.alert('올바른 이메일 형식이 아닙니다.');
-    } else {
-      await apis
-        .editMyInfo(email, name, nickname, password)
-        .then((response) => {
-          return response.data.status === 'ok' && response.data;
-        })
-        .catch((error) => {
-          if (error) {
-            window.alert('잘못된 회원 수정 요청입니다.');
-            console.log(error.response.data.message); // 어떻게 서버에서 에러 메시지 오는지 확인
-          }
-          return thunkAPI.rejectWithValue();
-        });
-    }
+  async (userInfo, thunkAPI) => {
+    const navigate = useNavigate();
+    const { nickname, profileImageUrl } = userInfo;
+    console.log(userInfo);
+    await apis.editMyInfo(nickname, profileImageUrl).then((response) => {
+      console.log(response);
+      if (response.status === 200) {
+        console.log(response.data);
+        localStorage.setItem('nickname', response.data.nickname);
+        localStorage.setItem('profileImageUrl', response.data.profileImageUrl);
+        navigate(-1);
+      }
+    });
   },
 );
 

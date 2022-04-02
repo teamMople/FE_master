@@ -16,6 +16,7 @@ Grid.propTypes = {
   margin: PropTypes.string,
   overflowY: PropTypes.bool,
   overflowX: PropTypes.bool,
+  rounded: PropTypes.bool,
 };
 
 Grid.defaltProps = {
@@ -34,6 +35,7 @@ const GridBox = styled.div`
   padding: ${(props) => props.padding};
   margin: ${(props) => props.margin};
   background-color: ${(props) => props.backgroundColor};
+  border-radius: ${(props) => (props.rounded ? '20px' : '')};
 
   ${(props) =>
     props.isFlex
@@ -44,8 +46,15 @@ const GridBox = styled.div`
           flex-wrap: nowrap;
         `
       : ``}
-
   ${(props) =>
+    props.isSide
+      ? `
+          display: flex;
+          align-items: center;
+          flex-wrap: nowrap;
+        `
+      : ``}
+    ${(props) =>
     props.center
       ? `
           display: flex;

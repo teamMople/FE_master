@@ -22,6 +22,9 @@ const GlobalStyle = createGlobalStyle`
     background-image: ${isBrowser && `url('/asset/image/bg.png')`} ;
     background-repeat: no-repeat;
     background-size: cover;
+    
+    // 모바일에서 오버스크롤 시 새로고침 방지 코드
+    overscroll-behavior-y: none
   }
   #root {
     height: inherit;

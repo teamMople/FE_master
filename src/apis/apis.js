@@ -8,6 +8,7 @@ const api = axios.create({
     'content-type': 'application/json;charset=UTF-8',
     accept: 'application/json',
   },
+  withCredentials: true,
 });
 
 // 토큰이 있어야 접근 가능한 API
@@ -17,6 +18,7 @@ const authApi = axios.create({
     'content-type': 'application/json;charset=UTF-8',
     accept: 'application/json',
   },
+  withCredentials: true,
 });
 
 const openviduApi = axios.create({
@@ -25,6 +27,7 @@ const openviduApi = axios.create({
     'content-type': 'application/json;charset=UTF-8',
     accept: 'application/json',
   },
+  withCredentials: true,
 });
 
 /* eslint-disable no-param-reassign */
@@ -77,8 +80,6 @@ const apis = {
     authApi.get(`/auth/api/board/${boardId}`, { boardId }),
   deleteBoard: (boardId) =>
     authApi.delete(`/auth/api/board/${boardId}`, { boardId }),
-  getMyBoardList: () => authApi.get('/auth/api/board/myboard'),
-  getMyCommentList: () => authApi.get('/auth/api/board/mycomments'),
   agreeBoard: (boardId) => authApi.get(`/auth/api/board/agree/${boardId}`),
   disagreeBoard: (boardId) =>
     authApi.get(`/auth/api/board/disagree/${boardId}`),

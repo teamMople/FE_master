@@ -43,11 +43,7 @@ function AlarmList(props) {
         {alarmList &&
           alarmList.map((alarm, index) => {
             return (
-              <AlarmTile
-                key={index}
-                board={alarm.board}
-                message={alarm.message}
-              />
+              <AlarmTile key={index} board={alarm.title} message={alarm.body} />
             );
           })}
       </Grid>

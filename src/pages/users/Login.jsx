@@ -17,7 +17,7 @@ import {
 } from 'components';
 import { useDispatch } from 'react-redux';
 import SectionWrapper from '../../components/molecules/SectionWrapper';
-import BasicModal from '../../components/molecules/modal/BasicModal';
+import { BasicModal } from 'components';
 
 function Login(props) {
   const themeContext = useContext(ThemeContext);
@@ -62,6 +62,8 @@ function Login(props) {
               response.data.profileImageUrl,
             );
             navigate('/home');
+          } else {
+            setShowMessage(true);
           }
         })
         .catch((e) => {

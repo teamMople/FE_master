@@ -1,19 +1,16 @@
-import React, {
-  useEffect,
-  useContext,
-  useState,
-  useCallback,
-  createRef,
-} from 'react';
+import React, { useEffect, useContext, useState, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
 import {
   BUCKET,
   awsS3Bucket,
   BASE_S3_URL,
 } from '../../shared/utils/awsBucketConfig';
 
+import apis from 'apis/apis';
 import axios from 'axios';
-import lo, { debounce } from 'lodash';
+import lo from 'lodash';
 
 import styled, { ThemeContext } from 'styled-components';
 import {
@@ -25,14 +22,9 @@ import {
   Input,
   Header,
   ProgressStepper,
-  Check,
   Survey,
   BasicModal,
 } from 'components';
-import Modal from 'react-modal';
-import { useDispatch } from 'react-redux';
-import apis from 'apis/apis';
-import { useRef } from 'react';
 
 function Signup(props) {
   const dispatch = useDispatch();

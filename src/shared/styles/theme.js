@@ -60,6 +60,7 @@ const style = {
     height: '50px',
   },
   borderRadius: {
+    halfRounded: '20px 20px 0px 0px',
     rounded: '20px',
     circular: '10em',
   },

@@ -1,8 +1,15 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+  useRef,
+} from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   agreeBoardAsync,
+  clearDetail,
   disagreeBoardAsync,
   getDetailAsync,
   selectedAgreeCount,
@@ -10,7 +17,12 @@ import {
   selectedDisagreeCount,
   selectedUserVoteStatus,
 } from 'modules/boards';
-import { clearCommentList } from 'modules/comments';
+import {
+  clearCommentList,
+  clearReplyCommentList,
+  getReplyCommentListAsync,
+  selectedReplyCommentList,
+} from 'modules/comments';
 
 import { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
@@ -27,7 +39,6 @@ import {
   KebabMenu,
 } from 'components';
 import { getCommentListAsync, selectedCommentList } from 'modules/comments';
-import { forwardRef } from 'react';
 
 const BoardDetail = (props, ref) => {
   const params = useParams();
@@ -40,7 +51,6 @@ const BoardDetail = (props, ref) => {
 
   const detail = useSelector(selectedDetail);
   const comments = useSelector(selectedCommentList);
-
   const userVoteStatus = useSelector(selectedUserVoteStatus);
   const agreeCount = useSelector(selectedAgreeCount);
   const disagreeCount = useSelector(selectedDisagreeCount);
@@ -65,7 +75,9 @@ const BoardDetail = (props, ref) => {
   useEffect(() => {
     dispatch(getDetailAsync(params.boardId));
     dispatch(getCommentListAsync(params.boardId));
+
     return () => {
+      dispatch(clearDetail());
       dispatch(clearCommentList());
     };
   }, [dispatch]);

@@ -8,6 +8,8 @@ import {
   BoardList,
 } from '../components/organisms';
 import {
+  clearBoardList,
+  clearLiveBoardList,
   getBoardListAsync,
   getLiveBoardListAsync,
   selectedBoardList,
@@ -30,6 +32,10 @@ const Home = () => {
   React.useEffect(() => {
     dispatch(getBoardListAsync());
     dispatch(getLiveBoardListAsync());
+    return () => {
+      dispatch(clearBoardList());
+      dispatch(clearLiveBoardList());
+    };
   }, [dispatch]);
 
   if (basicBoardsStatus !== 'success' || liveBoardsStatus !== 'success') {

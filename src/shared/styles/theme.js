@@ -81,6 +81,9 @@ const lightThemeColors = {
   lightPink: '#F6CAF2',
   orange: '#F29E3B',
   lightGreen: '#D9F3C0',
+  placeholder: '#D5D8DB',
+  disabled: '#F8F8F8',
+  overlap: 'rgba(0, 0, 0, 0.4)',
 };
 
 const darkThemeColors = {
@@ -98,6 +101,9 @@ const darkThemeColors = {
   lightPink: '#DAFCCC',
   orange: '#3BB7EB',
   lightGreen: '#DC3AF2',
+  placeholder: '#616264',
+  disabled: '#464545',
+  overlap: 'rgba(255, 255, 255, 0.4)',
 };
 
 const defaultTheme = {

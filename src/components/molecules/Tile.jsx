@@ -99,20 +99,32 @@ const Tile = (props) => {
               <StatusBox
                 live
                 // icon={'/asset/icons/Join.svg'}
-                count={board.participantsNicknames.length}
+                count={
+                  board.participantsNicknames.length < 1
+                    ? '0'
+                    : board.participantsNicknames.length
+                }
               />
             </Grid>
             <Grid isFlex>
               <Grid margin="0px 8px 0px 0px">
                 <StatusBox
-                  icon={'/asset/icons/Agreed.svg'}
-                  count={board.agreeCount}
+                  icon={
+                    localStorage.getItem('theme') === 'dark'
+                      ? '/asset/icons/Agreed_white.svg'
+                      : '/asset/icons/Agreed.svg'
+                  }
+                  count={board.agreeCount < 1 ? '0' : board.agreeCount}
                 />
               </Grid>
               <Grid>
                 <StatusBox
-                  icon={'/asset/icons/Disagreed.svg'}
-                  count={board.disagreeCount}
+                  icon={
+                    localStorage.getItem('theme') === 'dark'
+                      ? '/asset/icons/Disagreed_white.svg'
+                      : '/asset/icons/Disagreed.svg'
+                  }
+                  count={board.disagreeCount < 1 ? '0' : board.disagreeCount}
                 />
               </Grid>
             </Grid>
@@ -160,8 +172,12 @@ const Tile = (props) => {
           <Grid isFlex width="252px" className="buttonGroup">
             <Grid isFlex>
               <StatusBox
-                icon={'/asset/icons/Vote.svg'}
-                count={board.recommendCount}
+                icon={
+                  localStorage.getItem('theme') === 'dark'
+                    ? '/asset/icons/Vote_white.svg'
+                    : '/asset/icons/Vote.svg'
+                }
+                count={board.recommendCount < 1 ? '0' : board.recommendCount}
               />
             </Grid>
             <Grid isFlex>
@@ -172,8 +188,12 @@ const Tile = (props) => {
                       ? themeContext.colors.lightGreen
                       : themeContext.colors.lightGray
                   }
-                  icon={'/asset/icons/Agreed.svg'}
-                  count={board.agreeCount}
+                  icon={
+                    localStorage.getItem('theme') === 'dark'
+                      ? '/asset/icons/Agreed_white.svg'
+                      : '/asset/icons/Agreed.svg'
+                  }
+                  count={board.agreeCount < 1 ? '0' : board.agreeCount}
                 />
               </Grid>
               <Grid>
@@ -183,8 +203,12 @@ const Tile = (props) => {
                       ? themeContext.colors.orange
                       : themeContext.colors.lightGray
                   }
-                  icon={'/asset/icons/Disagreed.svg'}
-                  count={board.disagreeCount}
+                  icon={
+                    localStorage.getItem('theme') === 'dark'
+                      ? '/asset/icons/Disagreed_white.svg'
+                      : '/asset/icons/Disagreed.svg'
+                  }
+                  count={board.disagreeCount < 1 ? '0' : board.disagreeCount}
                 />
               </Grid>
             </Grid>
@@ -268,7 +292,7 @@ const WarningJoinRoomBox = styled.div`
   z-index: 3;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: ${({ theme }) => theme.colors.overlap};
   display: flex;
   justify-content: center;
   align-items: center;

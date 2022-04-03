@@ -1,11 +1,10 @@
 import React, { useContext, useEffect } from 'react';
-import { ThemeContext } from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   clearBoardList,
   getBoardListAsync,
   getBoardListByCategoryAsync,
-  getMyBoardList,
   getMyBoardListAsync,
   getMyCommentListAsync,
   selectedBoardList,
@@ -14,13 +13,13 @@ import {
 import { Wrapper, Grid, Tile, Text } from 'components';
 import { useLocation, useParams } from 'react-router-dom';
 
-function BoardList(props) {
+function BoardList() {
   const params = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
 
-  const { data, status } = useSelector(selectedBoardList);
+  const { data } = useSelector(selectedBoardList);
 
   useEffect(() => {
     if (location.pathname === '/myaccount/boards') {
@@ -38,7 +37,7 @@ function BoardList(props) {
   }, [dispatch, location]);
 
   return (
-    <Wrapper>
+    <NewWrapper>
       {data.length !== 0 ? (
         <Grid
           backgroundColor={themeContext.colors.backgroundGray}
@@ -72,12 +71,20 @@ function BoardList(props) {
         </Grid>
       )}
 
-      <Grid
-        height="89px"
-        backgroundColor={themeContext.colors.backgroundGray}
-      ></Grid>
-    </Wrapper>
+      {/*<Grid*/}
+      {/*  height="89px"*/}
+      {/*  backgroundColor={themeContext.colors.backgroundGray}*/}
+      {/*></Grid>*/}
+    </NewWrapper>
   );
 }
+
+const NewWrapper = styled(Wrapper)`
+  height: 100%;
+
+  > div {
+    padding-top: 120px;
+  }
+`;
 
 export default BoardList;

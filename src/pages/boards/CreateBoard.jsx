@@ -1,13 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
   BUCKET,
   awsS3Bucket,
   BASE_S3_URL,
 } from '../../shared/utils/awsBucketConfig';
 import { createBoardAsync } from 'modules/boards';
-import { ThemeContext } from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import {
   Wrapper,
   Grid,
@@ -16,13 +15,12 @@ import {
   Header,
   Textarea,
   DropdownSelect,
+  Text,
 } from 'components';
-import { createRef } from 'react';
 
 function CreateBoard(props) {
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const options = [
     { value: '학교생활', label: '학교생활' },
@@ -36,11 +34,10 @@ function CreateBoard(props) {
   const [category, setCategory] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [textLength, setTextLength] = useState(0);
   const [previewImage, setPreviewImage] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
-
-  const textareaRef = createRef();
 
   const changeCategory = (optionSelected) => {
     setCategory(optionSelected.value);
@@ -51,7 +48,11 @@ function CreateBoard(props) {
   };
 
   const changeContent = (e) => {
-    setContent(e.target.value);
+    const value = e.target.value;
+    if (value.length < 300) {
+      setTextLength(value.length);
+      setContent(value);
+    }
   };
 
   const boardInfo = { title, content, imageUrl, category };
@@ -92,7 +93,7 @@ function CreateBoard(props) {
   };
 
   return (
-    <Wrapper padding="42px 0px 0px 0px">
+    <NewWrapper>
       <Grid padding="0px 24px 12px 24px">
         <Header
           label="게시글 작성"
@@ -110,7 +111,6 @@ function CreateBoard(props) {
       <DropdownSelect
         placeholder="카테고리를 선택해주세요"
         options={options}
-        closeMenuOnSelect={false}
         color={themeContext.colors.lightGray}
         onChange={changeCategory}
       />
@@ -135,19 +135,22 @@ function CreateBoard(props) {
         <Textarea
           fluid
           border="none"
-          height="auto"
+          height="200px"
           placeholder="토론하고 싶은 내용을 작성해주세요"
           onChange={changeContent}
           lineHeight="18px"
         />
-        {previewImage && <Image src={previewImage} />}
+        {previewImage && <Image src={previewImage} shape={'rectangle'} />}
+        <Text tiny right color={themeContext.colors.darkGray}>
+          {textLength} / 300
+        </Text>
       </Grid>
       <Grid
         padding="16px 24px 0px 24px"
         style={{ display: 'flex', position: 'fixed', bottom: '10px' }}
       >
         <Grid onClick={handleImageClick}>
-          <img src="/asset/icons/Image.svg" />
+          <img src="/asset/icons/Image.svg" alt="image" />
           <input
             type="file"
             style={{ display: 'none' }}
@@ -157,8 +160,13 @@ function CreateBoard(props) {
           />
         </Grid>
       </Grid>
-    </Wrapper>
+    </NewWrapper>
   );
 }
+
+const NewWrapper = styled(Wrapper)`
+  height: 100%;
+  background-color: ${({ theme }) => theme.colors.white};
+`;
 
 export default CreateBoard;

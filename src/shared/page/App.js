@@ -124,14 +124,25 @@ function App() {
               <Route path="result/general" element={<CombinedBoardList />} />
               <Route path="result/live" element={<CombinedBoardList />} />
             </Route>
-            <Route path="/list" element={<BoardList />}>
-              <Route path=":categoryName" element={<BoardList />} />
+            <Route path="/list">
+              <Route
+                path=":categoryName"
+                element={<BoardByCategoryList from={'/home'} to={'/list/'} />}
+              >
+                <Route path="live" element={<LiveBoardList />} />
+                <Route path="general" element={<BoardList />} />
+              </Route>
             </Route>
-            <Route path="/livelist" element={<LiveBoardList />}>
-              <Route path=":categoryName" element={<LiveBoardList />} />
-            </Route>
+            {/*<Route path="/livelist" element={<LiveBoardList />}>*/}
+            {/*  <Route path=":categoryName" element={<LiveBoardList />} />*/}
+            {/*</Route>*/}
             <Route path="/category">
-              <Route path=":categoryName" element={<BoardByCategoryList />}>
+              <Route
+                path=":categoryName"
+                element={
+                  <BoardByCategoryList from={'/search'} to={'/category/'} />
+                }
+              >
                 <Route path="live" element={<LiveBoardList />} />
                 <Route path="general" element={<BoardList />} />
               </Route>

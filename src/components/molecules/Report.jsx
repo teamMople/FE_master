@@ -9,54 +9,81 @@ const Report = () => {
         className={active && 'active'}
         onClick={() => setActive(!active)}
       >
-        <div>report</div>
+        <div>
+          피<br />드<br />백
+        </div>
       </ReportWrapper>
-      <BugWrapper className={active && 'active'}>
-        <div>버그</div>
+      <BugWrapper
+        className={active && 'active'}
+        onClick={() => window.open('https://forms.gle/4rnNPK61UeoYBT996')}
+      >
+        <div>
+          버그
+          <br />
+          제보
+        </div>
       </BugWrapper>
-      <SurveyWrapper className={active && 'active'}>
-        <div>설문조사</div>
+      <SurveyWrapper
+        className={active && 'active'}
+        onClick={() => window.open('https://forms.gle/H4dX3qQYKDCstNMp6')}
+      >
+        <div>
+          설문
+          <br />
+          조사
+        </div>
       </SurveyWrapper>
     </>
   );
 };
 
 const ReportWrapper = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 25px;
+  padding: 8px 5px;
   position: fixed;
   z-index: 99;
   background-color: ${({ theme }) => theme.colors.blue};
   color: ${({ theme }) => theme.colors.white};
-  left: 24px;
-  bottom: 70px;
-  border-radius: 10em;
+  left: 0;
+  bottom: 120px;
+  border-radius: 0 8px 8px 0;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 1px 1px 1px 2px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 `;
-const SurveyWrapper = styled(ReportWrapper)`
+
+const CommonWrapper = styled.div`
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  border-radius: 10em;
+  left: -50px;
+  bottom: 120px;
   background-color: ${({ theme }) => theme.colors.white};
   border: 2px solid ${({ theme }) => theme.colors.blue};
   color: ${({ theme }) => theme.colors.blue};
-  z-index: 98;
+  transform: translateY(0);
   transition: all 0.2s ease;
+  z-index: 98;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
 
+const SurveyWrapper = styled(CommonWrapper)`
   &.active {
-    left: 90px;
+    left: 40px;
+    transform: translateY(30px);
   }
 `;
 
-const BugWrapper = styled(ReportWrapper)`
-  background-color: ${({ theme }) => theme.colors.white};
-  border: 2px solid ${({ theme }) => theme.colors.blue};
-  color: ${({ theme }) => theme.colors.blue};
-  z-index: 98;
-  transition: all 0.2s ease;
-
+const BugWrapper = styled(CommonWrapper)`
   &.active {
-    bottom: 130px;
+    left: 40px;
+    transform: translateY(-30px);
   }
 `;
 

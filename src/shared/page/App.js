@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import apis from 'apis/apis';
 
@@ -47,15 +47,24 @@ function App() {
   const dispatch = useDispatch();
 
   // Theme
-  const [theme, setTheme] = useState(lightTheme);
+  // const [theme, setTheme] = useState(lightTheme);
 
   // 테마 변경 값 로컬 스토리지에 저장해야함!
-  const changeTheme = () => {
-    if (theme === lightTheme) setTheme(darkTheme);
-    else {
-      setTheme(lightTheme);
-    }
-  };
+  // const changeTheme = () => {
+  //   if (theme === lightTheme) setTheme(darkTheme);
+  //   else {
+  //     setTheme(lightTheme);
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (localStorage.getItem('theme') === 'dark') {
+  //     setTheme(darkTheme);
+  //     dispatch(setDarkTheme(true));
+  //   } else {
+  //     setTheme(lightTheme);
+  //     dispatch(setDarkTheme(false));
+  //   }
+  // }, []);
 
   // Firebase Cloud Messaging
   const firebaseApp = initializeApp(firebaseConfig);
@@ -101,13 +110,11 @@ function App() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider
+      theme={localStorage.getItem('theme') === 'dark' ? darkTheme : lightTheme}
+    >
       <GlobalStyle />
       <BrowserRouter history={history}>
-        {/*잠시 임시로 넣어놓았습니다.*/}
-        {/*<button style={{ position: 'fixed', right: 0 }} onClick={changeTheme}>*/}
-        {/*  테마변경*/}
-        {/*</button>*/}
         <Suspense fallback={<PageLoading />}>
           <Routes>
             <Route path="/" element={<Splash />} />
@@ -128,14 +135,25 @@ function App() {
               <Route path="result/general" element={<CombinedBoardList />} />
               <Route path="result/live" element={<CombinedBoardList />} />
             </Route>
-            <Route path="/list" element={<BoardList />}>
-              <Route path=":categoryName" element={<BoardList />} />
+            <Route path="/list">
+              <Route
+                path=":categoryName"
+                element={<BoardByCategoryList from={'/home'} to={'/list/'} />}
+              >
+                <Route path="live" element={<LiveBoardList />} />
+                <Route path="general" element={<BoardList />} />
+              </Route>
             </Route>
-            <Route path="/livelist" element={<LiveBoardList />}>
-              <Route path=":categoryName" element={<LiveBoardList />} />
-            </Route>
+            {/*<Route path="/livelist" element={<LiveBoardList />}>*/}
+            {/*  <Route path=":categoryName" element={<LiveBoardList />} />*/}
+            {/*</Route>*/}
             <Route path="/category">
-              <Route path=":categoryName" element={<BoardByCategoryList />}>
+              <Route
+                path=":categoryName"
+                element={
+                  <BoardByCategoryList from={'/search'} to={'/category/'} />
+                }
+              >
                 <Route path="live" element={<LiveBoardList />} />
                 <Route path="general" element={<BoardList />} />
               </Route>

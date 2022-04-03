@@ -13,6 +13,7 @@ import {
   setOpenCreateRoom,
   setOpenRoomState,
 } from '../modules/chat';
+import { Text } from 'components';
 
 const Nav = (props) => {
   const [showNav, setShowNav] = useState(false);
@@ -23,19 +24,6 @@ const Nav = (props) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const goHome = () => {
-    navigate('/');
-  };
-  const goSearch = () => {
-    navigate('/');
-  };
-  const goNoti = () => {
-    navigate('/');
-  };
-  const goMyPage = () => {
-    navigate('/');
-  };
 
   let location = useLocation();
 
@@ -108,7 +96,7 @@ const Nav = (props) => {
       <NavWrapper active={showNav} {...props}>
         {showMenu && (
           <SpeedDialMenu>
-            <div
+            <Text
               className={showMenu && 'leftMenu'}
               onClick={() => {
                 navigate('/createboard');
@@ -117,18 +105,18 @@ const Nav = (props) => {
               }}
             >
               일반토론
-            </div>
-            <div
+            </Text>
+            <Text
               className={showMenu && 'rightMenu'}
               onClick={handleOpenCreateRoom}
             >
               LIVE토론
-            </div>
+            </Text>
           </SpeedDialMenu>
         )}
         <SpeedDial rot={rot} onClick={showSpeedDialMenu}>
           <div>
-            <img src="/asset/icons/Add_Plus.svg" />
+            <img src="/asset/icons/Add_Plus.svg" alt="add" />
           </div>
         </SpeedDial>
 

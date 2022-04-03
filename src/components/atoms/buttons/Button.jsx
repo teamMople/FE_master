@@ -90,7 +90,7 @@ const B = styled.button`
   cursor: pointer;
 
   &:disabled {
-    background-color: ${({ theme }) => theme.colors.backgroundGray};
+    background-color: ${({ theme }) => theme.colors.disabled};
     color: ${({ theme }) => theme.colors.gray};
     pointer-events: none;
   }

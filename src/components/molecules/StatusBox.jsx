@@ -32,7 +32,7 @@ const StatusBox = ({
 };
 
 StatusBox.propTypes = {
-  count: PropTypes.number,
+  count: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   icon: PropTypes.string,
   label: PropTypes.string,
   gap: PropTypes.string,

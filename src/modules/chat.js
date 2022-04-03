@@ -151,7 +151,11 @@ export const joinRoomAsync = createAsyncThunk(
         };
         return status;
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.error(err);
+        // navigate('/home', { replace: true });
+        window.location.href = `/home`;
+      });
   },
 );
 
@@ -164,7 +168,10 @@ export const leaveRoomAsync = createAsyncThunk(
         //!Todo 주석 풀 것
         // return alert('방 떠나기 성공!');
       })
-      .catch(() => alert('방 떠나기 실패!'));
+      .catch(() => {
+        console.log('방 떠나기 실패!');
+        window.location.href = `/home`;
+      });
   },
 );
 
@@ -188,7 +195,7 @@ export const roomSlice = createSlice({
         state.subscribers.splice(index, 1);
       }
     },
-    removeAllRoomSubscribers: (state, action) => {
+    removeAllRoomSubscribers: (state) => {
       state.subscribers = [];
     },
     setRemoteHandsUpStatus: (state, action) => {

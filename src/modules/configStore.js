@@ -9,6 +9,7 @@ import modalReducer from './modal';
 import notificationReducer from './notifications';
 import replyCommentReducer from './replyComments';
 import userReducer from './users';
+import themeReducer from './serviceTheme';
 
 import persistReducer from 'redux-persist/es/persistReducer';
 import storage from 'redux-persist/lib/storage';
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   notifications: notificationReducer,
   replyComments: replyCommentReducer,
   users: userReducer,
+  theme: themeReducer,
 });
 
 // Redux-persist

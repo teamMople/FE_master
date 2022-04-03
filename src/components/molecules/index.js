@@ -24,3 +24,4 @@ export { default as KebabMenu } from './KebabMenu';
 export { default as PageLoading } from './PageLoading';
 export { default as DeviceDetector } from './DeviceDetector';
 export { default as Report } from './Report';
+export { default as ToggleButton } from './ToggleButton';

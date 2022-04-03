@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Carousel } from '@trendyol-js/react-carousel';
+// import { Carousel } from '@trendyol-js/react-carousel';
+import { Carousel } from 'react-responsive-carousel';
 
 import { Grid, Text, CategoryTile } from 'components';
 import { useNavigate } from 'react-router-dom';
@@ -17,11 +18,17 @@ const CategoryCarousel = (props) => {
         </Text>
       </Grid>
       <Carousel
-        show={2.15}
-        slide={2}
-        swiping={true}
-        leftArrow={false}
-        rightArrow={false}
+        showIndicators={false}
+        emulateTouch
+        showArrows={false}
+        showStatus={false}
+        preventMovementUntilSwipeScrollTolerance
+        centerMode
+        centerSlidePercentage={40}
+        swipeable
+        showThumbs={false}
+        transitionTime={100}
+        swipeScrollTolerance={10}
         // showIndicators={false}
         // emulateTouch
         // showArrows={false}

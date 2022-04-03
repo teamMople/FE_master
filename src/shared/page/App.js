@@ -41,7 +41,7 @@ import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from 'shared/utils/firebase';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { useDispatch } from 'react-redux';
-import { addAlarmList } from 'modules/alarms';
+import { addNotificationList } from 'modules/notifications';
 
 function App() {
   const dispatch = useDispatch();
@@ -88,11 +88,22 @@ function App() {
   onMessage(firebaseMessaging, (payload) => {
     console.log('foregroundMessage');
     console.log(payload);
+
+    const date = new Date();
+    const now = date.getTime();
+
     if (payload) {
-      dispatch(addAlarmList(payload.notification));
+      dispatch(
+        addNotificationList({
+          title: payload.notification.title,
+          body: payload.notification.body,
+          createdAt: now,
+        }),
+      );
     }
   });
 
+  // Webpack production mode
   if (process.env.NODE_ENV === 'production') {
     console.log = function no_console() {};
     console.warn = function no_console() {};

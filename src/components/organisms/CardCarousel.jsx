@@ -21,6 +21,8 @@ const CardCarousel = (props) => {
         showStatus={false}
         preventMovementUntilSwipeScrollTolerance
         centerMode
+        centerSlidePercentage={75}
+        swipeable
         showThumbs={false}
         transitionTime={100}
         // show={1.2}

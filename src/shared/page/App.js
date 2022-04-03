@@ -37,11 +37,11 @@ import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
 import GlobalStyle from '../styles/globalStyles';
 import { PageLoading, Report } from 'components';
 
-import { initializeApp } from 'firebase/app';
-import { firebaseApp, firebaseConfig } from 'shared/utils/firebase';
+import { firebaseApp } from 'shared/utils/firebase';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addNotificationList } from 'modules/notifications';
+import { selectDarkTheme } from '../../modules/serviceTheme';
 
 function App() {
   const dispatch = useDispatch();
@@ -87,10 +87,23 @@ function App() {
     console.warn = function no_console() {};
   }
 
+  // 테마 변경
+  const darkThemeState = useSelector(selectDarkTheme);
+
+  useEffect(() => {
+    themeState();
+  }, [darkThemeState]);
+
+  const themeState = () => {
+    if (localStorage.getItem('theme') === 'dark') {
+      return darkTheme;
+    } else {
+      return lightTheme;
+    }
+  };
+
   return (
-    <ThemeProvider
-      theme={localStorage.getItem('theme') === 'dark' ? darkTheme : lightTheme}
-    >
+    <ThemeProvider theme={themeState}>
       <GlobalStyle />
       <BrowserRouter history={history}>
         <Suspense fallback={<PageLoading />}>

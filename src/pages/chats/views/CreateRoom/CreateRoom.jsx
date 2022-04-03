@@ -18,7 +18,6 @@ import {
   setOpenCreateRoom,
   setOpenRoomState,
 } from '../../../../modules/chat';
-import { SliderStepper } from '../../component';
 import PropTypes from 'prop-types';
 import HeaderSub from '../../component/HeaderSub';
 import {
@@ -31,6 +30,7 @@ import {
   SlideUpWrapper,
   TextareaWrapper,
 } from './style';
+import ReactSlider from 'react-slider';
 
 const CreateRoom = ({
   show,
@@ -140,14 +140,8 @@ const CreateRoom = ({
     }
   };
 
-  const handleMember = (e) => {
-    // if (param === 'increase' && memberCount < 10) {
-    //   setMemberCount((prev) => prev + 1);
-    // } else if (param === 'decrease' && memberCount > 2) {
-    //   setMemberCount((prev) => prev - 1);
-    // }
-    setMemberCount(e.target.value);
-    console.log(e.target.value);
+  const handleMember = (value) => {
+    setMemberCount(value);
   };
 
   console.log('openSetting', openSetting);
@@ -175,28 +169,27 @@ const CreateRoom = ({
                 </SelectOption>
               ))}
             </SelectOptionWrapper>
-            {/*<DropdownSelect
-            placeholder="카테고리를 선택해주세요"
-            color={themeContext.colors.lightGray}
-            onChange={setSelectedOption}
-            options={options}
-          />*/}
             <ParticipantCountWrapper>
-              <div>
+              <div className="count-participants">
                 <Text small>참여인원</Text>
                 <Text tiny color={themeContext.colors.blue}>
                   {memberCount}명
                 </Text>
               </div>
-              <SliderStepper value={memberCount} onChange={handleMember} />
+              <ReactSlider
+                className="horizontal-slider"
+                markClassName="slider-mark"
+                min={2}
+                max={10}
+                thumbClassName="slider-thumb"
+                trackClassName="slider-track"
+                thumbActiveClassName="slider-thumb-active"
+                onChange={(value) => handleMember(value)}
+                value={memberCount}
+                defaultValue={memberCount}
+              />
+              {/*<SliderStepper value={memberCount} onChange={handleMember} />*/}
             </ParticipantCountWrapper>
-            {/*<SetMemberCount*/}
-            {/*  disabledDecrease={memberCount === 2}*/}
-            {/*  disabledIncrease={memberCount === 10}*/}
-            {/*  count={memberCount}*/}
-            {/*  onClickDecrease={() => handleMember('decrease')}*/}
-            {/*  onClickIncrease={() => handleMember('increase')}*/}
-            {/*/>*/}
           </ContentWrapper>
         </SlideUpWrapper>
         {/* ================= */}
@@ -210,13 +203,6 @@ const CreateRoom = ({
               rightButtonRender={{ label: '완료', onClickButton: createRoom }}
             />
           </Grid>
-
-          {/*<DropdownSelect*/}
-          {/*  placeholder="카테고리를 선택해주세요"*/}
-          {/*  color={themeContext.colors.lightGray}*/}
-          {/*  onChange={setSelectedOption}*/}
-          {/*  options={options}*/}
-          {/*/>*/}
           <BodyWrapper>
             <Button
               size={'small'}

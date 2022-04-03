@@ -13,28 +13,33 @@ import {
   BasicModal,
   ToggleButton,
 } from 'components';
+import { setDarkTheme } from '../modules/serviceTheme';
 
-function Settings(props) {
+function Settings() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
-  const [dark, setDark] = useState(false);
+  const [active, setActive] = useState(false);
 
   const changeTheme = () => {
-    if (dark) {
-      setDark(false);
+    if (active) {
+      setActive(false);
       localStorage.setItem('theme', 'light');
+      dispatch(setDarkTheme(false));
     } else {
-      setDark(true);
+      setActive(true);
       localStorage.setItem('theme', 'dark');
+      dispatch(setDarkTheme(true));
     }
   };
 
   useEffect(() => {
     if (localStorage.getItem('theme') === 'dark') {
-      setDark(true);
+      setActive(true);
+      dispatch(setDarkTheme(true));
     } else {
-      setDark(false);
+      setActive(false);
+      dispatch(setDarkTheme(false));
     }
   }, []);
 
@@ -97,7 +102,7 @@ function Settings(props) {
         <Grid>
           <MenuItem>
             <Text>다크 모드</Text>
-            <ToggleButton active={dark} onClick={changeTheme} />
+            <ToggleButton active={active} onClick={changeTheme} />
           </MenuItem>
           <MenuItem>
             <Text>버전</Text>

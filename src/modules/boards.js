@@ -8,9 +8,9 @@ const boardListInitialState = {
 
 export const getBoardListAsync = createAsyncThunk(
   'boards/getBoardList',
-  async (thunkAPI) => {
+  async (listSize = 20, thunkAPI) => {
     try {
-      const response = await apis.getBoardList();
+      const response = await apis.getBoardList(listSize);
       console.log(response.data);
       return response.data;
     } catch (e) {

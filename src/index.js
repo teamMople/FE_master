@@ -13,7 +13,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { Loading } from 'pages';
 
 // Register service worker for Firebase Cloud Messenger
-/*if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator) {
   navigator.serviceWorker
     .register('./firebase-messaging-sw.js')
     .then(function (registration) {
@@ -22,7 +22,7 @@ import { Loading } from 'pages';
     .catch(function (err) {
       console.log('Service worker registration failed, error:', err);
     });
-}*/
+}
 
 let persistor = persistStore(store);
 
@@ -39,5 +39,5 @@ ReactDOM.render(
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
-// or send to an  analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

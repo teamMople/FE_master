@@ -12,8 +12,8 @@ const Splash = (props) => {
   const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
 
-  // const firebaseApp = initializeApp(firebaseConfig);
-  // const firebaseMessaging = getMessaging(firebaseApp);
+  const firebaseApp = initializeApp(firebaseConfig);
+  const firebaseMessaging = getMessaging(firebaseApp);
 
   const [isOpened, setIsOpened] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
@@ -22,7 +22,7 @@ const Splash = (props) => {
     setIsOpened(false);
   };
 
-  /*getToken(firebaseMessaging, {
+  getToken(firebaseMessaging, {
     vapidKey: process.env.REACT_APP_VAPID_KEY,
   })
     .then((currentToken) => {
@@ -37,7 +37,7 @@ const Splash = (props) => {
         setIsOpened(true);
       }
     })
-    .catch((err) => console.log(err));*/
+    .catch((err) => console.log(err));
 
   useEffect(() => {
     const token = getCookie('token');

@@ -1,6 +1,6 @@
 {
   "name": "bolier-plate",
-  "version": "alpha 0.1.0",
+  "version": "alpha 0.1.1",
   "private": true,
   "dependencies": {
     "@mui/material": "^5.5.1",

@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './modules/configStore';
 import { DeviceDetector } from './components';
+
 // Register service worker for Firebase Cloud Messenger
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
@@ -18,6 +19,7 @@ if ('serviceWorker' in navigator) {
       console.log('Service worker registration failed, error:', err);
     });
 }
+
 ReactDOM.render(
   <Provider store={store}>
     <DeviceDetector>

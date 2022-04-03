@@ -67,7 +67,7 @@ function App() {
   // }, []);
 
   // Firebase Cloud Messaging
-  const firebaseApp = initializeApp(firebaseConfig);
+  /*const firebaseApp = initializeApp(firebaseConfig);
   const firebaseMessaging = getMessaging(firebaseApp);
 
   getToken(firebaseMessaging, {
@@ -91,7 +91,7 @@ function App() {
     if (payload) {
       dispatch(addAlarmList(payload.notification));
     }
-  });
+  });*/
 
   if (process.env.NODE_ENV === 'production') {
     console.log = function no_console() {};

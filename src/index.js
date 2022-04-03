@@ -9,7 +9,7 @@ import store from './modules/configStore';
 import { DeviceDetector } from './components';
 
 // Register service worker for Firebase Cloud Messenger
-if ('serviceWorker' in navigator) {
+/*if ('serviceWorker' in navigator) {
   navigator.serviceWorker
     .register('./firebase-messaging-sw.js')
     .then(function (registration) {
@@ -18,7 +18,7 @@ if ('serviceWorker' in navigator) {
     .catch(function (err) {
       console.log('Service worker registration failed, error:', err);
     });
-}
+}*/
 
 ReactDOM.render(
   <Provider store={store}>

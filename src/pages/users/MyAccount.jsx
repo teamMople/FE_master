@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Wrapper, Grid, Image, Text, MenuTab } from 'components';
 
-const MyAccount = (props) => {
+const MyAccount = () => {
   const themeContext = useContext(ThemeContext);
   const nickname = localStorage.getItem('nickname');
   const email = localStorage.getItem('email');
@@ -20,14 +20,7 @@ const MyAccount = (props) => {
 
   return (
     <Wrapper backgroundColor={themeContext.colors.backgroundGray}>
-      <Grid
-        backgroundColor={themeContext.colors.white}
-        width="100%"
-        style={{
-          position: 'relative',
-          top: 0,
-        }}
-      >
+      <NewGrid backgroundColor={themeContext.colors.white}>
         <Grid padding="0px 24px 30px 24px">
           <HeaderWrapper>
             <Grid
@@ -58,10 +51,13 @@ const MyAccount = (props) => {
           highlightColor={themeContext.colors.blue}
           backgroundColor={themeContext.colors.white}
         />
-      </Grid>
-      <Grid width="100%" style={{ position: 'absolute', height: '100%' }}>
+      </NewGrid>
+      <MyAccountContentWrapper
+        width="100%"
+        style={{ position: 'absolute', height: '100%' }}
+      >
         <Outlet />
-      </Grid>
+      </MyAccountContentWrapper>
     </Wrapper>
   );
 };
@@ -76,6 +72,20 @@ const HeaderWrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   height: ${({ theme }) => theme.style.header.height};
+`;
+
+const NewGrid = styled(Grid)`
+  position: fixed;
+  width: 100%;
+  z-index: 5;
+`;
+const MyAccountContentWrapper = styled(Grid)`
+  padding-top: 245px;
+  > div {
+    > div {
+      padding-top: 0;
+    }
+  }
 `;
 
 export default MyAccount;

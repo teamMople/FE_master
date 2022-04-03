@@ -21,7 +21,7 @@ const BoardList = (props) => {
           <BoardWrapper key={index}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Image shape="circle" size={32} src={board.profileImageUrl} />
-              <div
+              <Text
                 style={{ marginLeft: '8px' }}
                 onClick={() => {
                   navigate('/board/' + board.id);
@@ -31,12 +31,17 @@ const BoardList = (props) => {
                   ? board.title.slice(0, 12) + '...'
                   : board.title}
                 ({board.recommendCount})
-              </div>
+              </Text>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="/asset/icons/Agreed.svg" />
-                <div style={{ marginLeft: '10px' }}>{board.agreeCount}</div>
+                {localStorage.getItem('theme') === 'dark' ? (
+                  <img src="/asset/icons/Agreed_white.svg" alt="icon" />
+                ) : (
+                  <img src="/asset/icons/Agreed.svg" alt="icon" />
+                )}
+
+                <Text style={{ marginLeft: '10px' }}>{board.agreeCount}</Text>
               </div>
               <div
                 style={{
@@ -45,8 +50,14 @@ const BoardList = (props) => {
                   marginLeft: '27px',
                 }}
               >
-                <img src="/asset/icons/Disagreed.svg" />
-                <div style={{ marginLeft: '10px' }}>{board.disagreeCount}</div>
+                {localStorage.getItem('theme') === 'dark' ? (
+                  <img src="/asset/icons/Disagreed_white.svg" alt="icon" />
+                ) : (
+                  <img src="/asset/icons/Disagreed.svg" alt="icon" />
+                )}
+                <Text style={{ marginLeft: '10px' }}>
+                  {board.disagreeCount}
+                </Text>
               </div>
             </div>
           </BoardWrapper>

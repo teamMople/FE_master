@@ -30,7 +30,7 @@ const CustomInput = styled.input`
     backgroundColor ? backgroundColor : theme.colors.white};
 
   &::placeholder {
-    color: ${({ theme }) => theme.colors.lightGray};
+    color: ${({ theme }) => theme.colors.placeholder};
     font-weight: ${(props) => (props.bold ? 600 : 500)};
   }
   &:focus {

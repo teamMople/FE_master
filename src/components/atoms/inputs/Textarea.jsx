@@ -8,7 +8,8 @@ const Textarea = ({ fluid, ...props }) => {
 
 const CustomTextarea = styled.textarea`
   border: ${(props) => (props.border ? props.border : 'none')};
-  background-color: ${(props) => props.backgroundColor};
+  background-color: ${({ backgroundColor, theme }) =>
+    backgroundColor ? backgroundColor : theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
   font-size: ${(props) => props.fontSize};
   font-weight: ${(props) => (props.bold ? 600 : 500)};
@@ -25,7 +26,7 @@ const CustomTextarea = styled.textarea`
   onkeyup: ${(props) => props.onkeyup};
 
   &::placeholder {
-    color: ${({ theme }) => theme.colors.gray};
+    color: ${({ theme }) => theme.colors.placeholder};
     font-size: ${(props) => props.fontSize};
     line-height: ${(props) => props.lineHeight};
     font-weight: ${(props) => (props.bold ? 600 : 500)};

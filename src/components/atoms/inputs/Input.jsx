@@ -71,7 +71,7 @@ const I = styled.input`
   }
 
   &::placeholder {
-    color: ${({ theme }) => theme.colors.gray2};
+    color: ${({ theme }) => theme.colors.placeholder};
     font-weight: ${(props) => (props.bold ? 600 : 500)};
   }
 

@@ -16,12 +16,13 @@ const DropdownSelect = ({ ...props }) => {
 const animatedComponents = makeAnimated();
 
 const dropdownSelectStyles = {
-  control: (base) => ({
+  control: (base, { theme }) => ({
     ...base,
     border: 'none',
     boxShadow: 'none',
     paddingLeft: 13,
     paddingRight: 13,
+    backgroundColor: theme.colors.white,
   }),
   singleValue: (base) => ({
     ...base,
@@ -39,7 +40,7 @@ const dropdownSelectStyles = {
     paddingRight: 13,
     backgroundColor: state.isSelected ? '#4F4F4F' : '#FFF',
   }),
-  option: (provided, state) => ({
+  option: (provided) => ({
     ...provided,
     border: 'none',
     boxShadow: 'none',
@@ -49,11 +50,11 @@ const dropdownSelectStyles = {
     paddingLeft: 23,
     paddingRight: 23,
   }),
-  indicatorSeparator: (provided, state) => ({
+  indicatorSeparator: (provided) => ({
     ...provided,
     backgroundColor: 'transparent',
   }),
-  placeholder: (provided, state) => ({
+  placeholder: (provided) => ({
     ...provided,
     color: '#4F4F4F',
     fontWeight: 600,

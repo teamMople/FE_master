@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { ThemeContext } from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getLiveBoardListAsync,
@@ -26,7 +26,7 @@ function LiveBoardList(props) {
   }, [dispatch]);
 
   return (
-    <Wrapper>
+    <NewWrapper>
       {data.length !== 0 ? (
         <Grid
           center
@@ -54,12 +54,18 @@ function LiveBoardList(props) {
           <Text color={themeContext.colors.blue}>검색 결과가 없습니다</Text>
         </Grid>
       )}
-      <Grid
-        height="89px"
-        backgroundColor={themeContext.colors.backgroundGray}
-      ></Grid>
-    </Wrapper>
+      {/*<Grid*/}
+      {/*  height="89px"*/}
+      {/*  backgroundColor={themeContext.colors.backgroundGray}*/}
+      {/*></Grid>*/}
+    </NewWrapper>
   );
 }
+const NewWrapper = styled(Wrapper)`
+  height: 100%;
+  > div {
+    padding-top: 120px;
+  }
+`;
 
 export default LiveBoardList;

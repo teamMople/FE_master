@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from 'modules/users';
 
-import styled, { ThemeContext } from 'styled-components';
+import styled from 'styled-components';
 import {
   Wrapper,
   Grid,
@@ -17,7 +17,6 @@ import {
 function Settings(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const themeContext = useContext(ThemeContext);
   const [openModal, setOpenModal] = useState(false);
   const [dark, setDark] = useState(false);
 
@@ -50,7 +49,7 @@ function Settings(props) {
       >
         정말 로그아웃을 하시겠습니까?
       </BasicModal>
-      <Wrapper backgroundColor={themeContext.colors.white} padding="0 12px">
+      <NewWrapper padding="0 12px">
         <Header label="설정" leftArrow />
         <Grid margin="12px 0px 40px 0px">
           <MenuItem onClick={() => navigate('/editmyprofile')}>
@@ -64,19 +63,19 @@ function Settings(props) {
         </Grid>
 
         <Grid margin="0px 0px 40px 0px">
-          <MenuItem onClick={() => {}}>
+          <MenuItem onClick={() => {}} className="disabled">
             <Text>Our Team</Text>
             <RightArrow active />
           </MenuItem>
-          <MenuItem onClick={() => {}}>
+          <MenuItem onClick={() => {}} className="disabled">
             <Text>FAQ/문의사항</Text>
             <RightArrow active />
           </MenuItem>
-          <MenuItem onClick={() => {}}>
+          <MenuItem onClick={() => {}} className="disabled">
             <Text>이용약관</Text>
             <RightArrow active />
           </MenuItem>
-          <MenuItem onClick={() => {}}>
+          <MenuItem onClick={() => {}} className="disabled">
             <Text>개인정보 처리방침</Text>
             <RightArrow active />
           </MenuItem>
@@ -105,10 +104,15 @@ function Settings(props) {
             <Text small>v {process.env.REACT_APP_VERSION}</Text>
           </MenuItem>
         </Grid>
-      </Wrapper>
+      </NewWrapper>
     </>
   );
 }
+
+const NewWrapper = styled(Wrapper)`
+  height: 100%;
+  background-color: ${({ theme }) => theme.colors.white};
+`;
 
 const MenuItem = styled(Grid)`
   display: flex;
@@ -121,6 +125,10 @@ const MenuItem = styled(Grid)`
 
   &:active {
     background-color: ${({ theme }) => theme.colors.lightGray};
+  }
+  &.disabled {
+    opacity: 0.2;
+    pointer-events: none;
   }
 `;
 

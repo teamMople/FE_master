@@ -9,19 +9,8 @@ import {
 import apis from 'apis/apis';
 import lo from 'lodash';
 
-import { ThemeContext } from 'styled-components';
-import {
-  Wrapper,
-  Grid,
-  Text,
-  Image,
-  Button,
-  Input,
-  Header,
-  ProgressStepper,
-  Check,
-  Survey,
-} from 'components';
+import styled, { ThemeContext } from 'styled-components';
+import { Wrapper, Grid, Text, Image, Button, Input, Header } from 'components';
 import { useDispatch } from 'react-redux';
 import { editMyInfo } from 'modules/users';
 
@@ -106,10 +95,7 @@ function EditUserProfile(props) {
   const userInfo = { nickname, profileImageUrl };
 
   return (
-    <Wrapper
-      backgroundColor={themeContext.colors.white}
-      padding="42px 24px 0px 24px"
-    >
+    <NewWrapper padding="0 24px">
       <Header label="프로필 편집" leftArrow />
 
       <Grid padding="32px 24px 0px 24px">
@@ -177,8 +163,13 @@ function EditUserProfile(props) {
           </Button>
         </div>
       </Grid>
-    </Wrapper>
+    </NewWrapper>
   );
 }
+
+const NewWrapper = styled(Wrapper)`
+  height: 100%;
+  background-color: ${({ theme }) => theme.colors.white};
+`;
 
 export default EditUserProfile;

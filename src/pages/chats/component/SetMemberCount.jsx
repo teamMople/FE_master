@@ -52,7 +52,7 @@ const CustomButton = styled.button`
     background-color: ${({ theme }) => theme.colors.gray};
   }
   &:disabled {
-    background-color: ${({ theme }) => theme.colors.backgroundGray};
+    background-color: ${({ theme }) => theme.colors.disabled};
     color: ${({ theme }) => theme.colors.gray};
   }
 `;

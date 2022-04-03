@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 
-import { ThemeContext } from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import {
   Wrapper,
   Grid,
-  Loader,
   BasicModal,
   PageLoading,
   Text,
+  Button,
 } from 'components';
 import {
   CardCarousel,
@@ -26,10 +26,12 @@ import {
 } from 'modules/liveBoards';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectModalOpen, setModalOpen } from 'modules/modal';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { data: basicBoards, status: basicBoardsStatus } =
     useSelector(selectedBoardList);
@@ -53,13 +55,20 @@ const Home = () => {
         <PageLoading />
       </Wrapper>
     );
-  } else if (
-    basicBoardsStatus === 'loading' ||
-    liveBoardsStatus === 'loading'
-  ) {
+  } else if (basicBoardsStatus === 'failed' || liveBoardsStatus === 'failed') {
     return (
       <Wrapper backgroundColor={themeContext.colors.white}>
-        <Text>에러 나쪄염 ㅠ.ㅠ</Text>
+        <BackDrop />
+        <ErrorPageWrapper>
+          <Text>로그인 시간이 만료되었습니다.</Text>
+          <Text>다시 로그인 해주세요!</Text>
+          <Button
+            secondary
+            onClick={() => navigate('/login', { replace: true })}
+          >
+            로그인 화면으로 이동
+          </Button>
+        </ErrorPageWrapper>
       </Wrapper>
     );
   } else {
@@ -99,5 +108,29 @@ const Home = () => {
     );
   }
 };
+
+const ErrorPageWrapper = styled.div`
+  position: fixed;
+  z-index: 21;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  row-gap: 8px;
+  > button {
+    margin-top: 16px;
+  }
+`;
+const BackDrop = styled.div`
+  position: fixed;
+  height: 100%;
+  z-index: 20;
+  width: 100%;
+  background-color: ${({ theme }) => theme.colors.white};
+  transition: all 0.3s ease;
+  opacity: 0.7;
+`;
 
 export default Home;

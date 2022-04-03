@@ -30,6 +30,7 @@ const CommentInputWindow = (props, { ref }) => {
           placeholder="댓글을 입력하세요"
           padding="8px 12px 8px 12px"
           onChange={changeContent}
+          value={content}
         />
         <Button
           ref={ref}
@@ -41,6 +42,7 @@ const CommentInputWindow = (props, { ref }) => {
           margin="0px 0px 0px 16px"
           onClick={(e) => {
             e.preventDefault();
+            setContent('');
             dispatch(createCommentAsync(commentInfo));
           }}
         >

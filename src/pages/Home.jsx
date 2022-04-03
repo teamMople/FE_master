@@ -1,7 +1,14 @@
 import React, { useContext } from 'react';
 
 import { ThemeContext } from 'styled-components';
-import { Wrapper, Grid, Loader, BasicModal } from 'components';
+import {
+  Wrapper,
+  Grid,
+  Loader,
+  BasicModal,
+  PageLoading,
+  Text,
+} from 'components';
 import {
   CardCarousel,
   CategoryCarousel,
@@ -40,10 +47,19 @@ const Home = () => {
     };
   }, [dispatch]);
 
-  if (basicBoardsStatus !== 'success' || liveBoardsStatus !== 'success') {
+  if (basicBoardsStatus === 'loading' || liveBoardsStatus === 'loading') {
     return (
-      <Wrapper>
-        <Loader type="dot" />
+      <Wrapper backgroundColor={themeContext.colors.white}>
+        <PageLoading />
+      </Wrapper>
+    );
+  } else if (
+    basicBoardsStatus === 'loading' ||
+    liveBoardsStatus === 'loading'
+  ) {
+    return (
+      <Wrapper backgroundColor={themeContext.colors.white}>
+        <Text>에러 나쪄염 ㅠ.ㅠ</Text>
       </Wrapper>
     );
   } else {

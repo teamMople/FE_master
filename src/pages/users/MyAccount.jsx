@@ -25,7 +25,8 @@ const MyAccount = () => {
           <HeaderWrapper>
             <Grid
               onClick={() => {
-                window.location.assign('/settings');
+                // window.location.assign('/settings');
+                navigate('/settings');
               }}
             >
               <img src="/asset/icons/Settings.svg" alt="setting" />

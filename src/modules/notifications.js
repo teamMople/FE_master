@@ -2,7 +2,7 @@ import React from 'react';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import apis from '../apis/apis';
 
-const alarmListInitialState = {
+const notificationListInitialState = {
   data: [],
 };
 
@@ -15,17 +15,17 @@ export const sendFirebaseCloudMessagingToken = createAsyncThunk(
   },
 );
 
-export const alarmSlice = createSlice({
-  name: 'alarms',
-  initialState: alarmListInitialState,
+export const notificationSlice = createSlice({
+  name: 'notifications',
+  initialState: notificationListInitialState,
   reducers: {
-    addAlarmList: (state, action) => {
-      console.log(action);
+    addNotificationList: (state, action) => {
       state.data.push(action.payload);
     },
   },
   extraReducers: {},
 });
 
-export const { addAlarmList } = alarmSlice.actions;
-export const selectedAlarmList = (state) => state.alarms.data;
+export const { addNotificationList } = notificationSlice.actions;
+export const selectedNotificationList = (state) => state.notifications.data;
+export default notificationSlice.reducer;

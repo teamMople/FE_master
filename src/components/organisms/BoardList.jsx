@@ -9,6 +9,11 @@ const BoardList = (props) => {
   const { label, boards } = props;
   const navigate = useNavigate();
 
+  const slicedBoards = boards.slice(0, 5);
+  const hotList = slicedBoards.sort(
+    (a, b) => b.agreeCount + b.disagreeCount - (a.agreeCount + a.disagreeCount),
+  );
+
   return (
     <Grid padding="0px 24px 0px 24px" margin="0px 0px 32px 0px">
       <Grid margin="0px 0px 16px 0px">
@@ -16,7 +21,7 @@ const BoardList = (props) => {
           {label}
         </Text>
       </Grid>
-      {boards.slice(0, 5).map((board, index) => {
+      {hotList.map((board, index) => {
         return (
           <BoardWrapper key={index}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -30,7 +35,7 @@ const BoardList = (props) => {
                 {board.title.length > 12
                   ? board.title.slice(0, 12) + '...'
                   : board.title}
-                ({board.recommendCount})
+                ({board.commentCount})
               </Text>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>

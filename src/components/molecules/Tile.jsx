@@ -177,7 +177,7 @@ const Tile = (props) => {
                     ? '/asset/icons/Vote_white.svg'
                     : '/asset/icons/Vote.svg'
                 }
-                count={board.recommendCount < 1 ? '0' : board.recommendCount}
+                count={board.commentCount < 1 ? '0' : board.commentCount}
               />
             </Grid>
             <Grid isFlex>
@@ -234,6 +234,7 @@ Tile.propTypes = {
     participantsNicknames: PropTypes.array,
     participantsProfileImageUrls: PropTypes.object,
     recommendCount: PropTypes.number,
+    commentCount: PropTypes.number,
     agreeCount: PropTypes.number,
     disagreeCount: PropTypes.number,
     category: PropTypes.string,

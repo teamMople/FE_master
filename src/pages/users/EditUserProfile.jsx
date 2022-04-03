@@ -62,7 +62,6 @@ function EditUserProfile(props) {
   const onImageChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
-    console.log(file);
     const reader = new FileReader();
 
     reader.onloadend = (finishedEvent) => {
@@ -84,15 +83,20 @@ function EditUserProfile(props) {
       Key: folderName + '/' + urlIdentifier,
     };
 
-    await awsS3Bucket.putObject(params).send((response) => {
+    await awsS3Bucket.putObject(params).send(() => {
       const signedUrl = BASE_S3_URL + folderName + '/' + urlIdentifier;
-      console.log(signedUrl);
       setProfileImageUrl(signedUrl);
     });
   };
 
   // Submit
   const userInfo = { nickname, profileImageUrl };
+
+  async function submitUserInfoAsync(folderName, file) {
+    return await handleUpload(folderName, file).then(() => {
+      dispatch(editMyInfo(userInfo));
+    });
+  }
 
   return (
     <NewWrapper padding="0 24px">
@@ -150,12 +154,13 @@ function EditUserProfile(props) {
           }}
         >
           <Button
-            onClick={() => {
-              // if (selectedFile !== null) {
-              //   handleUpload('profile', selectedFile);
-              // }
-              console.log(userInfo);
-              dispatch(editMyInfo(userInfo));
+            onClick={(e) => {
+              if (selectedFile === null) {
+                console.log(userInfo);
+                dispatch(editMyInfo(userInfo));
+              } else {
+                submitUserInfoAsync('profile', selectedFile);
+              }
             }}
             secondary
           >

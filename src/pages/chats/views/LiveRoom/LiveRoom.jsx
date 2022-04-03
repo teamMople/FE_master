@@ -86,18 +86,13 @@ const LiveRoom = () => {
   let messageStomp = over(messageSock);
   let voteStomp = over(voteSock);
 
-  const disconnectSocket = async (streamManager) => {
+  const sendLeaveToSocket = async (streamManager) => {
     let chatMessage = {
       sender: streamManager ? streamManager : joinRoomStatus.memberName,
       type: 'LEAVE',
       roomId: joinRoomStatus.roomId,
     };
     messageStomp.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
-    // await voteStomp.send('/pub/chat/vote', {}, JSON.stringify(chatMessage));
-    // messageStomp.unsubscribe();
-    // voteStomp.unsubscribe();
-    // messageStomp.disconnect(() => alert('끊깄다~'));
-    // voteStomp.disconnect();
   };
   window.onpopstate = function (event) {
     // "event" object seems to contain value only when the back button is clicked
@@ -348,7 +343,7 @@ const LiveRoom = () => {
     // 2. 전역에서 관리하고 있는 Subscribers 목록을 초기화한다.
     await dispatch(removeAllRoomSubscribers());
     // 1. 소켓 연결을 끊는다.
-    await disconnectSocket();
+    await sendLeaveToSocket();
     // 3. session 연결을 끊는다.
     await leaveSession();
     // 4. 로컬 저장소에 저장한 openvidu token 을 제거한다.
@@ -949,7 +944,8 @@ const LiveRoom = () => {
               {publisher && (
                 <VoteView
                   roomId={joinRoomStatus.roomId}
-                  userId={publisher.session.connection.data}
+                  memberName={convertStreamData(publisher)}
+                  role={joinRoomStatus.role}
                   memberAgreed={joinRoomStatus.memberAgreed}
                   memberDisagreed={joinRoomStatus.memberDisagreed}
                   stompClient={voteStomp}

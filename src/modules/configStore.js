@@ -1,31 +1,46 @@
-import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './users';
-import { alarmSlice } from './alarms';
-import {
-  boardListSlice,
-  liveBoardListSlice,
-  combinedBoardListSlice,
-  detailSlice,
-} from './boards';
-import { commentListSlice, replyCommentListSlice } from './comments';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
+import boardReducer from './boards';
 import chatReducer from './chat';
+import combinedBoardReducer from './combinedBoards';
+import commentReducer from './comments';
+import detailReducer from './detail';
+import liveBoardReducer from './liveBoards';
 import modalReducer from './modal';
+import notificationReducer from './notifications';
+import replyCommentReducer from './replyComments';
+import userReducer from './users';
 import themeReducer from './serviceTheme';
 
-const store = configureStore({
-  reducer: {
-    alarms: alarmSlice.reducer,
-    users: userReducer,
-    boards: boardListSlice.reducer,
-    liveBoards: liveBoardListSlice.reducer,
-    combinedBoards: combinedBoardListSlice.reducer,
-    detail: detailSlice.reducer,
-    comments: commentListSlice.reducer,
-    replyComments: replyCommentListSlice.reducer,
-    chats: chatReducer,
-    modals: modalReducer,
-    theme: themeReducer,
-  },
+// Root Reducer
+export const rootReducer = combineReducers({
+  boards: boardReducer,
+  chats: chatReducer,
+  combinedBoards: combinedBoardReducer,
+  comments: commentReducer,
+  detail: detailReducer,
+  liveBoards: liveBoardReducer,
+  modals: modalReducer,
+  notifications: notificationReducer,
+  replyComments: replyCommentReducer,
+  users: userReducer,
+  theme: themeReducer,
+});
+
+// Redux-persist
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['notificationReducer'],
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// store
+export const store = configureStore({
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       // serializableCheck: {
@@ -40,4 +55,4 @@ const store = configureStore({
     }),
 });
 
-export default store;
+export default persistReducer(persistConfig, rootReducer);

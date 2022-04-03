@@ -8,7 +8,7 @@ import {
   getMyBoardListAsync,
   getMyCommentListAsync,
   selectedBoardList,
-} from '../../modules/boards';
+} from 'modules/boards';
 
 import { Wrapper, Grid, Tile, Text } from 'components';
 import { useLocation, useParams } from 'react-router-dom';

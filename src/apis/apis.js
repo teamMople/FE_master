@@ -68,7 +68,7 @@ const apis = {
   // 게시물
   createBoard: (title, content, imageUrl, category) =>
     authApi.post('/auth/api/board', { title, content, imageUrl, category }),
-  getBoardList: () => authApi.get('/auth/api/board'),
+  getBoardList: (listSize) => authApi.get(`/auth/api/board?size=${listSize}`),
   getBoardListByCategory: (categoryName) =>
     authApi.get(
       `/auth/api/board/category/${encodeURIComponent(categoryName)}`,
@@ -120,7 +120,7 @@ const apis = {
   // 실시간 토론방
   getLiveRoomList: () => authApi.get('/api/chat/rooms/onair'),
   getLiveRoomListByCategory: (categoryName) =>
-    authApi.get(`/api/chat/rooms/${categoryName}`),
+    authApi.get(`/api/chat/rooms/onair/category/${categoryName}`),
   searchLiveRoom: (search) =>
     authApi.get(`/api/chat/rooms/onair/keyword/${search}`),
 

@@ -5,8 +5,12 @@ import App from './shared/page/App';
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux';
-import store from './modules/configStore';
 import { DeviceDetector } from './components';
+import { createStore } from '@reduxjs/toolkit';
+import { store, rootReducer } from './modules/configStore';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Loading } from 'pages';
 
 // Register service worker for Firebase Cloud Messenger
 /*if ('serviceWorker' in navigator) {
@@ -20,10 +24,14 @@ import { DeviceDetector } from './components';
     });
 }*/
 
+let persistor = persistStore(store);
+
 ReactDOM.render(
   <Provider store={store}>
     <DeviceDetector>
-      <App />
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
     </DeviceDetector>
   </Provider>,
   document.getElementById('root'),

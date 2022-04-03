@@ -16,26 +16,11 @@ const config = {
 firebase.initializeApp(config);
 
 const messaging = firebase.messaging();
+
 messaging.setBackgroundMessageHandler(function (payload) {
-  const promiseChain = clients
-    .matchAll({
-      type: 'window',
-      includeUncontrolled: true,
-    })
-    .then((windowClients) => {
-      for (let i = 0; i < windowClients.length; i++) {
-        const windowClient = windowClients[i];
-        console.log(payload);
-        windowClient.postMessage(payload);
-      }
-    })
-    .then(() => {
-      return registration.showNotification('my notification title');
-    });
-  return promiseChain;
-});
-self.addEventListener('notificationclick', function (event) {
-  // do what you want
-  // ...
-  console.log('sdf');
+  const title = 'boilerPlate';
+  const options = {
+    body: payload.data.status,
+  };
+  return self.registration.showNotification(title, options);
 });

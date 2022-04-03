@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import apis from 'apis/apis';
 
@@ -38,38 +38,16 @@ import GlobalStyle from '../styles/globalStyles';
 import { PageLoading, Report } from 'components';
 
 import { initializeApp } from 'firebase/app';
-import { firebaseConfig } from 'shared/utils/firebase';
+import { firebaseApp, firebaseConfig } from 'shared/utils/firebase';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { useDispatch } from 'react-redux';
-import { addAlarmList } from 'modules/alarms';
+import { addNotificationList } from 'modules/notifications';
 
 function App() {
   const dispatch = useDispatch();
 
-  // Theme
-  // const [theme, setTheme] = useState(lightTheme);
-
-  // 테마 변경 값 로컬 스토리지에 저장해야함!
-  // const changeTheme = () => {
-  //   if (theme === lightTheme) setTheme(darkTheme);
-  //   else {
-  //     setTheme(lightTheme);
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (localStorage.getItem('theme') === 'dark') {
-  //     setTheme(darkTheme);
-  //     dispatch(setDarkTheme(true));
-  //   } else {
-  //     setTheme(lightTheme);
-  //     dispatch(setDarkTheme(false));
-  //   }
-  // }, []);
-
   // Firebase Cloud Messaging
-  /*const firebaseApp = initializeApp(firebaseConfig);
   const firebaseMessaging = getMessaging(firebaseApp);
-
   getToken(firebaseMessaging, {
     vapidKey: process.env.REACT_APP_VAPID_KEY,
   })
@@ -88,11 +66,22 @@ function App() {
   onMessage(firebaseMessaging, (payload) => {
     console.log('foregroundMessage');
     console.log(payload);
-    if (payload) {
-      dispatch(addAlarmList(payload.notification));
-    }
-  });*/
 
+    const date = new Date();
+    const now = date.getTime();
+
+    if (payload) {
+      dispatch(
+        addNotificationList({
+          title: payload.notification.title,
+          body: payload.notification.body,
+          createdAt: now,
+        }),
+      );
+    }
+  });
+
+  // Webpack production mode
   if (process.env.NODE_ENV === 'production') {
     console.log = function no_console() {};
     console.warn = function no_console() {};

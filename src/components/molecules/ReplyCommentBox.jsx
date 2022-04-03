@@ -3,7 +3,7 @@ import { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Grid, Text, Button, ProfileBox, KebabMenu } from 'components';
 import { useDispatch } from 'react-redux';
-import { recommendReplyCommentAsync } from 'modules/comments';
+import { recommendReplyCommentAsync } from 'modules/replyComments';
 
 const ReplyCommentBox = (props) => {
   const { replyComment } = props;

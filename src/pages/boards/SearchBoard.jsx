@@ -6,12 +6,8 @@ import queryString from 'query-string';
 
 import { Wrapper, Grid, CategoryTile, SearchInput, Loader } from 'components';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  searchBoardAsync,
-  searchLiveBoardAsync,
-  selectedBoardList,
-  selectedLiveBoardList,
-} from 'modules/boards';
+import { selectedBoardList } from 'modules/boards';
+import { selectedLiveBoardList } from 'modules/liveBoards';
 import { Loading } from 'pages';
 
 function SearchBoard(props) {

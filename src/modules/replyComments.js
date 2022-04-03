@@ -39,9 +39,13 @@ export const recommendReplyCommentAsync = createAsyncThunk(
         .then((response) => {
           console.log(response.data);
           if (response.data.clicked) {
-            thunkAPI.dispatch(increaseReplyRecommendCount(replyId));
+            thunkAPI.dispatch(
+              increaseReplyRecommendCount({ commentId, replyId }),
+            );
           } else {
-            thunkAPI.dispatch(decreaseReplyRecommendCount(replyId));
+            thunkAPI.dispatch(
+              decreaseReplyRecommendCount({ commentId, replyId }),
+            );
           }
         })
         .catch((error) => {
@@ -72,16 +76,22 @@ const replyCommentListSlice = createSlice({
       state.data[replyIndex].list.push(action.payload);
     },
     increaseReplyRecommendCount: (state, action) => {
-      const replyIndex = state.data.findIndex((d) => {
+      const commentIndex = state.data.findIndex((d) => {
         return d.commentId === action.payload.commentId;
       });
-      state.data[replyIndex].list.recommendCount += 1;
+      const replyIndex = state.data[commentIndex].list.findIndex((d) => {
+        return d.replyId === action.payload.replyId;
+      });
+      state.data[commentIndex].list[replyIndex].recommendCount += 1;
     },
     decreaseReplyRecommendCount: (state, action) => {
-      const replyIndex = state.data.findIndex((d) => {
+      const commentIndex = state.data.findIndex((d) => {
         return d.commentId === action.payload.commentId;
       });
-      state.data[replyIndex].list.recommendCount -= 1;
+      const replyIndex = state.data[commentIndex].list.findIndex((d) => {
+        return d.replyId === action.payload.replyId;
+      });
+      state.data[commentIndex].list[replyIndex].recommendCount -= 1;
     },
   },
   extraReducers: {

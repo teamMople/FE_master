@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import apis from 'apis/apis';
 
@@ -38,7 +38,7 @@ import GlobalStyle from '../styles/globalStyles';
 import { PageLoading, Report } from 'components';
 
 import { initializeApp } from 'firebase/app';
-import { firebaseConfig } from 'shared/utils/firebase';
+import { firebaseApp, firebaseConfig } from 'shared/utils/firebase';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { useDispatch } from 'react-redux';
 import { addNotificationList } from 'modules/notifications';
@@ -46,30 +46,8 @@ import { addNotificationList } from 'modules/notifications';
 function App() {
   const dispatch = useDispatch();
 
-  // Theme
-  // const [theme, setTheme] = useState(lightTheme);
-
-  // 테마 변경 값 로컬 스토리지에 저장해야함!
-  // const changeTheme = () => {
-  //   if (theme === lightTheme) setTheme(darkTheme);
-  //   else {
-  //     setTheme(lightTheme);
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (localStorage.getItem('theme') === 'dark') {
-  //     setTheme(darkTheme);
-  //     dispatch(setDarkTheme(true));
-  //   } else {
-  //     setTheme(lightTheme);
-  //     dispatch(setDarkTheme(false));
-  //   }
-  // }, []);
-
   // Firebase Cloud Messaging
-  const firebaseApp = initializeApp(firebaseConfig);
   const firebaseMessaging = getMessaging(firebaseApp);
-
   getToken(firebaseMessaging, {
     vapidKey: process.env.REACT_APP_VAPID_KEY,
   })

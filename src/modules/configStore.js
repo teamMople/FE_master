@@ -1,4 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
 import boardReducer from './boards';
 import chatReducer from './chat';
 import combinedBoardReducer from './combinedBoards';
@@ -11,11 +14,8 @@ import replyCommentReducer from './replyComments';
 import userReducer from './users';
 import themeReducer from './serviceTheme';
 
-import persistReducer from 'redux-persist/es/persistReducer';
-import storage from 'redux-persist/lib/storage';
-
 // Root Reducer
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   boards: boardReducer,
   chats: chatReducer,
   combinedBoards: combinedBoardReducer,
@@ -33,14 +33,13 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: [notificationReducer],
-  blacklist: [],
+  whitelist: ['notificationReducer'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 // store
-const store = configureStore({
+export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -56,4 +55,4 @@ const store = configureStore({
     }),
 });
 
-export default store;
+export default persistReducer(persistConfig, rootReducer);

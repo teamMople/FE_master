@@ -13,7 +13,7 @@ const NotificationTile = (props) => {
       const now = new Date();
       const nowTime = parseInt(now.getTime()) / 1000;
       const createdAtTime = parseInt(createdAt) / 1000;
-      const result = (createdAtTime - nowTime) / 3600;
+      const result = (nowTime - createdAtTime) / 3600;
 
       if (result > 24) {
         return parseInt(result / 24) + '일 전';

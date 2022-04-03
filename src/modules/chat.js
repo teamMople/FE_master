@@ -4,7 +4,6 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import apis from '../apis/apis';
-import { OpenVidu } from 'openvidu-browser';
 
 const roomInitialState = {
   data: {
@@ -44,8 +43,8 @@ const roomInitialState = {
 };
 
 const sessionInitialState = {
-  OV: new OpenVidu(),
-  session: new OpenVidu().initSession(),
+  // OV: new OpenVidu(),
+  // session: new OpenVidu().initSession(),
 };
 
 const voteInitialState = {

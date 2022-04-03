@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
@@ -46,11 +46,7 @@ const CommentBox = (props) => {
 
   const isMyComment = () => {
     const nickname = localStorage.getItem('nickname');
-    if (nickname === comment.nickname) {
-      return true;
-    } else {
-      return false;
-    }
+    return nickname === comment.nickname;
   };
   const isPrivateKebabMenu = [true, false];
   const kebabMenuLabels = ['댓글 삭제하기', '댓글 신고하기'];
@@ -111,7 +107,10 @@ const CommentBox = (props) => {
                 }}
               >
                 <Grid margin="0px 5px 0px 0px">
-                  <img src="/asset/icons/Comment_replynumber.svg" />
+                  <img
+                    src="/asset/icons/Comment_replynumber.svg"
+                    alt="reply_number"
+                  />
                 </Grid>
                 <Text>
                   {replyCommentListByCommentId
@@ -124,12 +123,15 @@ const CommentBox = (props) => {
                 height="26px"
                 margin="0px 0px 0px 8px"
                 backgroundColor={themeContext.colors.backgroundGray}
-                onClick={(e) => {
+                onClick={() => {
                   dispatch(recommendCommentAsync(commentId));
                 }}
               >
                 <Grid margin="0px 5px 0px 0px">
-                  <img src="/asset/icons/Comment_recommend.svg" />
+                  <img
+                    src="/asset/icons/Comment_recommend.svg"
+                    alt="comment_recommend"
+                  />
                 </Grid>
                 <Text>{comment.recommendCount}</Text>
               </Button>
@@ -139,7 +141,7 @@ const CommentBox = (props) => {
             <Grid>
               <Grid isFlex width="100%" padding="8px 0px 24px 6px">
                 <Grid margin="0px 10px 0px 0px">
-                  <img src="/asset/icons/Reply.svg" />
+                  <img src="/asset/icons/Reply.svg" alt="reply" />
                 </Grid>
                 <Textarea
                   fluid
@@ -150,6 +152,7 @@ const CommentBox = (props) => {
                   placeholder="댓글을 입력하세요"
                   padding="8px 12px 8px 12px"
                   onChange={changeReplyContent}
+                  value={replyContent}
                 />
                 <Button
                   size={'tiny'}
@@ -159,6 +162,7 @@ const CommentBox = (props) => {
                   margin="0px 0px 0px 8px"
                   onClick={(e) => {
                     e.preventDefault();
+                    setReplyContent('');
                     dispatch(createReplyCommentAsync(replyCommentInfo));
                   }}
                 >

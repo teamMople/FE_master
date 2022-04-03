@@ -7,13 +7,14 @@ import { VoteResultBarWrapper } from './views/LiveRoom/style';
 
 const VoteView = ({
   roomId,
-  userId,
+  memberName,
   memberAgreed,
   memberDisagreed,
   stompClient,
   sock,
   agreeCount,
   disagreeCount,
+  role,
 }) => {
   const dispatch = useDispatch();
   const [agree, setAgree] = useState(memberAgreed);
@@ -25,7 +26,16 @@ const VoteView = ({
     connect();
     return () => {
       stompClient.unsubscribe();
-      stompClient.disconnect();
+      stompClient.disconnect(
+        {},
+        {
+          roomId: roomId,
+          memberName: memberName,
+          role: role,
+          agreed: agree,
+          disagreed: disagree,
+        },
+      );
     };
   }, []);
 
@@ -76,7 +86,7 @@ const VoteView = ({
       let message = {
         type: 'AGREE',
         roomId: roomId,
-        sender: userId,
+        sender: memberName,
         agreedBefore: agree,
         disagreedBefore: disagree,
       };
@@ -92,7 +102,7 @@ const VoteView = ({
       let message = {
         type: 'DISAGREE',
         roomId: roomId,
-        sender: userId,
+        sender: memberName,
         agreedBefore: agree,
         disagreedBefore: disagree,
       };
@@ -108,7 +118,7 @@ const VoteView = ({
       let message = {
         type: 'CANCEL_AGREE',
         roomId: roomId,
-        sender: userId,
+        sender: memberName,
         agreedBefore: agree,
         disagreedBefore: disagree,
       };
@@ -123,7 +133,7 @@ const VoteView = ({
       let message = {
         type: 'CANCEL_DISAGREE',
         roomId: roomId,
-        sender: userId,
+        sender: memberName,
         agreedBefore: agree,
         disagreedBefore: disagree,
       };
@@ -149,12 +159,13 @@ VoteView.propTypes = {
   sock: PropTypes.any,
   roomId: PropTypes.number,
   disconnect: PropTypes.bool,
-  userId: PropTypes.string,
+  memberName: PropTypes.string,
   leave: PropTypes.any,
   memberAgreed: PropTypes.any,
   memberDisagreed: PropTypes.any,
   agreeCount: PropTypes.number,
   disagreeCount: PropTypes.number,
+  role: PropTypes.string,
 };
 
 export default VoteView;

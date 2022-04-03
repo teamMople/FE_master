@@ -5,14 +5,14 @@ import PropTypes from 'prop-types';
 import { Grid, Text, Button, Textarea, ProfileBox, Loader } from 'components';
 
 import ReplyCommentList from 'components/organisms/ReplyCommentList';
+import { recommendCommentAsync } from 'modules/comments';
 import {
   getReplyCommentListAsync,
   clearReplyCommentList,
   createReplyCommentAsync,
   selectedReplyCommentList,
-  recommendCommentAsync,
-} from 'modules/comments';
-import { KebabMenu } from '.';
+} from 'modules/replyComments';
+import { KebabMenu } from 'components';
 
 const CommentBox = (props) => {
   const { comment } = props;

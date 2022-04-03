@@ -5,7 +5,7 @@ import {
   getLiveBoardListAsync,
   getLiveBoardListByCategoryAsync,
   selectedLiveBoardList,
-} from '../../modules/boards';
+} from 'modules/liveBoards';
 
 import { Wrapper, Grid, Tile, Text } from 'components';
 import { useParams } from 'react-router-dom';

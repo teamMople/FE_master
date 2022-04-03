@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { createCommentAsync } from '../../modules/comments';
 import { Grid, Button, Textarea } from 'components';
 
-const CommentInputWindow = (props, ref) => {
+const CommentInputWindow = (props, { ref }) => {
   const { boardId } = props;
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();

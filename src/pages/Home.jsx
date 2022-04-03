@@ -9,12 +9,14 @@ import {
 } from '../components/organisms';
 import {
   clearBoardList,
-  clearLiveBoardList,
   getBoardListAsync,
-  getLiveBoardListAsync,
   selectedBoardList,
-  selectedLiveBoardList,
 } from 'modules/boards';
+import {
+  clearLiveBoardList,
+  getLiveBoardListAsync,
+  selectedLiveBoardList,
+} from 'modules/liveBoards';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectModalOpen, setModalOpen } from 'modules/modal';
 

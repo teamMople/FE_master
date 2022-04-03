@@ -6,7 +6,7 @@ import { joinRoomAsync } from '../../modules/chat';
 import {
   getLiveBoardListAsync,
   selectedLiveBoardList,
-} from '../../modules/boards';
+} from 'modules/liveBoards';
 
 const RoomList = () => {
   const roomList = useSelector(selectedLiveBoardList);

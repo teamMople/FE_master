@@ -1,18 +1,16 @@
 import React, { useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
-import { batch, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   clearCombinedBoardList,
   searchBoardAsync,
   searchLiveBoardAsync,
-  selectedBoardList,
   selectedCombinedBoardList,
-  selectedLiveBoardList,
-} from '../../modules/boards';
+} from 'modules/combinedBoards';
 import queryString from 'query-string';
 
 import { Wrapper, Grid, Tile, Text, Loader } from 'components';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 function CombinedBoardList(props) {
   const { search } = useLocation();

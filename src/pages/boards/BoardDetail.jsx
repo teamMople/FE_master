@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useCallback,
-  useEffect,
-  useContext,
-  useRef,
-} from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -16,13 +10,8 @@ import {
   selectedDetail,
   selectedDisagreeCount,
   selectedUserVoteStatus,
-} from 'modules/boards';
-import {
-  clearCommentList,
-  clearReplyCommentList,
-  getReplyCommentListAsync,
-  selectedReplyCommentList,
-} from 'modules/comments';
+} from 'modules/detail';
+import { clearCommentList } from 'modules/comments';
 
 import { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
@@ -83,7 +72,12 @@ const BoardDetail = (props, ref) => {
   }, [dispatch]);
 
   return (
-    <Wrapper padding="0px 0px 0px 0px" ref={ref}>
+    <Wrapper
+      backgroundColor={themeContext.colors.white}
+      full
+      padding="0px 0px 0px 0px"
+      ref={ref}
+    >
       <Grid padding="0px 24px 0px 24px">
         <Grid isFlex>
           <Header label="" leftArrow />

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import { ThemeContext } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { getCookie } from '../shared/utils/Cookie';
-import { FullModal, Logo, Text, Grid } from 'components';
+import { Wrapper, FullModal, Logo, Text, Grid } from 'components';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from 'shared/utils/firebase';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
@@ -9,6 +10,7 @@ import apis from 'apis/apis';
 
 const Splash = (props) => {
   const navigate = useNavigate();
+  const themeContext = useContext(ThemeContext);
 
   const firebaseApp = initializeApp(firebaseConfig);
   const firebaseMessaging = getMessaging(firebaseApp);
@@ -101,11 +103,11 @@ const Splash = (props) => {
           </Grid>
         </Grid>
       </FullModal>
-      <div style={{ height: '100vh', display: 'flex' }}>
+      <Wrapper full backgroundColor={themeContext.colors.white}>
         <div style={{ margin: 'auto' }}>
           <Logo />
         </div>
-      </div>
+      </Wrapper>
     </React.Fragment>
   );
 };

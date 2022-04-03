@@ -1,29 +1,45 @@
-import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './users';
-import { alarmSlice } from './alarms';
-import {
-  boardListSlice,
-  liveBoardListSlice,
-  combinedBoardListSlice,
-  detailSlice,
-} from './boards';
-import { commentListSlice, replyCommentListSlice } from './comments';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import boardReducer from './boards';
 import chatReducer from './chat';
+import combinedBoardReducer from './combinedBoards';
+import commentReducer from './comments';
+import detailReducer from './detail';
+import liveBoardReducer from './liveBoards';
 import modalReducer from './modal';
+import notificationReducer from './notifications';
+import replyCommentReducer from './replyComments';
+import userReducer from './users';
 
+import persistReducer from 'redux-persist/es/persistReducer';
+import storage from 'redux-persist/lib/storage';
+
+// Root Reducer
+const rootReducer = combineReducers({
+  boards: boardReducer,
+  chats: chatReducer,
+  combinedBoards: combinedBoardReducer,
+  comments: commentReducer,
+  detail: detailReducer,
+  liveBoards: liveBoardReducer,
+  modals: modalReducer,
+  notifications: notificationReducer,
+  replyComments: replyCommentReducer,
+  users: userReducer,
+});
+
+// Redux-persist
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: [notificationReducer],
+  blacklist: [],
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// store
 const store = configureStore({
-  reducer: {
-    alarms: alarmSlice.reducer,
-    users: userReducer,
-    boards: boardListSlice.reducer,
-    liveBoards: liveBoardListSlice.reducer,
-    combinedBoards: combinedBoardListSlice.reducer,
-    detail: detailSlice.reducer,
-    comments: commentListSlice.reducer,
-    replyComments: replyCommentListSlice.reducer,
-    chats: chatReducer,
-    modals: modalReducer,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       // serializableCheck: {

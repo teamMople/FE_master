@@ -32,7 +32,8 @@ function Settings(props) {
         정말 로그아웃을 하시겠습니까?
       </BasicModal>
       <Wrapper
-        backgroundColors={themeContext.colors.white}
+        backgroundColor={themeContext.colors.white}
+        full
         padding="42px 24px 0px 24px"
       >
         <Header label="설정" leftArrow />

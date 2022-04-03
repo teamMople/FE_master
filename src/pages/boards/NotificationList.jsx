@@ -2,11 +2,11 @@ import React, { useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import { Wrapper, Grid, Text, NotificationTile } from 'components';
 import { useSelector } from 'react-redux';
-import { selectedAlarmList } from 'modules/alarms';
+import { selectedNotificationList } from 'modules/notifications';
 
 function NotificationList(props) {
   const themeContext = useContext(ThemeContext);
-  const notificationList = useSelector(selectedAlarmList);
+  const notificationList = useSelector(selectedNotificationList);
 
   useEffect(() => {}, []);
 
@@ -23,12 +23,13 @@ function NotificationList(props) {
       <Grid>
         {!notificationList && <Grid>도착한 알람이 없어요</Grid>}
         {notificationList &&
-          notificationList.map((alarm, index) => {
+          notificationList.map((noti, index) => {
             return (
               <NotificationTile
                 key={index}
-                board={alarm.title}
-                message={alarm.body}
+                board={noti.title}
+                message={noti.body}
+                createdAt={noti.createdAt}
               />
             );
           })}

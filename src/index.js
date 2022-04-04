@@ -27,20 +27,17 @@ if ('serviceWorker' in navigator) {
     // .catch(function (err) {
     //   console.log(err);
     // });
+    navigator.serviceWorker
+      .register('/firebase-messaging-sw.js')
+      .then(function (registration) {
+        console.log('Registration successful, scope is:', registration.scope);
+      })
+      .catch(function (err) {
+        console.log('Service worker registration failed, error:', err);
+      });
   });
 } else {
   console.log('Service Worker is not supported by browser.');
-}
-// Register service worker for Firebase Cloud Messenger
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker
-    .register('./firebase-messaging-sw.js')
-    .then(function (registration) {
-      console.log('Registration successful, scope is:', registration.scope);
-    })
-    .catch(function (err) {
-      console.log('Service worker registration failed, error:', err);
-    });
 }
 
 let persistor = persistStore(store);

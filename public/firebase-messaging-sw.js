@@ -4,6 +4,7 @@ import { getMessaging } from 'firebase/messaging/sw';
 const firebaseApp = initializeApp({
   apiKey: 'AIzaSyD0u9HX41rjh3MnO93isinkSuxzLEH22GI',
   authDomain: 'boiler-e3497.firebaseapp.com',
+  databaseURL: 'https://boiler-e3497.firebaseapp.com',
   projectId: 'boiler-e3497',
   storageBucket: 'boiler-e3497.appspot.com',
   messagingSenderId: '128639882477',

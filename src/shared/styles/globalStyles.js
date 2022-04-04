@@ -64,6 +64,11 @@ const GlobalStyle = createGlobalStyle`
           height: inherit;
         }
       }
+      .control-dots {
+        .dot {
+          box-shadow: none;
+        }
+      }
     }
     
     //&.room_carousel {

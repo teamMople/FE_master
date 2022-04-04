@@ -5,6 +5,7 @@ import { Grid, Text, Tile } from 'components';
 import { Carousel } from 'react-responsive-carousel';
 import styled, { ThemeContext } from 'styled-components';
 import { useMediaQuery } from 'react-responsive';
+import { IconButton } from '../atoms';
 
 const CardCarousel = (props) => {
   const { label, type, boards } = props;
@@ -18,10 +19,15 @@ const CardCarousel = (props) => {
 
   return (
     <Grid padding="0px 5px 32px 5px">
-      <Grid padding="0px 19px 0px 19px" margin="0px 0px 16px 0px">
+      <Grid padding="0px 19px 0px 19px" margin="0px 0px 16px 0px" isFlex>
         <Text bold size="20px">
           {label}
         </Text>
+        <IconButton
+          src={'/asset/icons/Redo.svg'}
+          onClick={() => window.location.reload()}
+          medium
+        />
       </Grid>
       {isIphoneSE ? (
         <Carousel

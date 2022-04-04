@@ -275,9 +275,9 @@ const LiveTileWrapper = styled.div`
   overflow: hidden;
   transition: all 0.2s ease;
 
+  -webkit-tap-highlight-color: ${({ theme }) => theme.colors.gray};
   &:active {
     background-color: ${({ theme }) => theme.colors.gray};
-    //background-color: rgba(0, 0, 0, 0.1);
   }
 
   > .buttonGroup {
@@ -309,6 +309,10 @@ const BasicTileWrapper = styled.div`
   width: 300px;
   height: 218px;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: ${({ theme }) => theme.colors.gray};
+  &:active {
+    background-color: ${({ theme }) => theme.colors.gray};
+  }
 
   > .buttonGroup {
     position: absolute;

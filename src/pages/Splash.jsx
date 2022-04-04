@@ -5,10 +5,10 @@ import { getCookie } from '../shared/utils/Cookie';
 import { Wrapper, FullModal, Logo, Text, Grid } from 'components';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from 'shared/utils/firebase';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { getMessaging, getToken } from 'firebase/messaging';
 import apis from 'apis/apis';
 
-const Splash = (props) => {
+const Splash = () => {
   const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
 

@@ -25,42 +25,24 @@ const CommentInputWindow = (props, { ref }) => {
 
   const commentInfo = { boardId, content };
 
-  const windowRef = useRef(null);
-  const textareaRef = useRef(null);
-
-  useEffect(() => {
-    setScrollHeight(textareaRef.current.scrollHeight);
-  }, [content]);
-
   return (
-    <Window
-      show={isClosed}
-      height={120 + scrollHeight + 'px'}
-      ref={windowRef}
-      {...props}
-    >
+    <Window show={isClosed} {...props}>
       <Grid isFlex width="100%" padding="8px 24px 24px 24px">
-        {/* <textarea
-          ref={textareaRef}
-          onChange={changeContent}
-          style={{ overflow: 'hidden', resize: 'none' }}
-        /> */}
         <Textarea
           fluid
-          height={34 + scrollHeight + 'px'}
           backgroundColor={themeContext.colors.backgroundGray}
+          height={'30px'}
           border="none"
           borderRadius="10px"
           placeholder="댓글을 입력하세요"
           padding="8px 12px 8px 12px"
           onChange={changeContent}
-          ref={textareaRef}
         />
         <Button
           ref={ref}
           shape={'rounded'}
-          size={'small'}
-          width={'30px'}
+          size={'tiny'}
+          height={'30px'}
           backgroundColor={themeContext.colors.backgroundGray}
           color={themeContext.colors.blue}
           margin="0px 0px 0px 16px"
@@ -87,7 +69,7 @@ const Window = styled.div`
   position: fixed;
   bottom: 0;
   width: 100%;
-  height: ${(props) => props.height}; // 66+54
+  height: 130px; // 66+54
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 20px 20px 0px 0px;
   filter: drop-shadow(0px -2px 4px rgba(0, 0, 0, 0.05));

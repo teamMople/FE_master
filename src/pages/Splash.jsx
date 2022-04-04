@@ -70,7 +70,7 @@ const Splash = () => {
         <Grid>
           <Grid isSide margin="0px 0px 16px 0px">
             <Grid center width="32px" margin="0px 8px 0px 0px">
-              <img src="/asset/icons/Image.svg" />
+              <img src="/asset/icons/Image.svg" alt="icon" />
             </Grid>
             <Grid>
               <Text bold medium>
@@ -81,7 +81,7 @@ const Splash = () => {
           </Grid>
           <Grid isSide margin="0px 0px 16px 0px">
             <Grid center width="32px" margin="0px 8px 0px 0px">
-              <img src="/asset/icons/Bell.svg" />
+              <img src="/asset/icons/Bell.svg" alt="icon" />
             </Grid>
             <Grid>
               <Text bold medium>
@@ -92,7 +92,7 @@ const Splash = () => {
           </Grid>
           <Grid isSide margin="0px 0px 16px 0px">
             <Grid center width="32px" margin="0px 8px 0px 0px">
-              <img src="/asset/icons/microphone.svg" />
+              <img src="/asset/icons/microphone.svg" alt="icon" />
             </Grid>
             <Grid>
               <Text bold medium>
@@ -104,7 +104,15 @@ const Splash = () => {
         </Grid>
       </FullModal>
       <Wrapper full backgroundColor={themeContext.colors.white}>
-        <div style={{ margin: 'auto' }}>
+        <div
+          style={{
+            height: '100%',
+            margin: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <Logo />
         </div>
       </Wrapper>

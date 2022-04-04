@@ -8,6 +8,7 @@ import {
   PageLoading,
   Text,
   Button,
+  EventCarousel,
 } from 'components';
 import {
   CardCarousel,
@@ -91,16 +92,17 @@ const Home = () => {
               boards={liveBoards}
             />
             <BoardList label="HOT 게시글" boards={basicBoards} />
+            <EventCarousel />
             <CardCarousel
               label="내가 참여 중인 토론방"
               type="basic"
               boards={basicBoards}
             />
-            <CardCarousel
+            {/*<CardCarousel
               label="보플 Pick 토론방"
               type="basic"
               boards={basicBoards}
-            />
+            />*/}
             <CategoryCarousel label="카테고리 둘러보기" />
           </Grid>
         </Wrapper>

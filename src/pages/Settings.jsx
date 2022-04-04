@@ -128,6 +128,7 @@ const MenuItem = styled(Grid)`
   border-radius: 10px;
   transition: all 0.2s ease;
 
+  -webkit-tap-highlight-color: ${({ theme }) => theme.colors.lightGray};
   &:active {
     background-color: ${({ theme }) => theme.colors.lightGray};
   }

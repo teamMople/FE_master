@@ -59,11 +59,40 @@ export const ContentWrapper = styled.div`
 `;
 export const ParticipantCountWrapper = styled.div`
   margin: 32px 0;
-  > div {
+  > .count-participants {
     margin-bottom: 22px;
     display: flex;
     align-items: center;
     column-gap: 8px;
+  }
+  .horizontal-slider {
+    .slider-track-0 {
+      border-radius: 10em;
+      background-color: ${({ theme }) => theme.colors.primaryYellow};
+      height: 10px;
+    }
+    .slider-track-1 {
+      border-radius: 10em;
+      background-color: ${({ theme }) => theme.colors.gray};
+      height: 10px;
+    }
+    .slider-mark {
+      background-color: #282c34;
+      width: 2px;
+      height: 10px;
+    }
+    .slider-thumb {
+      width: 22px;
+      height: 22px;
+      border: 1px solid ${({ theme }) => theme.colors.primaryYellow};
+      background-color: ${({ theme }) => theme.colors.white};
+      box-shadow: 0 1px 1px 0 ${({ theme }) => theme.colors.gray};
+      border-radius: 10em;
+      top: -6px;
+      &.slider-thumb-active {
+        outline: none;
+      }
+    }
   }
 `;
 

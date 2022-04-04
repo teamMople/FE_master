@@ -1,11 +1,9 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { ThemeContext } from 'styled-components';
 import { Grid, ReplyCommentBox } from 'components';
 
 const ReplyCommentList = (props) => {
   const { replyComments } = props;
-  const themeContext = useContext(ThemeContext);
 
   return (
     <Grid width="100%">

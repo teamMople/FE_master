@@ -177,7 +177,7 @@ const Tile = (props) => {
                     ? '/asset/icons/Vote_white.svg'
                     : '/asset/icons/Vote.svg'
                 }
-                count={board.recommendCount < 1 ? '0' : board.recommendCount}
+                count={board.commentCount < 1 ? '0' : board.commentCount}
               />
             </Grid>
             <Grid isFlex>
@@ -234,6 +234,7 @@ Tile.propTypes = {
     participantsNicknames: PropTypes.array,
     participantsProfileImageUrls: PropTypes.object,
     recommendCount: PropTypes.number,
+    commentCount: PropTypes.number,
     agreeCount: PropTypes.number,
     disagreeCount: PropTypes.number,
     category: PropTypes.string,
@@ -274,9 +275,9 @@ const LiveTileWrapper = styled.div`
   overflow: hidden;
   transition: all 0.2s ease;
 
+  -webkit-tap-highlight-color: ${({ theme }) => theme.colors.gray};
   &:active {
     background-color: ${({ theme }) => theme.colors.gray};
-    //background-color: rgba(0, 0, 0, 0.1);
   }
 
   > .buttonGroup {
@@ -308,6 +309,10 @@ const BasicTileWrapper = styled.div`
   width: 300px;
   height: 218px;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: ${({ theme }) => theme.colors.gray};
+  &:active {
+    background-color: ${({ theme }) => theme.colors.gray};
+  }
 
   > .buttonGroup {
     position: absolute;

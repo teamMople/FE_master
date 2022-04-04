@@ -5,10 +5,10 @@ const Logo = (props) => {
   return (
     <LogoWrapper {...props}>
       <LogoShape>
-        <img src="/asset/logo/logoShape.svg" />
+        <img src="/asset/logo/logoShape.svg" alt="logo" />
       </LogoShape>
       <LogoText>
-        <img src="/asset/logo/logoText.svg" />
+        <img src="/asset/logo/logoText.svg" alt="logo" />
       </LogoText>
     </LogoWrapper>
   );

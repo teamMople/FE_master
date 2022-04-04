@@ -1,15 +1,9 @@
-import { initializeApp } from 'firebase/app';
-import { getMessaging } from 'firebase/messaging/sw';
+importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/7.6.1/firebase-messaging.js');
+importScripts('https://www.gstatic.com/firebasejs/7.2.1/firebase-analytics.js');
 
-const firebaseApp = initializeApp({
-  apiKey: 'AIzaSyD0u9HX41rjh3MnO93isinkSuxzLEH22GI',
-  authDomain: 'boiler-e3497.firebaseapp.com',
-  databaseURL: 'https://boiler-e3497.firebaseapp.com',
-  projectId: 'boiler-e3497',
-  storageBucket: 'boiler-e3497.appspot.com',
+firebase.initializeApp({
   messagingSenderId: '128639882477',
-  appId: '1:128639882477:web:4e0c086f572ce6b9a468e4',
-  measurementId: 'G-V83CYYD10V',
 });
 
-const messaging = getMessaging(firebaseApp);
+const messaging = firebase.messaging();

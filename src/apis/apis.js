@@ -64,6 +64,7 @@ const apis = {
   verifyEmail: (email) => api.post('/api/user/check/Email', { email }),
   verifyNickname: (nickname) =>
     api.post('/api/user/check/Nickname', { nickname }),
+  inactivateUser: (email) => api.post('/api/user/inactivate', { email }),
 
   // 게시물
   createBoard: (title, content, imageUrl, category) =>

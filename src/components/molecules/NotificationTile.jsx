@@ -27,6 +27,20 @@ const NotificationTile = (props) => {
     }
   };
 
+  const getRevisedMessage = (message) => {
+    if (message === '새 댓글이 달렸습니다') {
+      return '에 새로운 댓글이 달렸습니다';
+    } else if (message === '새 대댓글이 달렸습니다') {
+      return '에 새로운 답글이 달렸습니다';
+    } else if (message === '글 작성') {
+      return '의 투표가 진행 중입니다. 진행상황을 확인해보세요!';
+    } else if (message === '댓글 작성') {
+      return '의 투표가 진행 중입니다. 진행상황을 확인해보세요!';
+    } else {
+      return;
+    }
+  };
+
   return (
     <Grid width="100%" margin="0px 0px 12px 0px">
       <Grid padding="8px 0px 8px 0px">
@@ -36,7 +50,7 @@ const NotificationTile = (props) => {
           color={themeContext.colors.black}
           padding="8px 0px 8px 8px"
         >
-          [{board}]{message}
+          [{board}]{getRevisedMessage(message)}
         </Text>
       </Grid>
       <Grid margin="0px 0px 8px 0px">

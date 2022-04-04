@@ -1,4 +1,10 @@
-import React, { useContext, useState, forwardRef } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  forwardRef,
+  useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeContext } from 'styled-components';
 import { useDispatch } from 'react-redux';
@@ -11,6 +17,7 @@ const CommentInputWindow = (props, { ref }) => {
   const dispatch = useDispatch();
   const [isClosed, setIsClosed] = useState(false);
   const [content, setContent] = useState('');
+  const [scrollHeight, setScrollHeight] = useState(0);
 
   const changeContent = (e) => {
     setContent(e.target.value);
@@ -19,12 +26,12 @@ const CommentInputWindow = (props, { ref }) => {
   const commentInfo = { boardId, content };
 
   return (
-    <Window show={isClosed}>
+    <Window show={isClosed} {...props}>
       <Grid isFlex width="100%" padding="8px 24px 24px 24px">
         <Textarea
           fluid
-          height="34px"
           backgroundColor={themeContext.colors.backgroundGray}
+          height={'30px'}
           border="none"
           borderRadius="10px"
           placeholder="댓글을 입력하세요"
@@ -34,9 +41,9 @@ const CommentInputWindow = (props, { ref }) => {
         />
         <Button
           ref={ref}
-          size={'small'}
-          width="57px"
-          height="30px"
+          shape={'rounded'}
+          size={'tiny'}
+          height={'30px'}
           backgroundColor={themeContext.colors.backgroundGray}
           color={themeContext.colors.blue}
           margin="0px 0px 0px 16px"
@@ -55,6 +62,7 @@ const CommentInputWindow = (props, { ref }) => {
 
 CommentInputWindow.propTypes = {
   boardId: PropTypes.number,
+  autoResize: PropTypes.bool,
 };
 
 const Window = styled.div`
@@ -63,7 +71,7 @@ const Window = styled.div`
   position: fixed;
   bottom: 0;
   width: 100%;
-  height: 120px; // 66+54
+  height: 130px; // 66+54
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 20px 20px 0px 0px;
   filter: drop-shadow(0px -2px 4px rgba(0, 0, 0, 0.05));

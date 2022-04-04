@@ -148,16 +148,14 @@ export const signupAsync = createAsyncThunk(
 export const editMyInfo = createAsyncThunk(
   'users/editUserInfo',
   async (userInfo, thunkAPI) => {
-    const navigate = useNavigate();
     const { nickname, profileImageUrl } = userInfo;
     console.log(userInfo);
     await apis.editMyInfo(nickname, profileImageUrl).then((response) => {
       console.log(response);
       if (response.status === 200) {
-        console.log(response.data);
-        localStorage.setItem('nickname', response.data.nickname);
-        localStorage.setItem('profileImageUrl', response.data.profileImageUrl);
-        navigate(-1);
+        localStorage.setItem('nickname', nickname);
+        localStorage.setItem('profileImageUrl', profileImageUrl);
+        window.location.replace('/settings');
       }
     });
   },
@@ -198,6 +196,25 @@ export const verifyNicknameAsync = createAsyncThunk(
     await apis
       .verifyNickname(nickname)
       .then((response) => console.log(response));
+  },
+);
+
+export const inactivateUserAsync = createAsyncThunk(
+  'users/inactivateUser',
+  async (email) => {
+    await apis
+      .inactivateUser(email)
+      .then((response) => {
+        if (response.status === 200) {
+          localStorage.removeItem('email');
+          localStorage.removeItem('nickname');
+          localStorage.removeItem('profileImageUrl');
+          window.location.replace('/');
+        }
+      })
+      .catch((err) => {
+        window.alert('비활성화에 실패했습니다');
+      });
   },
 );
 

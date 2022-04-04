@@ -24,6 +24,8 @@ import {
   NotFound,
   CombinedBoardList,
   Loading,
+  Inactivate,
+  ChangePassword,
 } from '../../pages';
 import '../styles/App.css';
 
@@ -157,6 +159,8 @@ function App() {
             </Route>
             <Route path="/editmyprofile" element={<EditUserProfile />} />
             <Route path="/findpassword" element={<FindPassword />} />
+            <Route path="/changepassword" element={<ChangePassword />} />
+            <Route path="/inactivate" element={<Inactivate />} />
             <Route path="/noti" element={<NotificationList />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/loading" element={<Loading />} />

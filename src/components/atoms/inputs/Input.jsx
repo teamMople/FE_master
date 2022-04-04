@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Text from '../text/Text';
@@ -12,8 +12,11 @@ function Input({
   backgroundColor,
   fluid,
   disabled,
+  eyeIconRender,
   ...props
 }) {
+  const [eyeIconClicked, setEyeIconClicked] = useState(false);
+
   return (
     <InputWrapper margin={margin} backgroundColor={backgroundColor}>
       {label && <Text bold>{label}</Text>}
@@ -27,6 +30,7 @@ function Input({
       >
         {props.children}
       </I>
+      <EyeIcon eyeIconRender={eyeIconRender} />
     </InputWrapper>
   );
 }
@@ -40,6 +44,7 @@ Input.propTypes = {
   backgroundColor: PropTypes.string,
   fluid: PropTypes.bool,
   disabled: PropTypes.bool,
+  eyeIconRender: PropTypes.bool,
 };
 
 Input.defaultProps = {
@@ -81,5 +86,7 @@ const I = styled.input`
     }
   }
 `;
+
+const EyeIcon = styled.div``;
 
 export default Input;

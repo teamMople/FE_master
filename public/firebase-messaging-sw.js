@@ -1,10 +1,7 @@
-importScripts('https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js');
-importScripts(
-  'https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js',
-);
+import { initializeApp } from 'firebase/app';
+import { getMessaging } from 'firebase/messaging/sw';
 
-firebase.initializeApp({
-  messagingSenderId: '128639882477',
+const firebaseApp = initializeApp({
   apiKey: 'AIzaSyD0u9HX41rjh3MnO93isinkSuxzLEH22GI',
   authDomain: 'boiler-e3497.firebaseapp.com',
   projectId: 'boiler-e3497',
@@ -14,4 +11,4 @@ firebase.initializeApp({
   measurementId: 'G-V83CYYD10V',
 });
 
-const messaging = firebase.messaging();
+const messaging = getMessaging(firebaseApp);

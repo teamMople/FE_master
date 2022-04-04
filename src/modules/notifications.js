@@ -22,10 +22,20 @@ export const notificationSlice = createSlice({
     addNotificationList: (state, action) => {
       state.data.push(action.payload);
     },
+    createNewNotification: (state, action) => {
+      const date = new Date();
+      const now = date.getTime();
+      state.data.push({
+        title: action.payload.title,
+        body: action.payload.body,
+        createdAt: now,
+      });
+    },
   },
   extraReducers: {},
 });
 
-export const { addNotificationList } = notificationSlice.actions;
+export const { addNotificationList, createNewNotification } =
+  notificationSlice.actions;
 export const selectedNotificationList = (state) => state.notifications.data;
 export default notificationSlice.reducer;

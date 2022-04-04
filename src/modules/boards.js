@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { useNavigate } from 'react-router-dom';
 import apis from '../apis/apis';
+import { createNewNotification } from './notifications';
 
 const boardListInitialState = {
   data: [],
@@ -47,12 +49,16 @@ export const getMyCommentListAsync = createAsyncThunk(
 export const createBoardAsync = createAsyncThunk(
   'boards/createBoard',
   async (boardInfo, thunkAPI) => {
+    console.log(boardInfo);
     const { title, content, imageUrl, category } = boardInfo;
     await apis
       .createBoard(title, content, imageUrl, category)
-      .then()
+      .then((response) => {
+        if (response.status === 200) {
+          window.location.replace('/home');
+        }
+      })
       .catch((e) => console.log(e));
-    return;
   },
 );
 
@@ -63,10 +69,6 @@ export const boardListSlice = createSlice({
     clearBoardList: (state) => {
       state.status = 'idle';
       state.data = [];
-    },
-    addSearchResult: (state, action) => {
-      state.status = 'idle';
-      state.data = action.payload;
     },
   },
   extraReducers: {
@@ -110,12 +112,9 @@ export const boardListSlice = createSlice({
     [getMyCommentListAsync.rejected]: (state) => {
       state.status = 'failed';
     },
-    [createBoardAsync.fulfilled]: (state, action) => {
-      state.data.push(action.payload);
-    },
   },
 });
 
-export const { clearBoardList, loadBoardList } = boardListSlice.actions;
+export const { clearBoardList } = boardListSlice.actions;
 export const selectedBoardList = (state) => state.boards;
 export default boardListSlice.reducer;

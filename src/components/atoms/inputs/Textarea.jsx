@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useRef, useState, useEffect, forwardRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const Textarea = ({ fluid, ...props }) => {
+const Textarea = forwardRef(({ fluid, ...props }) => {
   return <CustomTextarea fluid={fluid} {...props} />;
-};
+});
+
+Textarea.displayName = 'Textarea';
 
 const CustomTextarea = styled.textarea`
   border: ${(props) => (props.border ? props.border : 'none')};
@@ -21,9 +23,6 @@ const CustomTextarea = styled.textarea`
   border-radius: ${(props) => props.borderRadius};
   box-sizing: border-box;
   padding: ${(props) => props.padding};
-
-  onkeydown: ${(props) => props.onkeydown};
-  onkeyup: ${(props) => props.onkeyup};
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.placeholder};

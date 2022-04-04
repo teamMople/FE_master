@@ -42,13 +42,13 @@ const Home = () => {
   const modalState = useSelector(selectModalOpen);
 
   React.useEffect(() => {
-    dispatch(getBoardListAsync());
+    dispatch(getBoardListAsync(50));
     return () => {
       dispatch(clearBoardList());
     };
   }, []);
   useEffect(() => {
-    dispatch(getLiveBoardListAsync());
+    dispatch(getLiveBoardListAsync(50));
     return () => {
       dispatch(clearLiveBoardList());
     };

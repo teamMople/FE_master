@@ -104,17 +104,9 @@ const Splash = () => {
         </Grid>
       </FullModal>
       <Wrapper full backgroundColor={themeContext.colors.white}>
-        <div
-          style={{
-            height: '100%',
-            margin: 'auto',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <Grid center height="100%">
           <Logo />
-        </div>
+        </Grid>
       </Wrapper>
     </React.Fragment>
   );

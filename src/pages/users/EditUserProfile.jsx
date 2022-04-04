@@ -83,19 +83,25 @@ function EditUserProfile(props) {
       Key: folderName + '/' + urlIdentifier,
     };
 
-    await awsS3Bucket.putObject(params).send(() => {
-      const signedUrl = BASE_S3_URL + folderName + '/' + urlIdentifier;
-      setProfileImageUrl(signedUrl);
+    return new Promise((resolve, reject) => {
+      awsS3Bucket.putObject(params).send((response) => {
+        const signedUrl = BASE_S3_URL + folderName + '/' + urlIdentifier;
+        resolve(signedUrl);
+      });
     });
   };
 
   // Submit
-  const userInfo = { nickname, profileImageUrl };
+  async function submitUserInfoWithImageAsync(folderName, file) {
+    const signedUrl = await handleUpload(folderName, file);
+    setProfileImageUrl(signedUrl);
+    const userInfo = { nickname, profileImageUrl: signedUrl };
+    dispatch(editMyInfo(userInfo));
+  }
 
-  async function submitUserInfoAsync(folderName, file) {
-    return await handleUpload(folderName, file).then(() => {
-      dispatch(editMyInfo(userInfo));
-    });
+  async function submitUserInfoWithoutImageAsync() {
+    const userInfo = { nickname, profileImageUrl };
+    dispatch(editMyInfo(userInfo));
   }
 
   return (
@@ -155,11 +161,10 @@ function EditUserProfile(props) {
         >
           <Button
             onClick={(e) => {
-              if (selectedFile === null) {
-                console.log(userInfo);
-                dispatch(editMyInfo(userInfo));
+              if (selectedFile) {
+                submitUserInfoWithImageAsync('profile', selectedFile);
               } else {
-                submitUserInfoAsync('profile', selectedFile);
+                submitUserInfoWithoutImageAsync();
               }
             }}
             secondary

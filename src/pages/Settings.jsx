@@ -56,7 +56,7 @@ function Settings(props) {
             <Text>프로필 편집</Text>
             <RightArrow active />
           </MenuItem>
-          <MenuItem onClick={() => {}}>
+          <MenuItem onClick={() => navigate('/changepassword')}>
             <Text>비밀번호 변경</Text>
             <RightArrow active />
           </MenuItem>
@@ -89,7 +89,11 @@ function Settings(props) {
             <Text>로그아웃</Text>
             <RightArrow active />
           </MenuItem>
-          <MenuItem onClick={() => {}}>
+          <MenuItem
+            onClick={() => {
+              navigate('/inactivate');
+            }}
+          >
             <Text>비활성화하기</Text>
             <RightArrow active />
           </MenuItem>

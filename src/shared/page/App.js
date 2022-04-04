@@ -24,6 +24,8 @@ import {
   NotFound,
   CombinedBoardList,
   Loading,
+  Inactivate,
+  ChangePassword,
 } from '../../pages';
 import '../styles/App.css';
 
@@ -37,8 +39,7 @@ import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
 import GlobalStyle from '../styles/globalStyles';
 import { PageLoading, Report } from 'components';
 
-import { initializeApp } from 'firebase/app';
-import { firebaseApp, firebaseConfig } from 'shared/utils/firebase';
+import { firebaseApp } from 'shared/utils/firebase';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { useDispatch } from 'react-redux';
 import { addNotificationList } from 'modules/notifications';
@@ -144,6 +145,8 @@ function App() {
             </Route>
             <Route path="/editmyprofile" element={<EditUserProfile />} />
             <Route path="/findpassword" element={<FindPassword />} />
+            <Route path="/changepassword" element={<ChangePassword />} />
+            <Route path="/inactivate" element={<Inactivate />} />
             <Route path="/noti" element={<NotificationList />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/loading" element={<Loading />} />

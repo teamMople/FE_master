@@ -30,6 +30,10 @@ const combinedBoardListSlice = createSlice({
       state.status = 'idle';
       state.data = [];
     },
+    addSearchResult: (state, action) => {
+      state.status = 'idle';
+      state.data = action.payload;
+    },
   },
   extraReducers: {
     [searchBoardAsync.fulfilled]: (state, action) => {

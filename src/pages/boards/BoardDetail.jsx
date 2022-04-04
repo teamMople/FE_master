@@ -74,7 +74,6 @@ const BoardDetail = (props, ref) => {
   return (
     <Wrapper
       backgroundColor={themeContext.colors.white}
-      full
       padding="0px 0px 0px 0px"
       ref={ref}
     >

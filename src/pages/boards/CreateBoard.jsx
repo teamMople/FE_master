@@ -6,6 +6,9 @@ import {
   BASE_S3_URL,
 } from '../../shared/utils/awsBucketConfig';
 import { createBoardAsync } from 'modules/boards';
+import { createNewNotification } from 'modules/notifications';
+import { useNavigate } from 'react-router-dom';
+
 import styled, { ThemeContext } from 'styled-components';
 import {
   Wrapper,
@@ -22,6 +25,7 @@ function CreateBoard(props) {
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
 
+  // Select
   const options = [
     { value: '학교생활', label: '학교생활' },
     { value: '직장생활', label: '직장생활' },
@@ -31,13 +35,11 @@ function CreateBoard(props) {
     { value: '기타', label: '기타' },
   ];
 
+  // Input
   const [category, setCategory] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [textLength, setTextLength] = useState(0);
-  const [previewImage, setPreviewImage] = useState();
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
 
   const changeCategory = (optionSelected) => {
     setCategory(optionSelected.value);
@@ -55,7 +57,10 @@ function CreateBoard(props) {
     }
   };
 
-  const boardInfo = { title, content, imageUrl, category };
+  // Image Loader
+  const [previewImage, setPreviewImage] = useState();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
 
   const hiddenImageInput = React.useRef(null);
   const handleImageClick = (e) => {
@@ -76,6 +81,8 @@ function CreateBoard(props) {
     reader.readAsDataURL(file);
   };
 
+  console.log(selectedFile);
+
   const handleUpload = async (folderName, file) => {
     const urlIdentifier = `img-${Math.ceil(Math.random() * 10 ** 10)}`;
 
@@ -86,10 +93,24 @@ function CreateBoard(props) {
       Key: folderName + '/' + urlIdentifier,
     };
 
-    await awsS3Bucket.putObject(params).send((response) => {
-      const signedUrl = BASE_S3_URL + folderName + '/' + urlIdentifier;
-      setImageUrl(signedUrl);
+    return new Promise((resolve, reject) => {
+      awsS3Bucket.putObject(params).send((response) => {
+        const signedUrl = BASE_S3_URL + folderName + '/' + urlIdentifier;
+        resolve(signedUrl);
+      });
     });
+  };
+
+  // submit
+  const submitBoardWithImageAsync = async (folderName, file) => {
+    const signedUrl = await handleUpload(folderName, file);
+    const boardInfo = { title, content, imageUrl: signedUrl, category };
+    dispatch(createBoardAsync(boardInfo));
+  };
+
+  const submitBoardWithOutImageAsync = () => {
+    const boardInfo = { title, content, imageUrl, category };
+    dispatch(createBoardAsync(boardInfo));
   };
 
   return (
@@ -100,10 +121,12 @@ function CreateBoard(props) {
           leftArrow
           rightButtonRender={{
             label: '완료',
-            onClickButton: () => {
-              handleUpload('boards', selectedFile);
-              dispatch(createBoardAsync(boardInfo));
-              window.location.assign('/home');
+            onClickButton: (e) => {
+              if (selectedFile) {
+                submitBoardWithImageAsync('image', selectedFile);
+              } else {
+                submitBoardWithOutImageAsync();
+              }
             },
           }}
         />
@@ -147,9 +170,13 @@ function CreateBoard(props) {
       </Grid>
       <Grid
         padding="16px 24px 0px 24px"
-        style={{ display: 'flex', position: 'fixed', bottom: '10px' }}
+        style={{
+          display: 'flex',
+          position: 'fixed',
+          bottom: '10px',
+        }}
       >
-        <Grid onClick={handleImageClick}>
+        <Grid onClick={handleImageClick} style={{ cursor: 'pointer' }}>
           <img src="/asset/icons/Image.svg" alt="image" />
           <input
             type="file"

@@ -4,6 +4,7 @@ importScripts(
 );
 
 firebase.initializeApp({
+  messagingSenderId: '128639882477',
   apiKey: 'AIzaSyD0u9HX41rjh3MnO93isinkSuxzLEH22GI',
   authDomain: 'boiler-e3497.firebaseapp.com',
   projectId: 'boiler-e3497',

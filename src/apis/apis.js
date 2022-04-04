@@ -10,6 +10,7 @@ const api = axios.create({
     accept: 'application/json',
   },
   withCredentials: true,
+  exposedHeaders: ['set-cookie'],
 });
 
 // 토큰이 있어야 접근 가능한 API
@@ -21,6 +22,7 @@ const authApi = axios.create({
     accept: 'application/json',
   },
   withCredentials: true,
+  exposedHeaders: ['set-cookie'],
 });
 
 const openviduApi = axios.create({

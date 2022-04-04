@@ -7,6 +7,7 @@ import { Button, IconButton, Text } from 'components/index';
 const BasicModal = ({
   open,
   close,
+  isVisible,
   title,
   onClose,
   onConfirm,
@@ -16,7 +17,7 @@ const BasicModal = ({
   closeMessage,
 }) => {
   return createPortal(
-    <>
+    <BasicModalWrapper isVisible={isVisible}>
       <BackDrop className={open ? 'active' : close ? '' : ''} />
       <ModalWrapper className={open ? 'active' : close ? '' : ''}>
         <InnerWrapper>
@@ -50,7 +51,7 @@ const BasicModal = ({
           </ModalActions>
         </InnerWrapper>
       </ModalWrapper>
-    </>,
+    </BasicModalWrapper>,
     document.getElementById('modal'),
   );
 };
@@ -68,6 +69,10 @@ BasicModal.propTypes = {
   confirmMessage: PropTypes.string,
   closeMessage: PropTypes.string,
 };
+
+const BasicModalWrapper = styled.div`
+  display: ${(props) => (props.isVisible ? 'none' : '')};
+`;
 
 const ModalWrapper = styled.div`
   position: fixed;

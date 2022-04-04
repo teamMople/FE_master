@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { getCookie } from '../shared/utils/Cookie';
-import { Wrapper, FullModal, Logo, Text, Grid } from 'components';
+import { Wrapper, FullModal, BasicModal, Logo, Text, Grid } from 'components';
 
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from 'shared/utils/firebase';
@@ -56,54 +56,96 @@ const Splash = () => {
 
   return (
     <React.Fragment>
-      <FullModal
+      <BasicModal
         open={isOpened}
         close={isOpened}
         onClose={handleClose}
         onConfirm={handleClose}
         isVisible={isVisible}
       >
-        <Grid margin="0px 0px 16px 0px">
-          <Text bold large>
-            원활한 앱 사용을 위해 아래 권한이 필요합니다.
-          </Text>
+        <Grid padding="0px 24px 12px 24px">
+          <Grid center margin="0px 0px 20px 0px">
+            <Text small>원활한 앱 사용을 위해 아래 권한이 필요합니다.</Text>
+          </Grid>
+          <Grid>
+            <Grid isSide margin="0px 0px 16px 0px">
+              <Grid center width="32px" margin="0px 8px 0px 0px">
+                <img
+                  src="/asset/icons/Check.svg"
+                  alt="icon"
+                  width="20px"
+                  height="20px"
+                />
+              </Grid>
+              <Grid width={'100%'}>
+                <Grid margin="0px 0px 10px 0px">
+                  <Text bold small color={themeContext.colors.darkGray}>
+                    사진 (선택)
+                  </Text>
+                  <Text small color={themeContext.colors.darkGray}>
+                    프로필 및 게시물 사진 등록에 필요합니다.
+                  </Text>
+                </Grid>
+                <Grid
+                  width={'100%'}
+                  height={'1px'}
+                  backgroundColor={themeContext.colors.lightGray}
+                />
+              </Grid>
+            </Grid>
+            <Grid isSide margin="0px 0px 16px 0px">
+              <Grid center width="32px" margin="0px 8px 0px 0px">
+                <img
+                  src="/asset/icons/Check.svg"
+                  alt="icon"
+                  width="20px"
+                  height="20px"
+                />
+              </Grid>
+              <Grid width={'100%'}>
+                <Grid margin="0px 0px 10px 0px">
+                  <Text bold small color={themeContext.colors.darkGray}>
+                    알림 (필수)
+                  </Text>
+                  <Text small color={themeContext.colors.darkGray}>
+                    댓글 알림 수신에 필요합니다.
+                  </Text>
+                </Grid>
+                <Grid
+                  width={'100%'}
+                  height={'1px'}
+                  backgroundColor={themeContext.colors.lightGray}
+                />
+              </Grid>
+            </Grid>
+            <Grid isSide margin="0px 0px 16px 0px">
+              <Grid center width="32px" margin="0px 8px 0px 0px">
+                <img
+                  src="/asset/icons/Check.svg"
+                  alt="icon"
+                  width="20px"
+                  height="20px"
+                />
+              </Grid>
+              <Grid width={'100%'}>
+                <Grid margin="0px 0px 10px 0px">
+                  <Text bold small color={themeContext.colors.darkGray}>
+                    마이크 (필수)
+                  </Text>
+                  <Text small color={themeContext.colors.darkGray}>
+                    라이브 음성 채팅에 필요합니다.
+                  </Text>
+                </Grid>
+                <Grid
+                  width={'100%'}
+                  height={'1px'}
+                  backgroundColor={themeContext.colors.lightGray}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid>
-          <Grid isSide margin="0px 0px 16px 0px">
-            <Grid center width="32px" margin="0px 8px 0px 0px">
-              <img src="/asset/icons/Image.svg" alt="icon" />
-            </Grid>
-            <Grid>
-              <Text bold medium>
-                사진(선택)
-              </Text>
-              <Text medium>프로필 및 게시물 사진 등록에 필요합니다.</Text>
-            </Grid>
-          </Grid>
-          <Grid isSide margin="0px 0px 16px 0px">
-            <Grid center width="32px" margin="0px 8px 0px 0px">
-              <img src="/asset/icons/Bell.svg" alt="icon" />
-            </Grid>
-            <Grid>
-              <Text bold medium>
-                알림(필수)
-              </Text>
-              <Text medium>댓글 알림 수신에 필요합니다.</Text>
-            </Grid>
-          </Grid>
-          <Grid isSide margin="0px 0px 16px 0px">
-            <Grid center width="32px" margin="0px 8px 0px 0px">
-              <img src="/asset/icons/microphone.svg" alt="icon" />
-            </Grid>
-            <Grid>
-              <Text bold medium>
-                마이크(필수)
-              </Text>
-              <Text medium>라이브 음성 채팅에 필요합니다.</Text>
-            </Grid>
-          </Grid>
-        </Grid>
-      </FullModal>
+      </BasicModal>
       <Wrapper full backgroundColor={themeContext.colors.white}>
         <Grid center height="100%">
           <Logo />

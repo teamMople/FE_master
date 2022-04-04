@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { useNavigate } from 'react-router-dom';
 import apis from '../apis/apis';
-import { createNewNotification } from './notifications';
 
 const boardListInitialState = {
   data: [],
@@ -49,7 +47,6 @@ export const getMyCommentListAsync = createAsyncThunk(
 export const createBoardAsync = createAsyncThunk(
   'boards/createBoard',
   async (boardInfo, thunkAPI) => {
-    console.log(boardInfo);
     const { title, content, imageUrl, category } = boardInfo;
     await apis
       .createBoard(title, content, imageUrl, category)
@@ -62,6 +59,17 @@ export const createBoardAsync = createAsyncThunk(
   },
 );
 
+export const deleteBoardAsync = createAsyncThunk(
+  'boards/deleteBoard',
+  async (boardId, thunkAPI) => {
+    await apis.deleteBoard(boardId).then((response) => {
+      console.log(response);
+      thunkAPI.dispatch(deleteBoard(boardId));
+      window.location.replace('/home');
+    });
+  },
+);
+
 export const boardListSlice = createSlice({
   name: 'boardList',
   initialState: boardListInitialState,
@@ -69,6 +77,12 @@ export const boardListSlice = createSlice({
     clearBoardList: (state) => {
       state.status = 'idle';
       state.data = [];
+    },
+    deleteBoard: (state, action) => {
+      const deletedBoardList = state.data.filter(
+        (d) => d.boardId !== action.payload,
+      );
+      state.data = deletedBoardList;
     },
   },
   extraReducers: {
@@ -115,6 +129,6 @@ export const boardListSlice = createSlice({
   },
 });
 
-export const { clearBoardList } = boardListSlice.actions;
+export const { clearBoardList, deleteBoard } = boardListSlice.actions;
 export const selectedBoardList = (state) => state.boards;
 export default boardListSlice.reducer;

@@ -27,8 +27,10 @@ import {
   CommentInputWindow,
   KebabMenu,
   ToggleButton,
+  BasicModal,
 } from 'components';
 import { getCommentListAsync, selectedCommentList } from 'modules/comments';
+import { deleteBoardAsync } from 'modules/boards';
 
 const BoardDetail = (props, ref) => {
   const params = useParams();
@@ -49,8 +51,12 @@ const BoardDetail = (props, ref) => {
 
   const voteInfo = { userVoteStatus, boardId };
 
-  const deleteBoard = () => {};
-  const showReportModal = () => {};
+  const deleteBoard = () => {
+    setIsDeleteModalOpened(true);
+  };
+  const showReportModal = () => {
+    setIsReportModalOpened(true);
+  };
 
   const isMyBoard = (props) => {
     const nickname = localStorage.getItem('nickname');
@@ -63,6 +69,17 @@ const BoardDetail = (props, ref) => {
   const isPrivateKebabMenu = [true, false];
   const kebabMenuLabels = ['글 삭제하기', '글 신고하기'];
   const kebabMenuOnClicks = [deleteBoard, showReportModal];
+
+  const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
+  const [isReportModalOpened, setIsReportModalOpened] = useState(false);
+
+  const handleDeleteModalClose = () => {
+    setIsDeleteModalOpened(!isDeleteModalOpened);
+  };
+
+  const handleReportModalClose = () => {
+    setIsReportModalOpened(!isReportModalOpened);
+  };
 
   useEffect(() => {
     dispatch(getDetailAsync(params.boardId));
@@ -80,6 +97,28 @@ const BoardDetail = (props, ref) => {
       padding="0px 0px 0px 0px"
       ref={ref}
     >
+      <BasicModal
+        open={isDeleteModalOpened}
+        close={isDeleteModalOpened}
+        onClose={handleDeleteModalClose}
+        onConfirm={() => {
+          dispatch(deleteBoardAsync(boardId));
+        }}
+        closeMessage={'취소'}
+        confirmMessage={'삭제'}
+      >
+        글을 삭제할까요?
+      </BasicModal>
+      <BasicModal
+        open={isReportModalOpened}
+        close={isReportModalOpened}
+        onClose={handleReportModalClose}
+        onConfirm={handleReportModalClose}
+        closeMessage={'취소'}
+        confirmMessage={'신고'}
+      >
+        글을 신고할까요?
+      </BasicModal>
       <Grid padding="0px 24px 0px 24px">
         <Grid isFlex>
           <Header label="" leftArrow />

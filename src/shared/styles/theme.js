@@ -81,6 +81,7 @@ const lightThemeColors = {
   lightPink: '#F6CAF2',
   orange: '#F29E3B',
   lightGreen: '#D9F3C0',
+  alertGreen: '#01B671',
   placeholder: '#D5D8DB',
   disabled: '#F8F8F8',
   overlap: 'rgba(0, 0, 0, 0.4)',

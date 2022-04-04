@@ -1,5 +1,4 @@
 import React, { useEffect, useContext, useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -26,8 +25,7 @@ import {
   BasicModal,
 } from 'components';
 
-function Signup(props) {
-  const dispatch = useDispatch();
+function Signup() {
   const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
 
@@ -43,11 +41,9 @@ function Signup(props) {
   const [emailCheckMessage, setEmailCheckMessage] = useState();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [textColor, setTextColor] = useState('error');
   const [isValidEmailByRegex, setIsValidEmailByRegex] = useState(false);
   const [isValidEmailByNotDuplicated, setIsValidEmailByNotDuplicated] =
     useState(false);
-  const [isValidPassword, setIsValidPassword] = useState(false);
 
   const emailDebounce = lo.debounce((k) => setEmail(k), 500);
   const emailKeyPress = useCallback(emailDebounce, []);

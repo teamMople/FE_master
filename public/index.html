@@ -46,6 +46,8 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <script defer src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
     <title>Boiler Plate</title>
   </head>
   <body>
@@ -65,39 +67,4 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('./service-worker.js')
-        // .then(
-        //   function (registration) {
-        //     console.log('Worker registration successful', registration.scope);
-        //   },
-        //   function (err) {
-        //     console.log('Worker registration failed', err);
-        //   },
-        // )
-        // .catch(function (err) {
-        //   console.log(err);
-        // });
-      });
-    } else {
-      console.log('Service Worker is not supported by browser.');
-    }
-  </script>
-  <script>
-    //모바일기기이름을 담은 배열
-    // let mobile_keys = new Array('iPhone','iPad','Android','BlackBerry','Windows Phone',
-    //         'Windows CE','LG','MOT','SAMSUNG','SonyEricsson','Nokia');
-    //
-    // for(let i in mobile_keys){
-    //   //브라우저의 에이전트 정보에 모바일이름과 매치되는 글자가 있다면
-    //   if(navigator.userAgent.match(mobile_keys[i])){
-    //     // alert('모바일기기에서 접속했습니다.');
-    //     document.querySelector('#web_view_wrapper').style="";
-    //     document.getElementById('web_view').remove();
-    //   }
-    // }
-  </script>
-  </head>
 </html>

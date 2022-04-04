@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useRef } from 'react';
+import React, { useEffect, useContext, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -26,6 +26,7 @@ import {
   CommentList,
   CommentInputWindow,
   KebabMenu,
+  ToggleButton,
 } from 'components';
 import { getCommentListAsync, selectedCommentList } from 'modules/comments';
 
@@ -43,6 +44,8 @@ const BoardDetail = (props, ref) => {
   const userVoteStatus = useSelector(selectedUserVoteStatus);
   const agreeCount = useSelector(selectedAgreeCount);
   const disagreeCount = useSelector(selectedDisagreeCount);
+
+  const [showComments, setShowComments] = useState(false);
 
   const voteInfo = { userVoteStatus, boardId };
 
@@ -74,7 +77,6 @@ const BoardDetail = (props, ref) => {
   return (
     <Wrapper
       backgroundColor={themeContext.colors.white}
-      full
       padding="0px 0px 0px 0px"
       ref={ref}
     >
@@ -132,13 +134,17 @@ const BoardDetail = (props, ref) => {
             selected={userVoteStatus}
           />
         </Grid>
-        <Grid right margin="0px 0px 30px 0px">
-          <Text size="14px" lineHeight="22px">
+        <Grid isFlex right margin="0px 0px 30px 0px">
+          <Text style={{ marginRight: '20px' }}>
             댓글 수 ({comments.length})
           </Text>
+          <ToggleButton
+            active={showComments}
+            onClick={() => setShowComments(!showComments)}
+          />
         </Grid>
       </Grid>
-      <CommentList comments={comments} />
+      {showComments && <CommentList comments={comments} />}
       <CommentInputWindow boardId={boardId} ref={inputRef} />
     </Wrapper>
   );

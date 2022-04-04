@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const Grid = ({ overflowY, overflowX, ...props }) => {
+const Grid = ({ overflowY, overflowX, full, ...props }) => {
   return (
     <React.Fragment>
       <GridBox {...props}>{props.children}</GridBox>
@@ -17,6 +17,7 @@ Grid.propTypes = {
   overflowY: PropTypes.bool,
   overflowX: PropTypes.bool,
   rounded: PropTypes.bool,
+  full: PropTypes.bool,
 };
 
 Grid.defaltProps = {

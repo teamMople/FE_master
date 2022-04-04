@@ -13,28 +13,33 @@ import {
   BasicModal,
   ToggleButton,
 } from 'components';
+import { setDarkTheme } from '../modules/serviceTheme';
 
-function Settings(props) {
+function Settings() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
-  const [dark, setDark] = useState(false);
+  const [active, setActive] = useState(false);
 
   const changeTheme = () => {
-    if (dark) {
-      setDark(false);
+    if (active) {
+      setActive(false);
       localStorage.setItem('theme', 'light');
+      dispatch(setDarkTheme(false));
     } else {
-      setDark(true);
+      setActive(true);
       localStorage.setItem('theme', 'dark');
+      dispatch(setDarkTheme(true));
     }
   };
 
   useEffect(() => {
     if (localStorage.getItem('theme') === 'dark') {
-      setDark(true);
+      setActive(true);
+      dispatch(setDarkTheme(true));
     } else {
-      setDark(false);
+      setActive(false);
+      dispatch(setDarkTheme(false));
     }
   }, []);
 
@@ -56,7 +61,7 @@ function Settings(props) {
             <Text>프로필 편집</Text>
             <RightArrow active />
           </MenuItem>
-          <MenuItem onClick={() => {}}>
+          <MenuItem onClick={() => navigate('/changepassword')}>
             <Text>비밀번호 변경</Text>
             <RightArrow active />
           </MenuItem>
@@ -89,7 +94,11 @@ function Settings(props) {
             <Text>로그아웃</Text>
             <RightArrow active />
           </MenuItem>
-          <MenuItem onClick={() => {}}>
+          <MenuItem
+            onClick={() => {
+              navigate('/inactivate');
+            }}
+          >
             <Text>비활성화하기</Text>
             <RightArrow active />
           </MenuItem>
@@ -97,7 +106,7 @@ function Settings(props) {
         <Grid>
           <MenuItem>
             <Text>다크 모드</Text>
-            <ToggleButton active={dark} onClick={changeTheme} />
+            <ToggleButton active={active} onClick={changeTheme} />
           </MenuItem>
           <MenuItem>
             <Text>버전</Text>
@@ -123,6 +132,7 @@ const MenuItem = styled(Grid)`
   border-radius: 10px;
   transition: all 0.2s ease;
 
+  -webkit-tap-highlight-color: ${({ theme }) => theme.colors.lightGray};
   &:active {
     background-color: ${({ theme }) => theme.colors.lightGray};
   }

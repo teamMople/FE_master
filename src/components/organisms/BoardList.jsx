@@ -82,6 +82,10 @@ const BoardWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 17px;
+  -webkit-tap-highlight-color: ${({ theme }) => theme.colors.lightGray};
+  &:active {
+    background-color: ${({ theme }) => theme.colors.lightGray};
+  }
 `;
 
 export default BoardList;

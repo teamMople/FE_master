@@ -1,10 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { loginAsync } from '../../modules/users';
 import axios from 'axios';
 import { setCookie } from '../../shared/utils/Cookie';
 
-import styled, { css, keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { ThemeContext } from 'styled-components';
 import {
   Wrapper,
@@ -15,13 +14,11 @@ import {
   Header,
   OAuthLoginButtons,
 } from 'components';
-import { useDispatch } from 'react-redux';
 import SectionWrapper from '../../components/molecules/SectionWrapper';
 import { BasicModal } from 'components';
 
-function Login(props) {
+function Login() {
   const themeContext = useContext(ThemeContext);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -75,7 +72,7 @@ function Login(props) {
     }
   };
 
-  const userInfo = { email, password };
+  // const userInfo = { email, password };
 
   React.useEffect(() => {}, []);
 
@@ -83,9 +80,9 @@ function Login(props) {
   const handleClose = () => {
     setIsOpened(false);
   };
-  const handleOpen = () => {
-    setIsOpened(true);
-  };
+  // const handleOpen = () => {
+  //   setIsOpened(true);
+  // };
   return (
     <>
       {/*<button onClick={handleOpen}>open modal</button>*/}

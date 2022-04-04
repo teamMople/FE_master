@@ -9,6 +9,7 @@ import NotificationList from './boards/NotificationList';
 import SearchBoard from './boards/SearchBoard';
 
 // users
+import ChangePassword from './users/ChangePassword';
 import EditUserProfile from './users/EditUserProfile';
 import FindPassword from './users/FindPassword';
 import Inactivate from './users/Inactivate';
@@ -39,6 +40,7 @@ export {
   NotificationList,
   SearchBoard,
   // users
+  ChangePassword,
   EditUserProfile,
   FindPassword,
   Inactivate,

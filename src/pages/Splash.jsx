@@ -5,10 +5,10 @@ import { getCookie } from '../shared/utils/Cookie';
 import { Wrapper, FullModal, Logo, Text, Grid } from 'components';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from 'shared/utils/firebase';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { getMessaging, getToken } from 'firebase/messaging';
 import apis from 'apis/apis';
 
-const Splash = (props) => {
+const Splash = () => {
   const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
 
@@ -70,7 +70,7 @@ const Splash = (props) => {
         <Grid>
           <Grid isSide margin="0px 0px 16px 0px">
             <Grid center width="32px" margin="0px 8px 0px 0px">
-              <img src="/asset/icons/Image.svg" />
+              <img src="/asset/icons/Image.svg" alt="icon" />
             </Grid>
             <Grid>
               <Text bold medium>
@@ -81,7 +81,7 @@ const Splash = (props) => {
           </Grid>
           <Grid isSide margin="0px 0px 16px 0px">
             <Grid center width="32px" margin="0px 8px 0px 0px">
-              <img src="/asset/icons/Bell.svg" />
+              <img src="/asset/icons/Bell.svg" alt="icon" />
             </Grid>
             <Grid>
               <Text bold medium>
@@ -92,7 +92,7 @@ const Splash = (props) => {
           </Grid>
           <Grid isSide margin="0px 0px 16px 0px">
             <Grid center width="32px" margin="0px 8px 0px 0px">
-              <img src="/asset/icons/microphone.svg" />
+              <img src="/asset/icons/microphone.svg" alt="icon" />
             </Grid>
             <Grid>
               <Text bold medium>
@@ -104,9 +104,9 @@ const Splash = (props) => {
         </Grid>
       </FullModal>
       <Wrapper full backgroundColor={themeContext.colors.white}>
-        <div style={{ margin: 'auto' }}>
+        <Grid center height="100%">
           <Logo />
-        </div>
+        </Grid>
       </Wrapper>
     </React.Fragment>
   );

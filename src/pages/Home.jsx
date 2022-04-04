@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import styled, { ThemeContext } from 'styled-components';
 import {
@@ -43,12 +43,18 @@ const Home = () => {
 
   React.useEffect(() => {
     dispatch(getBoardListAsync());
-    dispatch(getLiveBoardListAsync());
     return () => {
       dispatch(clearBoardList());
+    };
+  }, []);
+  useEffect(() => {
+    dispatch(getLiveBoardListAsync());
+    return () => {
       dispatch(clearLiveBoardList());
     };
-  }, [dispatch]);
+  }, [modalState.open]);
+
+  console.log('modal state::::>>>>>>>', modalState.type);
 
   if (basicBoardsStatus === 'loading' || liveBoardsStatus === 'loading') {
     return (
@@ -78,10 +84,18 @@ const Home = () => {
         {/* 라이브 종료 팝업 ::start:: */}
         <BasicModal
           open={modalState.open}
-          onClose={() => dispatch(setModalOpen(false))}
-          onConfirm={() => dispatch(setModalOpen(false))}
+          onClose={() => {
+            dispatch(setModalOpen({ open: false }));
+          }}
+          onConfirm={() => {
+            dispatch(setModalOpen({ open: false }));
+          }}
         >
-          방장이 라이브를 종료하였습니다.
+          {modalState.type === 'close'
+            ? '방장이 라이브를 종료하였습니디'
+            : modalState.type === 'leave'
+            ? '라이브를 떠났습니다'
+            : ''}
         </BasicModal>
         {/* 라이브 종료 팝업 ::end:: */}
         <Wrapper backgroundColor={themeContext.colors.backgroundGray}>

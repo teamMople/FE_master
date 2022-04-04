@@ -11,3 +11,26 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+#dialog-title {
+  display: none;
+}
+.MuiPaper-root.MuiDialog-paper.MuiDialog-paperScrollPaper.MuiDialog-paperWidthSm.MuiPaper-elevation24.MuiPaper-rounded{
+  border-radius: 20px;
+}
+.MuiDialogContent-root.MuiDialogContent-dividers {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+.MuiDialogActions-root.MuiDialogActions-spacing button:first-child {
+  font-size: 14px;
+  border-radius: 10px;
+}
+
+.MuiDialogActions-root.MuiDialogActions-spacing button:last-child {
+  font-size: 14px;
+  border-radius: 10px;
+  background-color: #6E6BF0;
+}

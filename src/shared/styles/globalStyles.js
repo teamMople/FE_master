@@ -70,6 +70,7 @@ const GlobalStyle = createGlobalStyle`
         }
       }
     }
+
     
     //&.room_carousel {
     //  li:first-child{

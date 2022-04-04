@@ -11,7 +11,26 @@ import { store, rootReducer } from './modules/configStore';
 import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Loading } from 'pages';
+import ReactPWAInstallProvider from 'react-pwa-install';
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./service-worker.js');
+    // .then(
+    //   function (registration) {
+    //     console.log('Worker registration successful', registration.scope);
+    //   },
+    //   function (err) {
+    //     console.log('Worker registration failed', err);
+    //   },
+    // )
+    // .catch(function (err) {
+    //   console.log(err);
+    // });
+  });
+} else {
+  console.log('Service Worker is not supported by browser.');
+}
 // Register service worker for Firebase Cloud Messenger
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
@@ -27,13 +46,15 @@ if ('serviceWorker' in navigator) {
 let persistor = persistStore(store);
 
 ReactDOM.render(
-  <Provider store={store}>
-    <DeviceDetector>
-      <PersistGate loading={null} persistor={persistor}>
-        <App />
-      </PersistGate>
-    </DeviceDetector>
-  </Provider>,
+  <ReactPWAInstallProvider>
+    <Provider store={store}>
+      <DeviceDetector>
+        <PersistGate loading={null} persistor={persistor}>
+          <App />
+        </PersistGate>
+      </DeviceDetector>
+    </Provider>
+  </ReactPWAInstallProvider>,
   document.getElementById('root'),
 );
 

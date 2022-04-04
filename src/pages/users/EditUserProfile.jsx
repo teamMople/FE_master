@@ -1,6 +1,4 @@
 import React, { useCallback, useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
 import {
   BUCKET,
   awsS3Bucket,
@@ -14,9 +12,8 @@ import { Wrapper, Grid, Text, Image, Button, Input, Header } from 'components';
 import { useDispatch } from 'react-redux';
 import { editMyInfo } from 'modules/users';
 
-function EditUserProfile(props) {
+function EditUserProfile() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
 
   const prevNickname = localStorage.getItem('nickname');

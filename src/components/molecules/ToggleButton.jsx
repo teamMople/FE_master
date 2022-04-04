@@ -19,7 +19,7 @@ const ToggleWrapper = styled.div`
   width: 50px;
   height: 25px;
   padding: 3.5px;
-  background-color: ${({ theme }) => theme.colors.gray};
+  background-color: ${({ theme }) => theme.colors.lightGray};
   border-radius: 10em;
   display: flex;
   position: relative;
@@ -34,12 +34,13 @@ const Thumb = styled.div`
   left: 3.5px;
   width: 18.5px;
   height: 18.5px;
-  background-color: ${({ theme }) => theme.colors.lightGray};
+  background-color: ${({ theme }) => theme.colors.blue};
   border-radius: 10em;
   transition: all 0.2s ease;
 
   &.active {
     left: 28px;
+    background-color: ${({ theme }) => theme.colors.lightGray};
   }
 `;
 export default ToggleButton;

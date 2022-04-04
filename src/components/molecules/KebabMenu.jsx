@@ -1,13 +1,10 @@
-import React, { useContext, useState } from 'react';
-import styled, { ThemeContext } from 'styled-components';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Grid, Text } from 'components';
-import { useNavigate } from 'react-router-dom';
 
 const KebabMenu = (props) => {
   const { showPrivateMenu, isPrivateMenu, labels, onClicks } = props;
-  const navigate = useNavigate();
-  const themeContext = useContext(ThemeContext);
 
   const [isOpened, setIsOpened] = useState(false);
 
@@ -18,7 +15,7 @@ const KebabMenu = (props) => {
       }}
     >
       <Grid>
-        <img src="/asset/icons/KebabMenu.svg" />
+        <img src="/asset/icons/KebabMenu.svg" alt="menu" />
       </Grid>
       {isOpened && (
         <MenuListWrapper>
@@ -66,8 +63,8 @@ const MenuBox = styled.div`
   width: 63px;
   height: 32px;
   background-color: ${({ theme }) => theme.colors.backgroundGray};
-  border-radius: 10px 0px 10px 10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 10px 0 10px 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
   display: flex;
   justify-content: center;

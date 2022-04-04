@@ -49,6 +49,7 @@ import {
   CategoryCarousel,
   CommentList,
   CommentInputWindow,
+  EventCarousel,
 } from './organisms';
 
 export {
@@ -98,4 +99,5 @@ export {
   DeviceDetector,
   Report,
   ToggleButton,
+  EventCarousel,
 };

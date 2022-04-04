@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { useReactPWAInstall } from 'react-pwa-install';
+import PwaInstall from '../organisms/PwaInstall';
 
 // export const setVh = () => {
 //   const vh = window.innerHeight * 0.01;
@@ -9,11 +11,13 @@ import PropTypes from 'prop-types';
 // };
 
 const DeviceDetector = ({ children }) => {
+  const { supported, isInstalled } = useReactPWAInstall();
   const [active, setActive] = useState(false);
 
-  useEffect(() => {
+  setTimeout(() => {
     setActive(true);
-  }, []);
+  }, 300);
+
   return isMobile ? (
     <>{children}</>
   ) : (
@@ -22,9 +26,15 @@ const DeviceDetector = ({ children }) => {
         <InnerWrapper className={active && 'active'}>
           <SubTitle className={active && 'active'}>일상적 토론의 시작</SubTitle>
           <MainTitle className={active && 'active'}>보일러 플레이트</MainTitle>
-          <DownloadButton className={active && 'active'}>
-            <div>다운로드</div>
-          </DownloadButton>
+          {supported() && !isInstalled() && (
+            <>
+              <PwaInstall>
+                <DownloadButton className={active && 'active'}>
+                  <div>다운로드</div>
+                </DownloadButton>
+              </PwaInstall>
+            </>
+          )}
         </InnerWrapper>
       </TitleWrapper>
       <WebViewWrapper>

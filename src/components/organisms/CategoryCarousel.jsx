@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { Carousel } from '@trendyol-js/react-carousel';
-import { Carousel } from 'react-responsive-carousel';
 
 import { Grid, Text, CategoryTile } from 'components';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 const CategoryCarousel = (props) => {
   const { label, categories } = props;
@@ -17,46 +16,27 @@ const CategoryCarousel = (props) => {
           {label}
         </Text>
       </Grid>
-      <Carousel
-        showIndicators={false}
-        emulateTouch
-        showArrows={false}
-        showStatus={false}
-        preventMovementUntilSwipeScrollTolerance
-        centerMode
-        centerSlidePercentage={40}
-        swipeable
-        showThumbs={false}
-        transitionTime={100}
-        swipeScrollTolerance={10}
-        // showIndicators={false}
-        // emulateTouch
-        // showArrows={false}
-        // showStatus={false}
-        // preventMovementUntilSwipeScrollTolerance
-        // centerMode
-        // showThumbs={false}
-        // transitionTime={300}
-        // centerSlidePercentage={45}
-      >
-        {categories.map((cat, index) => {
-          return (
-            <CategoryTile
-              key={index}
-              category={cat.category}
-              categoryImageUrl={cat.categoryImageUrl}
-              onClick={() => {
-                if (cat.category.indexOf('/') === -1) {
-                  navigate('/list/' + cat.category);
-                } else {
-                  const uriParam = cat.category.replace('/', '');
-                  navigate('/list/' + uriParam);
-                }
-              }}
-            />
-          );
-        })}
-      </Carousel>
+      <HorizontalScrollWrapper>
+        <div>
+          {categories.map((cat, index) => {
+            return (
+              <CategoryTile
+                key={index}
+                category={cat.category}
+                categoryImageUrl={cat.categoryImageUrl}
+                onClick={() => {
+                  if (cat.category.indexOf('/') === -1) {
+                    navigate('/list/' + cat.category);
+                  } else {
+                    const uriParam = cat.category.replace('/', '');
+                    navigate('/list/' + uriParam);
+                  }
+                }}
+              />
+            );
+          })}
+        </div>
+      </HorizontalScrollWrapper>
     </Grid>
   );
 };
@@ -95,5 +75,22 @@ CategoryCarousel.defaultProps = {
     },
   ],
 };
+
+const HorizontalScrollWrapper = styled.div`
+  overflow-x: auto;
+  > div {
+    display: flex;
+    column-gap: 8px;
+    > div {
+      min-width: 160px;
+      max-width: 160px;
+    }
+  }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
+`;
 
 export default CategoryCarousel;

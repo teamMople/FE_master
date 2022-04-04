@@ -67,7 +67,13 @@ function BoardList() {
             justifyContent: 'center',
           }}
         >
-          <Text color={themeContext.colors.blue}>검색 결과가 없습니다</Text>
+          <Text color={themeContext.colors.blue}>
+            {location.pathname === '/myaccount/boards'
+              ? '작성한 게시글이 없습니다'
+              : location.pathname === '/myaccount/mycomments'
+              ? '작성한 댓글이 없습니다'
+              : '검색 결과가 없습니다'}
+          </Text>
         </Grid>
       )}
 

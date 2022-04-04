@@ -121,7 +121,7 @@ const apis = {
   // 실시간 토론방
   getLiveRoomList: () => authApi.get('/api/chat/rooms/onair'),
   getLiveRoomListByCategory: (categoryName) =>
-    authApi.get(`/api/chat/rooms/${categoryName}`),
+    authApi.get(`/api/chat/rooms/onair/category/${categoryName}`),
   searchLiveRoom: (search) =>
     authApi.get(`/api/chat/rooms/onair/keyword/${search}`),
 

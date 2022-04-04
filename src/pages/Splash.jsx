@@ -3,6 +3,7 @@ import { ThemeContext } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { getCookie } from '../shared/utils/Cookie';
 import { Wrapper, FullModal, Logo, Text, Grid } from 'components';
+
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from 'shared/utils/firebase';
 import { getMessaging, getToken } from 'firebase/messaging';

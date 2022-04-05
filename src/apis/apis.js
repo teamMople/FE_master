@@ -54,7 +54,7 @@ const apis = {
     api.post('/api/signup', { email, profileImageUrl, nickname, password }),
   login: (email, password) => api.post('/api/login', { email, password }),
   kakaoLogin: (kakaoAuthCode) =>
-    api.get(`/api/kakao/login?code=${kakaoAuthCode}`),
+    api.get(`/api/kakao/login?kakaoAuthCode=${kakaoAuthCode}`),
   logout: () => api.post('/api/logout'),
   // to-dos
   editMyInfo: (nickname, profileImageUrl) =>

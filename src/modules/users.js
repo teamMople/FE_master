@@ -80,9 +80,8 @@ export const kakaoLoginAsync = createAsyncThunk(
   'users/kakaoLogin',
   async (code) => {
     console.log(code);
-    const navigate = useNavigate();
-    await apis
-      .kakaoLogin(code)
+    await axios
+      .get(`https://api.www.boiler-plate.org/api/kakao/login?code=${code}`)
       .then((response) => {
         console.log(response);
         if (response.status === 200) {
@@ -93,7 +92,7 @@ export const kakaoLoginAsync = createAsyncThunk(
             'profileImageUrl',
             response.data.profileImageUrl,
           );
-          navigate('/home');
+          window.location.replace('/home');
         }
       })
       .catch((error) => {

@@ -1,13 +1,12 @@
 import React, { useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeContext } from 'styled-components';
-
 import {
   googleLoginAsync,
   naverLoginAsync,
   kakaoLoginAsync,
 } from '../../modules/users';
-import { Wrapper, Loader } from 'components';
+import { Wrapper, Grid, Loader } from 'components';
 import { useDispatch } from 'react-redux';
 
 const OAuthRedirectHandler = (props) => {
@@ -17,6 +16,7 @@ const OAuthRedirectHandler = (props) => {
 
   let params = new URL(window.location).searchParams;
   let code = params.get('code');
+  console.log(code);
 
   useEffect(() => {
     switch (provider) {
@@ -35,8 +35,10 @@ const OAuthRedirectHandler = (props) => {
   }, []);
 
   return (
-    <Wrapper>
-      <Loader type="dot" backgroundColor={themeContext.colors.blue} />
+    <Wrapper full backgroundColor={themeContext.colors.white}>
+      <Grid height="100%" center>
+        <Loader type="dot" backgroundColor={themeContext.colors.blue} />
+      </Grid>
     </Wrapper>
   );
 };

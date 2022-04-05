@@ -13,7 +13,6 @@ const CommentList = (props) => {
             return <CommentBox key={index} comment={comment} />;
           })}
       </Grid>
-      <Grid width="100%" height="84px" />
     </React.Fragment>
   );
 };

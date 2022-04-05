@@ -12,6 +12,17 @@ const loginUserInitialState = loginUser
   ? { isLogin: true, loginUser }
   : { isLogin: false, loginUser: null };
 
+const userInitialState = {
+  status: 'idle',
+  isLogin: false,
+  loginUser: {
+    userId: '',
+    email: '',
+    nickname: '',
+    profileImageUrl: '',
+  },
+};
+
 const isRightEmailType = (email) => {
   if (email.match(emailRegExp) === null) {
     return false;
@@ -37,43 +48,21 @@ export const loginAsync = createAsyncThunk(
             localStorage.setItem('userId', response.data.userId);
             localStorage.setItem('email', response.data.email);
             localStorage.setItem('nickname', response.data.nickname);
+            localStorage.setItem(
+              'profileImageUrl',
+              response.data.profileImageUrl,
+            );
             navigate('/home');
+            return {
+              userId: response.data.userId,
+              email: response.data.email,
+              nickname: response.data.nickname,
+              profileImageUrl: response.data.profileImageUrl,
+            };
           }
         })
-        .catch((e) => {});
+        .catch();
     }
-  },
-);
-
-export const googleLoginAsync = createAsyncThunk(
-  'users/googleLogin',
-  async (code) => {
-    const navigate = useNavigate();
-    await axios
-      .get(`http://13.125.244.227:8080/api/google/login?code=${code}`)
-      .then((res) => {
-        console.log(res);
-        navigate('/');
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  },
-);
-
-export const naverLoginAsync = createAsyncThunk(
-  'users/naverLogin',
-  async (code) => {
-    const navigate = useNavigate();
-    await axios
-      .get(`http://13.125.244.227:8080/api/naver/login?code=${code}`)
-      .then((res) => {
-        console.log(res);
-        navigate('/');
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   },
 );
 
@@ -95,26 +84,29 @@ export const kakaoLoginAsync = createAsyncThunk(
             response.data.profileImageUrl,
           );
           window.location.replace('/home');
+          return {
+            userId: response.data.userId,
+            email: response.data.email,
+            nickname: response.data.nickname,
+            profileImageUrl: response.data.profileImageUrl,
+          };
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch();
   },
 );
 
 export const logoutAsync = createAsyncThunk('users/logout', async () => {
-  const navigate = useNavigate();
-
   await apis
     .logout()
     .then((response) => {
-      if (response.status === '200') {
+      if (response.status === 200) {
         deleteCookie('token');
+        localStorage.removeItem('token');
         localStorage.removeItem('email');
         localStorage.removeItem('nickname');
         localStorage.removeItem('profileImageUrl');
-        navigate('/');
+        window.location.replace('/');
       }
     })
     .catch((error) => {
@@ -229,7 +221,7 @@ export const inactivateUserAsync = createAsyncThunk(
 
 export const userSlice = createSlice({
   name: 'users',
-  initialState: loginUserInitialState,
+  initialState: userInitialState,
   reducers: {
     logout: (state) => {
       state.isLogin = false;
@@ -244,53 +236,49 @@ export const userSlice = createSlice({
   },
   extraReducers: {
     [loginAsync.pending]: (state, action) => {
-      state.isLogin = false;
+      state.status = 'loading';
     },
     [loginAsync.fulfilled]: (state, { payload }) => {
+      state.status = 'success';
       state.isLogin = true;
+      state.loginUser = {
+        userId: payload.userId,
+        email: payload.email,
+        nickname: payload.nickname,
+        profileImageUrl: payload.profileImageUrl,
+      };
     },
     [loginAsync.rejected]: (state, action) => {
-      state.isLogin = false;
-    },
-    [googleLoginAsync.pending]: (state, action) => {
-      state.isLogin = false;
-    },
-    [googleLoginAsync.fulfilled]: (state, { payload }) => {
-      state.isLogin = true;
-    },
-    [googleLoginAsync.rejected]: (state, action) => {
-      state.isLogin = false;
-    },
-    [naverLoginAsync.pending]: (state, action) => {
-      state.isLogin = false;
-    },
-    [naverLoginAsync.fulfilled]: (state, { payload }) => {
-      state.isLogin = true;
-    },
-    [naverLoginAsync.rejected]: (state, action) => {
-      state.isLogin = false;
+      state.status = 'failed';
     },
     [kakaoLoginAsync.pending]: (state, action) => {
-      state.isLogin = false;
+      state.status = 'loading';
     },
     [kakaoLoginAsync.fulfilled]: (state, { payload }) => {
+      state.status = 'success';
       state.isLogin = true;
+      state.loginUser = {
+        userId: payload.userId,
+        email: payload.email,
+        nickname: payload.nickname,
+        profileImageUrl: payload.profileImageUrl,
+      };
     },
     [kakaoLoginAsync.rejected]: (state, action) => {
-      state.isLogin = false;
+      state.status = 'failed';
     },
     [signupAsync.pending]: (state, action) => {
-      state.isLogin = false;
+      state.status = 'loading';
     },
     [signupAsync.fulfilled]: (state, { payload }) => {
-      state.isLogin = false;
+      state.status = 'success';
     },
     [signupAsync.rejected]: (state, action) => {
-      state.isLogin = false;
+      state.status = 'failed';
     },
   },
 });
 
 export const { logout } = userSlice.actions;
-export const selectUserState = (state) => state.users;
+export const selectedUserStatus = (state) => state.users.status;
 export default userSlice.reducer;

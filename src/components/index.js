@@ -50,6 +50,7 @@ import {
   CommentList,
   CommentInputWindow,
   EventCarousel,
+  AllBoardContents,
 } from './organisms';
 
 export {
@@ -100,4 +101,5 @@ export {
   Report,
   ToggleButton,
   EventCarousel,
+  AllBoardContents,
 };

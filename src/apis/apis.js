@@ -72,7 +72,10 @@ const apis = {
   // 게시물
   createBoard: (title, content, imageUrl, category) =>
     authApi.post('/auth/api/board', { title, content, imageUrl, category }),
-  getBoardList: (listSize) => authApi.get(`/auth/api/board?size=${listSize}`),
+  getBoardList: (size, page) =>
+    authApi.get(`/auth/api/board?size=${size}&page=${page}`),
+  getBoardTopList: (size, page) =>
+    authApi.get(`/auth/api/board/top?size=${size}&page=${page}`),
   getBoardListByCategory: (categoryName) =>
     authApi.get(
       `/auth/api/board/category/${encodeURIComponent(categoryName)}`,

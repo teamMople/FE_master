@@ -86,6 +86,7 @@ export const kakaoLoginAsync = createAsyncThunk(
         console.log(response);
         if (response.status === 200) {
           setCookie('token', response.data.Authorization, 1);
+          localStorage.setItem('token', response.data.Authorization);
           localStorage.setItem('userId', response.data.userId);
           localStorage.setItem('email', response.data.email);
           localStorage.setItem('nickname', response.data.nickname);

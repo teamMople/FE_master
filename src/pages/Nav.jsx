@@ -33,6 +33,7 @@ const Nav = (props) => {
     '/',
     '/login',
     '/signup',
+    '/api/kakao/login',
     '/welcome',
     '/list',
     '/settings',

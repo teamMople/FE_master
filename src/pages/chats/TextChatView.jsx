@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   ChatWrapper,
-  EnterLeaveWrapper,
   Messenger,
   MessengerInner,
   MessengerWrapper,
@@ -10,7 +9,7 @@ import {
   UserProfileImage,
 } from './style';
 import { Button, Text, Textarea } from '../../components';
-import { ThemeContext } from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 
 const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
   const themeContext = useContext(ThemeContext);
@@ -72,7 +71,6 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
   const onMessageReceived = (payload) => {
     // chat.scrollTop = chat.scrollHeight;
     let payloadData = JSON.parse(payload.body);
-    const messageTime = calcTime(payloadData.sentAt);
     // console.log('messageTime :::', messageTime);
     // console.log('👺payloadData ====>', payloadData);
     setPublicChats((prevPublicChats) => [
@@ -146,14 +144,20 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
           <ChatWrapper id="chat_content">
             {/*<ChatWrapper className={active && 'active'}>*/}
             {/*<Button>숨기기</Button>*/}
+            {publicChats.length < 1 && (
+              <WaitingMessage>
+                작성된 대화가 없습니다.
+                <br /> 대화를 시작해보세요!
+              </WaitingMessage>
+            )}
             <div>
               {publicChats.map((chat, index) => (
                 <div key={index}>
-                  {chat.type === 'ENTER' && (
+                  {/*{chat.type === 'ENTER' && (
                     <EnterLeaveWrapper key={index}>
                       <Text>{chat.sender}님이 입장하셨습니다.</Text>
                     </EnterLeaveWrapper>
-                  )}
+                  )}*/}
                   {chat.type === 'CHAT' && chat.sender !== memberName && (
                     <MessengerWrapper key={index}>
                       <UserProfileImage src={chat.profileUrl} alt="user" />
@@ -202,11 +206,11 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
                       </MessengerInner>
                     </MessengerWrapper>
                   )}
-                  {chat.type === 'LEAVE' && (
+                  {/*{chat.type === 'LEAVE' && (
                     <EnterLeaveWrapper key={index}>
                       <Text>{chat.sender}님이 나가셨습니다.</Text>
                     </EnterLeaveWrapper>
-                  )}
+                  )}*/}
                 </div>
               ))}
             </div>
@@ -259,5 +263,14 @@ TextChatView.propTypes = {
   onClickShow: PropTypes.func,
   onClickMoveUserRoom: PropTypes.func,
 };
+
+const WaitingMessage = styled(Text)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  color: ${({ theme }) => theme.colors.blue};
+`;
 
 export default TextChatView;

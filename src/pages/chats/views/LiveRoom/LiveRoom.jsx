@@ -671,7 +671,14 @@ const LiveRoom = () => {
     return (
       <BottomButtonGroup>
         <RoomInnerButton onClick={() => setPageIndex(0)}>
-          <img src={'/asset/icons/paper-plane.svg'} alt="icon" />
+          <img
+            src={`/asset/icons/${
+              localStorage.getItem('theme') === 'dark'
+                ? 'paper-plane_light.svg'
+                : 'paper-plane.svg'
+            }`}
+            alt="icon"
+          />
           <Text>채팅방</Text>
         </RoomInnerButton>
 

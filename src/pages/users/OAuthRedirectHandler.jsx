@@ -14,13 +14,9 @@ const OAuthRedirectHandler = (props) => {
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
 
-  console.log(window.location);
-  console.log(document.location);
+  let code = new URL(window.location.href).searchParams.get('code');
 
   useEffect(() => {
-    let params = new URL(document.location.toString()).searchParams;
-    let code = params.get('code');
-    console.log(code);
     dispatch(kakaoLoginAsync(code));
   }, []);
 

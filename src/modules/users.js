@@ -86,6 +86,9 @@ export const kakaoLoginAsync = createAsyncThunk(
         console.log(response);
         if (response.status === 200) {
           setCookie('token', response.headers.authorization, 1);
+          localStorage.setItem('data', JSON.stringify(response.data));
+          localStorage.setItem('header', JSON.stringify(response.headers));
+          localStorage.setItem('token', response.headers.authorization);
           localStorage.setItem('userId', response.data.userId);
           localStorage.setItem('email', response.data.email);
           localStorage.setItem('nickname', response.data.nickname);
@@ -93,7 +96,7 @@ export const kakaoLoginAsync = createAsyncThunk(
             'profileImageUrl',
             response.data.profileImageUrl,
           );
-          // window.location.replace('/home');
+          window.location.replace('/home');
         }
       })
       .catch((error) => {

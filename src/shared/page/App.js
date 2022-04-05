@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense } from 'react';
+import React, { useEffect, Suspense, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import apis from 'apis/apis';
 
@@ -37,7 +37,7 @@ import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
 import LiveRoom from '../../pages/chats/views/LiveRoom/LiveRoom';
 import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
 import GlobalStyle from '../styles/globalStyles';
-import { PageLoading } from 'components';
+import { BasicModal, PageLoading } from 'components';
 
 import { firebaseApp } from 'shared/utils/firebase';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
@@ -48,6 +48,7 @@ import AllBoardList from '../../pages/boards/AllBoardList';
 
 function App() {
   const dispatch = useDispatch();
+  const [openModal, setOpenModal] = useState(false);
 
   // Firebase Cloud Messaging
   const firebaseMessaging = getMessaging(firebaseApp);
@@ -101,6 +102,16 @@ function App() {
         window.localStream = stream; // A
       })
       .catch((err) => {
+        if (err.name === 'ConstraintNotSatisfiedError') {
+          console.error('not supported by your device.');
+        } else if (err.name === 'PermissionDeniedError') {
+          console.error(
+            'Permissions have not been granted to use your camera and ' +
+              'microphone, you need to allow the page access to your devices in ' +
+              'order for the demo to work.',
+          );
+        }
+        setOpenModal(true);
         console.log('u got an error:' + err);
       });
   }
@@ -123,6 +134,17 @@ function App() {
   return (
     <ThemeProvider theme={themeState}>
       <GlobalStyle />
+      <BasicModal
+        open={openModal}
+        close={openModal}
+        onClose={() => setOpenModal(false)}
+        onConfirm={() => {
+          setOpenModal(false);
+          window.location.reload();
+        }}
+      >
+        모든 권한을 허용하지 않으면 서비스를 이용하실 수 없습니다.
+      </BasicModal>
       <BrowserRouter history={history}>
         <Suspense fallback={<PageLoading />}>
           <Routes>

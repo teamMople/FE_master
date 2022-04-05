@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { useNavigate } from 'react-router-dom';
 import apis from '../apis/apis';
-import { createNewNotification } from './notifications';
 
 const boardListInitialState = {
   data: [],
@@ -10,9 +8,9 @@ const boardListInitialState = {
 
 export const getBoardListAsync = createAsyncThunk(
   'boards/getBoardList',
-  async (listSize = 20, thunkAPI) => {
+  async ({ size, page }, thunkAPI) => {
     try {
-      const response = await apis.getBoardList(listSize);
+      const response = await apis.getBoardList(size, page);
       console.log(response.data);
       return response.data;
     } catch (e) {
@@ -33,7 +31,6 @@ export const getMyBoardListAsync = createAsyncThunk(
   'boards/getMyBoardList',
   async () => {
     const response = await apis.getMyBoardList();
-    console.log(response.data);
     return response.data;
   },
 );

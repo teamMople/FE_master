@@ -755,7 +755,7 @@ const LiveRoom = () => {
                 color={themeContext.colors.black}
                 onClick={leaveRoom}
               >
-                방 나기기
+                방 나가기
               </Button>
             )}
             {publisher && isModerator(publisher) && (

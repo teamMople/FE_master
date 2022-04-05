@@ -32,7 +32,7 @@ const OAuthRedirectHandler = (props) => {
       default:
         return;
     }
-  }, []);
+  }, [dispatch, code]);
 
   return (
     <Wrapper full backgroundColor={themeContext.colors.white}>

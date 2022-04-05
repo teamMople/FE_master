@@ -14,24 +14,28 @@ const OAuthRedirectHandler = (props) => {
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
 
+  console.log(window.location);
   let params = new URL(window.location).searchParams;
   let code = params.get('code');
   console.log(code);
 
   useEffect(() => {
-    switch (provider) {
-      case 'google':
-        dispatch(googleLoginAsync(code));
-        break;
-      case 'naver':
-        dispatch(naverLoginAsync(code));
-        break;
-      case 'kakao':
-        dispatch(kakaoLoginAsync(code));
-        break;
-      default:
-        return;
+    function getUserLoginInfo(code, provider) {
+      switch (provider) {
+        case 'google':
+          dispatch(googleLoginAsync(code));
+          break;
+        case 'naver':
+          dispatch(naverLoginAsync(code));
+          break;
+        case 'kakao':
+          dispatch(kakaoLoginAsync(code));
+          break;
+        default:
+          return;
+      }
     }
+    getUserLoginInfo(code, provider);
   }, [dispatch, code]);
 
   return (

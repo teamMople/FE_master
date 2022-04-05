@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   agreeBoardAsync,
@@ -33,6 +33,8 @@ import { getCommentListAsync, selectedCommentList } from 'modules/comments';
 import { deleteBoardAsync } from 'modules/boards';
 
 const BoardDetail = (props, ref) => {
+  const navigate = useNavigate();
+
   const params = useParams();
   const boardId = parseInt(params.boardId);
 
@@ -113,7 +115,10 @@ const BoardDetail = (props, ref) => {
         open={isReportModalOpened}
         close={isReportModalOpened}
         onClose={handleReportModalClose}
-        onConfirm={handleReportModalClose}
+        onConfirm={(e) => {
+          console.log('click');
+          navigate('/board/report/' + boardId);
+        }}
         closeMessage={'취소'}
         confirmMessage={'신고'}
       >

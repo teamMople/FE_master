@@ -14,6 +14,7 @@ import notificationReducer from './notifications';
 import replyCommentReducer from './replyComments';
 import userReducer from './users';
 import themeReducer from './serviceTheme';
+import socketReducer from './socket';
 
 // Root Reducer
 export const rootReducer = combineReducers({
@@ -29,6 +30,7 @@ export const rootReducer = combineReducers({
   replyComments: replyCommentReducer,
   users: userReducer,
   theme: themeReducer,
+  socket: socketReducer,
 });
 
 // Redux-persist

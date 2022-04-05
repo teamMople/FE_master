@@ -39,6 +39,8 @@ const Tile = (props) => {
       .then((res) => navigate(`/room/${res.payload.roomId}`))
       .catch((error) => console.error(error));
   };
+
+  console.log(board);
   switch (type) {
     case 'live':
       return (
@@ -65,13 +67,20 @@ const Tile = (props) => {
               </Text>
             </WarningJoinRoomBox>
           )}
-          <Grid margin="0px 0px 18px 0px">
+          <Grid margin="0px 0px 12px 0px">
             <ProfileImageStack
               nicknames={board.participantsNicknames}
               imageUrls={Object.values(board.participantsProfileImageUrls)}
             />
           </Grid>
-          <Grid margin="0px 0px 14px 0px">
+          <Grid margin="0px 0px 10px 0px">
+            <Text
+              small
+              color={themeContext.colors.blue}
+              style={{ marginBottom: '4px' }}
+            >
+              #{board.category}
+            </Text>
             <Text
               bold
               color={themeContext.colors.black}
@@ -104,6 +113,7 @@ const Tile = (props) => {
                     ? '0'
                     : board.participantsNicknames.length
                 }
+                maxParticipantCount={board.maxParticipantCount}
               />
             </Grid>
             <Grid isFlex>
@@ -145,11 +155,11 @@ const Tile = (props) => {
               navigate('/board/' + board.id);
             }}
           >
-            <Grid margin="0px 0px 14px 0px">
+            <Grid margin="0px 0px 10px 0px">
               <Text
                 small
                 color={themeContext.colors.blue}
-                style={{ marginBottom: '4px' }}
+                style={{ marginBottom: '5px' }}
               >
                 #{board.category}
               </Text>

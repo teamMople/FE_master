@@ -12,6 +12,7 @@ function Button({
   color,
   shape,
   disabled,
+  fontSize,
   ...props
 }) {
   return (
@@ -25,6 +26,7 @@ function Button({
       color={color}
       shape={shape}
       disabled={disabled}
+      fontSize={fontSize}
       {...props}
     >
       {props.children}
@@ -43,6 +45,7 @@ Button.propTypes = {
   secondary: PropTypes.bool,
   color: PropTypes.any,
   shape: PropTypes.oneOf(['circular', 'rounded']),
+  fontSize: PropTypes.string,
 };
 
 Button.defaultProps = {
@@ -81,7 +84,8 @@ const B = styled.button`
       ? theme.colors.white
       : theme.colors.blue};
   border-radius: ${({ shape }) => (shape === 'rounded' ? '10px' : '10em')};
-  font-size: ${({ size }) => (size === 'tiny' ? '10px' : '14px')};
+  font-size: ${({ size, fontSize }) =>
+    fontSize ? fontSize : size === 'tiny' ? '10px' : '14px'};
   display: flex;
   justify-content: center;
   align-items: center;

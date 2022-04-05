@@ -43,6 +43,7 @@ const CommentInputWindow = (props, { ref }) => {
           ref={ref}
           shape={'rounded'}
           size={'tiny'}
+          fontSize={'14px'}
           height={'30px'}
           backgroundColor={themeContext.colors.backgroundGray}
           color={themeContext.colors.blue}

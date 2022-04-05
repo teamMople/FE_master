@@ -37,6 +37,7 @@ const openviduApi = axios.create({
 /* eslint-disable no-param-reassign */
 authApi.interceptors.request.use(function (config) {
   const accessToken = getCookie('token');
+  console.log(accessToken);
   config.headers.common.Authorization = `Bearer ${accessToken}`;
   return config;
 });

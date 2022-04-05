@@ -31,15 +31,21 @@ function LiveBoardList(props) {
         <Grid
           center
           backgroundColor={themeContext.colors.backgroundGray}
-          padding="32px 24px 0px 24px"
+          style={{ minHeight: '100%' }}
         >
-          {data.map((board, index) => {
-            return (
-              <Grid key={index} padding="0px 0px 16px 0px">
-                <Tile type="live" board={board} />
-              </Grid>
-            );
-          })}
+          <Grid
+            center
+            backgroundColor={themeContext.colors.backgroundGray}
+            padding="32px 24px 0px 24px"
+          >
+            {data.map((board, index) => {
+              return (
+                <Grid key={index} padding="0px 0px 16px 0px">
+                  <Tile type="live" board={board} />
+                </Grid>
+              );
+            })}
+          </Grid>
         </Grid>
       ) : (
         <Grid

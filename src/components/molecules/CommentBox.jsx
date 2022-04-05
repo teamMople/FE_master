@@ -54,6 +54,8 @@ const CommentBox = (props) => {
 
   const replyCommentInfo = { commentId, replyContent };
 
+  console.log(comment);
+
   if (
     replyCommentListStatus === 'idle' ||
     replyCommentListStatus === 'loading'
@@ -106,9 +108,13 @@ const CommentBox = (props) => {
                   setIsVisible(!isVisible);
                 }}
               >
-                <Grid margin="0px 5px 0px 0px">
+                <Grid margin="0px 5px 0px 0px" isFlex>
                   <img
-                    src="/asset/icons/Comment_replynumber.svg"
+                    src={`/asset/icons/${
+                      localStorage.getItem('theme') === 'dark'
+                        ? 'Comment_replynumber_light.svg'
+                        : 'Comment_replynumber.svg'
+                    }`}
                     alt="reply_number"
                   />
                 </Grid>
@@ -127,9 +133,13 @@ const CommentBox = (props) => {
                   dispatch(recommendCommentAsync(commentId));
                 }}
               >
-                <Grid margin="0px 5px 0px 0px">
+                <Grid margin="0px 5px 0px 0px" isFlex>
                   <img
-                    src="/asset/icons/Comment_recommend.svg"
+                    src={`/asset/icons/${
+                      localStorage.getItem('theme') === 'dark'
+                        ? 'Comment_recommend_light.svg'
+                        : 'Comment_recommend.svg'
+                    }`}
                     alt="comment_recommend"
                   />
                 </Grid>

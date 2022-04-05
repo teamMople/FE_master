@@ -46,7 +46,11 @@ const ProfileBox = (props) => {
         >
           {props.nickname}
         </Text>
-        <Text size="10px" lineHeight="18px" color={themeContext.colors.gray}>
+        <Text
+          size="10px"
+          lineHeight="18px"
+          color={themeContext.colors.placeholder}
+        >
           {getDateString(props.createdAt)}
         </Text>
       </Grid>

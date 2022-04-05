@@ -18,7 +18,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     height: inherit;
     //overflow: hidden;
-    // background-color: ${({ theme }) => theme.colors.blue};
+    background-color: ${({ theme }) => theme.colors.white};
     background-image: ${isBrowser && `url('/asset/image/bg.png')`} ;
     background-repeat: no-repeat;
     background-size: cover;

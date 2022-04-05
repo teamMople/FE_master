@@ -6,8 +6,6 @@ import {
   BASE_S3_URL,
 } from '../../shared/utils/awsBucketConfig';
 import { createBoardAsync } from 'modules/boards';
-import { createNewNotification } from 'modules/notifications';
-import { useNavigate } from 'react-router-dom';
 
 import styled, { ThemeContext } from 'styled-components';
 import {
@@ -63,7 +61,7 @@ function CreateBoard(props) {
   const [imageUrl, setImageUrl] = useState('');
 
   const hiddenImageInput = React.useRef(null);
-  const handleImageClick = (e) => {
+  const handleImageClick = () => {
     hiddenImageInput.current.click();
   };
 
@@ -119,6 +117,7 @@ function CreateBoard(props) {
         <Header
           label="게시글 작성"
           leftArrow
+          disabled={category === '' || title === '' || content === ''}
           rightButtonRender={{
             label: '완료',
             onClickButton: (e) => {
@@ -162,6 +161,7 @@ function CreateBoard(props) {
           placeholder="토론하고 싶은 내용을 작성해주세요"
           onChange={changeContent}
           lineHeight="18px"
+          value={content}
         />
         {previewImage && <Image src={previewImage} shape={'rectangle'} />}
         <Text tiny right color={themeContext.colors.darkGray}>

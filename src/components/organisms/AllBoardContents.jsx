@@ -19,22 +19,31 @@ const AllBoardContents = (props) => {
           boards.map((board, index) => {
             return (
               <BoardWrapper key={index}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <AlignWrapper>
                   <Image shape="circle" size={32} src={board.profileImageUrl} />
-                  <Text
-                    style={{ marginLeft: '8px' }}
-                    onClick={() => {
-                      navigate('/board/' + board.id);
-                    }}
-                  >
-                    {board.title.length > 12
-                      ? board.title.slice(0, 12) + '...'
-                      : board.title}
-                    ({board.commentCount})
-                  </Text>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div style={{ marginLeft: '8px' }}>
+                    <Text
+                      small
+                      color={themeContext.colors.blue}
+                      style={{ marginBottom: '4px' }}
+                    >
+                      # {board.category}
+                    </Text>
+                    <Text
+                      semiBold
+                      onClick={() => {
+                        navigate('/board/' + board.id);
+                      }}
+                    >
+                      {board.title.length > 12
+                        ? board.title.slice(0, 12) + '...'
+                        : board.title}
+                      ({board.commentCount})
+                    </Text>
+                  </div>
+                </AlignWrapper>
+                <AlignWrapper>
+                  <AlignWrapper>
                     {localStorage.getItem('theme') === 'dark' ? (
                       <img src="/asset/icons/Agreed_white.svg" alt="icon" />
                     ) : (
@@ -44,7 +53,7 @@ const AllBoardContents = (props) => {
                     <Text style={{ marginLeft: '10px' }}>
                       {board.agreeCount}
                     </Text>
-                  </div>
+                  </AlignWrapper>
                   <div
                     style={{
                       display: 'flex',
@@ -61,7 +70,7 @@ const AllBoardContents = (props) => {
                       {board.disagreeCount}
                     </Text>
                   </div>
-                </div>
+                </AlignWrapper>
               </BoardWrapper>
             );
           })}
@@ -85,6 +94,11 @@ const BoardWrapper = styled.div`
   &:active {
     background-color: ${({ theme }) => theme.colors.lightGray};
   }
+`;
+
+const AlignWrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 const NewGrid = styled(Grid)``;
 

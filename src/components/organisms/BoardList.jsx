@@ -35,6 +35,7 @@ const BoardList = (props) => {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Image shape="circle" size={32} src={board.profileImageUrl} />
               <Text
+                semiBold
                 style={{ marginLeft: '8px' }}
                 onClick={() => {
                   navigate('/board/' + board.id);

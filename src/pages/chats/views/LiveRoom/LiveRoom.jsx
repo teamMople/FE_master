@@ -775,10 +775,16 @@ const LiveRoom = () => {
                 live
                 liveBackgroundColor={themeContext.colors.blue}
                 count={roomSubscribers.length + 1}
+                maxParticipantCount={joinRoomStatus.maxParticipantCount}
               />
               <StatusBox
                 label={'hosted by'}
                 text={joinRoomStatus.moderatorNickname}
+                gap={'3px'}
+                // backgroundColor={themeContext.colors.white}
+              />
+              <StatusBox
+                text={`# ${joinRoomStatus.category}`}
                 gap={'3px'}
                 // backgroundColor={themeContext.colors.white}
               />

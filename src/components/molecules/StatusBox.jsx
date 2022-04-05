@@ -14,6 +14,7 @@ const StatusBox = ({
   backgroundColor,
   live,
   liveBackgroundColor,
+  maxParticipantCount,
 }) => {
   const themeContext = useContext(ThemeContext);
   return (
@@ -25,7 +26,12 @@ const StatusBox = ({
           {label}
         </Text>
       )}
-      {count && <Text style={{ marginLeft: gap }}>{count}</Text>}
+      {count && (
+        <Text style={{ marginLeft: gap }}>
+          {count}
+          {maxParticipantCount && ` / ${maxParticipantCount}`}
+        </Text>
+      )}
       {text && <Text style={{ marginLeft: gap }}>{text}</Text>}
     </Box>
   );
@@ -41,6 +47,7 @@ StatusBox.propTypes = {
   backgroundColor: PropTypes.string,
   live: PropTypes.bool,
   liveBackgroundColor: PropTypes.string,
+  maxParticipantCount: PropTypes.number,
 };
 
 StatusBox.defaultProps = {

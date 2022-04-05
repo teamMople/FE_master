@@ -23,11 +23,13 @@ const CardCarousel = (props) => {
         <Text bold size="20px">
           {label}
         </Text>
-        <IconButton
-          src={'/asset/icons/Redo.svg'}
-          onClick={() => window.location.reload()}
-          medium
-        />
+        {type === 'live' && (
+          <IconButton
+            src={'/asset/icons/Redo.svg'}
+            onClick={() => window.location.reload()}
+            medium
+          />
+        )}
       </Grid>
       {isIphoneSE ? (
         <Carousel

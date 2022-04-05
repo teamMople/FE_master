@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { OpenVidu } from 'openvidu-browser';
 import {
   closeRoomAsync,
-  leaveRoomAsync,
   ovGetTokenAsync,
   removeAllRoomSubscribers,
   removeRoomSubscriber,
@@ -40,7 +39,7 @@ import {
 } from './style';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { setModalOpen } from '../../../../modules/modal';
+import { selectModalOpen, setModalOpen } from '../../../../modules/modal';
 
 //!Todo 마이크 선택 가능하도록!!
 
@@ -70,8 +69,7 @@ const LiveRoom = () => {
   const roomSubscribers = useSelector((state) => state.chats.room.subscribers);
   const joinRoomStatus = useSelector(selectRoomState);
   const memberVoteStatus = useSelector((state) => state.chats.vote.voteStatus);
-  // const session = useSelector((state) => state.chats.session.session);
-  // const OV = useSelector((state) => state.chats.session.OV);
+  const modalState = useSelector(selectModalOpen);
 
   const [OV, setOV] = useState(new OpenVidu());
   const [session, setSession] = useState(OV.initSession());
@@ -79,20 +77,19 @@ const LiveRoom = () => {
   // Socket 초기화 - 여기서 초기화 해주고...
   let messageSock = new SockJS(process.env.REACT_APP_SOCKET_MESSAGE_URL);
   let voteSock = new SockJS(process.env.REACT_APP_SOCKET_VOTE_URL);
-  // let messageStomp = Stomp.over(function () {
-  //   return messageSock;
-  // });
-  // messageStomp.reconnect_delay = 3000;
   let messageStomp = over(messageSock);
   let voteStomp = over(voteSock);
 
-  const sendLeaveToSocket = async (streamManager) => {
-    let chatMessage = {
-      sender: streamManager ? streamManager : joinRoomStatus.memberName,
+  const sendLeaveToSocket = async () => {
+    let sendData = {
+      sender: joinRoomStatus.memberName,
       type: 'LEAVE',
       roomId: joinRoomStatus.roomId,
+      role: joinRoomStatus.role,
+      agreed: memberVoteStatus.memberAgreed,
+      disagreed: memberVoteStatus.memberDisagreed,
     };
-    messageStomp.send('/pub/chat/message', {}, JSON.stringify(chatMessage));
+    messageStomp.send('/pub/chat/message', {}, JSON.stringify(sendData));
   };
   window.onpopstate = function (event) {
     // "event" object seems to contain value only when the back button is clicked
@@ -104,7 +101,7 @@ const LiveRoom = () => {
       if (joinRoomStatus.role !== 'MODERATOR') {
         leaveRoom().then(() => navigate('/home', { replace: true }));
       } else {
-        sendForceLeave().then(() => leaveRoom2());
+        sendForceLeave().then(() => leaveRoom());
       }
     } else {
       // Continue user action through link or button
@@ -167,6 +164,7 @@ const LiveRoom = () => {
   }, []);
   // 방 종료 시 참여자들에게 메세지 보내기
   const [closeState, setCloseState] = useState(false);
+  const [notExist, setNotExistModal] = useState(false);
   const sendForceLeave = async () => {
     const options = {
       data: JSON.stringify({ noModerator: true }),
@@ -174,15 +172,18 @@ const LiveRoom = () => {
     };
     await session
       .signal(options)
-      .then(() => console.log('(SEND) 방장이 존재하지 않습니다!'))
+      .then(() => {
+        sendLeaveToSocket();
+        console.log('(SEND) 방장이 존재하지 않습니다!');
+      })
       .catch((error) => console.error(error));
     setCloseState(true); // 방 종료 상태 관리
   };
   const receiveForceLeave = () => {
     if (session && joinRoomStatus.role !== 'MODERATOR') {
       session.on('signal:forceLeave', (event) => {
-        dispatch(setModalOpen(true)); // 참여자에게 라이브 종료 팝업창 띄우기
         leaveRoom().then((r) => r);
+        dispatch(setModalOpen({ open: true, type: 'close' })); // 참여자에게 라이브 종료 팝업창 띄우기
         console.log('(RECEIVE) 방장이 존재하지 않습니다!');
       });
     }
@@ -200,15 +201,11 @@ const LiveRoom = () => {
     }
   };
   const joinSession = async () => {
-    // dispatch(
-    //   setInit({ OV: new OpenVidu(), session: new OpenVidu().initSession() }),
-    // );
     await subscribeToStreamCreated();
-
+    await connectToSession();
     // await session.on('exception', (exception) => {
     //   console.warn(exception);
     // });
-    await connectToSession();
   };
 
   const deleteSubscriber = (streamManager) => {
@@ -223,7 +220,6 @@ const LiveRoom = () => {
         // subscribers.push(subscriber);
         // setSubscribersState(subscribers);
 
-        // 전역으로 관리하지 않으면 갱신된 정보를 시각적으로 받아 볼 수 없다!!!! 으아!!!!! 짜증나!!!!
         const data = subscriber.stream.connection.data.split('%')[0];
         const imageUrl = JSON.parse(data).profileImageUrl;
         dispatch(
@@ -297,8 +293,6 @@ const LiveRoom = () => {
       mirror: false, // Whether to mirror your local video or not
     });
 
-    // subscribeToStreamDestroyed();
-
     await session.publish(initPublisher);
     setPublisher(initPublisher);
     setPublisherProfileImage(localStorage.getItem('profileImageUrl'));
@@ -319,30 +313,20 @@ const LiveRoom = () => {
       .catch((err) => {
         console.error(err);
         navigate('/home', { replace: true });
-        // alert('ERORORORRORO');
       });
   };
 
   const leaveRoom = async () => {
-    const data = {
-      roomId: joinRoomStatus.roomId,
-      memberName: joinRoomStatus.memberName,
-      role: joinRoomStatus.role,
-      agreed: memberVoteStatus.memberAgreed,
-      disagreed: memberVoteStatus.memberDisagreed,
-    };
-
-    // await dispatch(leaveRoomAsync(data)).then(() => deleteToken());
-    await dispatch(leaveRoomAsync(data)).then(() => leaveRoom2());
-  };
-  const leaveRoom2 = async () => {
     if (joinRoomStatus.role === 'MODERATOR') {
       await closeRoom();
+    } else {
+      if (modalState.type !== 'close') {
+        dispatch(setModalOpen({ open: true, type: 'leave' })); // 참여자에게 비정상적으로 방을 떠났다는 팝업 띄우기
+      }
     }
-    // await setUnsubscribe(true);
     // 2. 전역에서 관리하고 있는 Subscribers 목록을 초기화한다.
     await dispatch(removeAllRoomSubscribers());
-    // 1. 소켓 연결을 끊는다.
+    // 1. Leave 메시지를 각 소켓 앤드포인트에 보낸다.
     await sendLeaveToSocket();
     // 3. session 연결을 끊는다.
     await leaveSession();
@@ -352,35 +336,6 @@ const LiveRoom = () => {
     await navigate('/home', { replace: true });
     // await (window.location.href = `/home`);
   };
-  /*const deleteToken = async () => {
-    const openviduData = {
-      roomId: joinRoomStatus.roomId,
-      memberName: joinRoomStatus.memberName,
-      role: joinRoomStatus.role,
-      token: localStorage.getItem('OVAccessToken'),
-    };
-    await dispatch(ovDeleteTokenAsync(openviduData))
-      .then(async () => {
-        //!Todo 주석 풀 것!
-        // alert('퇴장 토큰 삭제 성공!');
-        if (joinRoomStatus.role === 'MODERATOR') {
-          // await sendForceLeave();
-          await closeRoom();
-        }
-        await setUnsubscribe(true);
-        // 1. 소켓 연결을 끊는다.
-        await disconnectSocket();
-        // 2. 전역에서 관리하고 있는 Subscribers 목록을 초기화한다.
-        await dispatch(removeAllRoomSubscribers());
-        // 3. session 연결을 끊는다.
-        await leaveSession();
-        // 4. 로컬 저장소에 저장한 openvidu token 을 제거한다.
-        await localStorage.removeItem('OVAccessToken');
-        // 5. 페이지를 이동시킨다.
-        await navigate('/home', { replace: true });
-      })
-      .catch(() => alert('퇴장 토큰 삭제 실패!'));
-  };*/
 
   // 마이크 상태가 변할 때 메세지를 보낸다
   const sendChangeMicStatus = () => {
@@ -772,6 +727,14 @@ const LiveRoom = () => {
 
   return (
     <>
+      {/*<BasicModal*/}
+      {/*  open={notExist}*/}
+      {/*  onConfirm={() => {*/}
+      {/*    setNotExistModal(false);*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  이미 종료된 방입니다*/}
+      {/*</BasicModal>*/}
       <BasicModal
         open={closeState}
         onConfirm={() => {
@@ -792,7 +755,7 @@ const LiveRoom = () => {
                 color={themeContext.colors.black}
                 onClick={leaveRoom}
               >
-                방 나기기
+                방 나가기
               </Button>
             )}
             {publisher && isModerator(publisher) && (

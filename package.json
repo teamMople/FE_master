@@ -1,6 +1,6 @@
 {
-  "name": "front-end",
-  "version": "0.1.0",
+  "name": "bolier-plate",
+  "version": "alpha 0.1.1",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.12.3",

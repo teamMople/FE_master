@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense } from 'react';
+import React, { useEffect, Suspense, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import apis from 'apis/apis';
 
@@ -40,15 +40,18 @@ import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
 import GlobalStyle from '../styles/globalStyles';
 import { PageLoading, Report } from 'components';
 import { getCookie } from '../utils/Cookie';
+import { BasicModal, PageLoading } from 'components';
 
 import { firebaseApp } from 'shared/utils/firebase';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { useDispatch, useSelector } from 'react-redux';
 import { addNotificationList } from 'modules/notifications';
 import { selectDarkTheme } from '../../modules/serviceTheme';
+import AllBoardList from '../../pages/boards/AllBoardList';
 
 function App() {
   const dispatch = useDispatch();
+  const [openModal, setOpenModal] = useState(false);
 
   // Firebase Cloud Messaging
   const token = getCookie('token');
@@ -95,6 +98,31 @@ function App() {
     console.warn = function no_console() {};
   }
 
+  // 마이크 사용 요청 to user
+  useEffect(() => {
+    getLocalStream();
+  }, []);
+  function getLocalStream() {
+    navigator.mediaDevices
+      .getUserMedia({ video: false, audio: true })
+      .then((stream) => {
+        window.localStream = stream; // A
+      })
+      .catch((err) => {
+        if (err.name === 'ConstraintNotSatisfiedError') {
+          console.error('not supported by your device.');
+        } else if (err.name === 'PermissionDeniedError') {
+          console.error(
+            'Permissions have not been granted to use your camera and ' +
+              'microphone, you need to allow the page access to your devices in ' +
+              'order for the demo to work.',
+          );
+        }
+        setOpenModal(true);
+        console.log('u got an error:' + err);
+      });
+  }
+
   // 테마 변경
   const darkThemeState = useSelector(selectDarkTheme);
 
@@ -113,6 +141,17 @@ function App() {
   return (
     <ThemeProvider theme={themeState}>
       <GlobalStyle />
+      <BasicModal
+        open={openModal}
+        close={openModal}
+        onClose={() => setOpenModal(false)}
+        onConfirm={() => {
+          setOpenModal(false);
+          window.location.reload();
+        }}
+      >
+        모든 권한을 허용하지 않으면 서비스를 이용하실 수 없습니다.
+      </BasicModal>
       <BrowserRouter history={history}>
         <Suspense fallback={<PageLoading />}>
           <Routes>
@@ -129,6 +168,8 @@ function App() {
             <Route path={'/room/create'} element={<CreateRoom />} />
             <Route path={'/room/:roomId'} element={<LiveRoom />} />
             <Route path="/home" element={<Home />} />
+            <Route path="/recent" element={<AllBoardList type={'recent'} />} />
+            <Route path="/hot" element={<AllBoardList type={'hot'} />} />
             <Route path="/search" element={<SearchBoard />}>
               <Route path="result" element={<CombinedBoardList />} />
               <Route path="result/general" element={<CombinedBoardList />} />
@@ -175,7 +216,7 @@ function App() {
           </Routes>
         </Suspense>
         <Nav />
-        <Report />
+        {/*<Report />*/}
       </BrowserRouter>
     </ThemeProvider>
   );

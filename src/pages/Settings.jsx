@@ -54,7 +54,7 @@ function Settings() {
       >
         정말 로그아웃을 하시겠습니까?
       </BasicModal>
-      <NewWrapper padding="0 12px">
+      <NewWrapper padding="0 24px">
         <Header label="설정" leftArrow />
         <Grid margin="12px 0px 40px 0px">
           <MenuItem onClick={() => navigate('/editmyprofile')}>
@@ -110,7 +110,7 @@ function Settings() {
           </MenuItem>
           <MenuItem>
             <Text>버전</Text>
-            <Text small>v {process.env.REACT_APP_VERSION}</Text>
+            <Text small>version {process.env.REACT_APP_VERSION}</Text>
           </MenuItem>
         </Grid>
       </NewWrapper>

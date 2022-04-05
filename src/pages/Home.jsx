@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import styled, { ThemeContext } from 'styled-components';
 import {
@@ -28,6 +28,11 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { selectModalOpen, setModalOpen } from 'modules/modal';
 import { useNavigate } from 'react-router-dom';
+import {
+  getBoardHotListAsync,
+  clearBoardHotList,
+  selectedBoardHotList,
+} from 'modules/boardsHot';
 
 const Home = () => {
   const themeContext = useContext(ThemeContext);
@@ -39,24 +44,45 @@ const Home = () => {
   const { data: liveBoards, status: liveBoardsStatus } = useSelector(
     selectedLiveBoardList,
   );
+  const { data: boardsHot, status: boardsHotStatus } =
+    useSelector(selectedBoardHotList);
   const modalState = useSelector(selectModalOpen);
 
-  React.useEffect(() => {
-    dispatch(getBoardListAsync(50));
-    dispatch(getLiveBoardListAsync(50));
+  useEffect(() => {
+    dispatch(getBoardListAsync({ size: 20, page: 0 }));
     return () => {
       dispatch(clearBoardList());
+    };
+  }, []);
+  useEffect(() => {
+    dispatch(getBoardHotListAsync({ size: 5, page: 0 }));
+    return () => {
+      dispatch(clearBoardHotList());
+    };
+  }, []);
+
+  useEffect(() => {
+    dispatch(getLiveBoardListAsync(50));
+    return () => {
       dispatch(clearLiveBoardList());
     };
-  }, [dispatch]);
+  }, [modalState.open]);
 
-  if (basicBoardsStatus === 'loading' || liveBoardsStatus === 'loading') {
+  if (
+    basicBoardsStatus === 'loading' ||
+    liveBoardsStatus === 'loading' ||
+    boardsHotStatus === 'loading'
+  ) {
     return (
       <Wrapper backgroundColor={themeContext.colors.white}>
         <PageLoading />
       </Wrapper>
     );
-  } else if (basicBoardsStatus === 'failed' || liveBoardsStatus === 'failed') {
+  } else if (
+    basicBoardsStatus === 'failed' ||
+    liveBoardsStatus === 'failed' ||
+    boardsHotStatus === 'failed'
+  ) {
     return (
       <Wrapper backgroundColor={themeContext.colors.white}>
         <BackDrop />
@@ -78,10 +104,18 @@ const Home = () => {
         {/* 라이브 종료 팝업 ::start:: */}
         <BasicModal
           open={modalState.open}
-          onClose={() => dispatch(setModalOpen(false))}
-          onConfirm={() => dispatch(setModalOpen(false))}
+          onClose={() => {
+            dispatch(setModalOpen({ open: false }));
+          }}
+          onConfirm={() => {
+            dispatch(setModalOpen({ open: false }));
+          }}
         >
-          방장이 라이브를 종료하였습니다.
+          {modalState.type === 'close'
+            ? '방장이 라이브를 종료하였습니디'
+            : modalState.type === 'leave'
+            ? '라이브를 떠났습니다'
+            : ''}
         </BasicModal>
         {/* 라이브 종료 팝업 ::end:: */}
         <Wrapper backgroundColor={themeContext.colors.backgroundGray}>
@@ -91,8 +125,13 @@ const Home = () => {
               type="live"
               boards={liveBoards}
             />
-            <BoardList label="HOT 게시글" boards={basicBoards} />
+            <BoardList label="HOT 게시글" boards={boardsHot} type={'hot'} />
             <EventCarousel />
+            <BoardList
+              label="최신 게시글"
+              boards={basicBoards}
+              type={'recent'}
+            />
             <CardCarousel
               label="내가 참여 중인 토론방"
               type="basic"

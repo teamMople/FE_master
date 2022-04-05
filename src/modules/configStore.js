@@ -3,6 +3,7 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 import boardReducer from './boards';
+import boardHotReducer from './boardsHot';
 import chatReducer from './chat';
 import combinedBoardReducer from './combinedBoards';
 import commentReducer from './comments';
@@ -17,6 +18,7 @@ import themeReducer from './serviceTheme';
 // Root Reducer
 export const rootReducer = combineReducers({
   boards: boardReducer,
+  boardsHot: boardHotReducer,
   chats: chatReducer,
   combinedBoards: combinedBoardReducer,
   comments: commentReducer,

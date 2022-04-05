@@ -60,7 +60,7 @@ const BoardDetail = (props, ref) => {
     setIsReportModalOpened(true);
   };
 
-  const isMyBoard = (props) => {
+  const isMyBoard = () => {
     const nickname = localStorage.getItem('nickname');
     if (nickname === detail.nickname) {
       return true;
@@ -126,7 +126,7 @@ const BoardDetail = (props, ref) => {
       </BasicModal>
       <Grid padding="0px 24px 0px 24px">
         <Grid isFlex>
-          <Header label="" leftArrow />
+          <Header label={detail.category} leftArrow style={{ width: '100%' }} />
           <KebabMenu
             showPrivateMenu={isMyBoard()}
             isPrivateMenu={isPrivateKebabMenu}
@@ -182,10 +182,12 @@ const BoardDetail = (props, ref) => {
           <Text style={{ marginRight: '20px' }}>
             댓글 수 ({comments.length})
           </Text>
-          <ToggleButton
-            active={showComments}
-            onClick={() => setShowComments(!showComments)}
-          />
+          {comments.length !== 0 && (
+            <ToggleButton
+              active={showComments}
+              onClick={() => setShowComments(!showComments)}
+            />
+          )}
         </Grid>
       </Grid>
       {showComments && <CommentList comments={comments} />}

@@ -84,7 +84,14 @@ const ReportBoard = (props) => {
               유의하시어 신중하게 신고해주세요.
             </Text>
           </Grid>
-          <Button secondary>확인</Button>
+          <Button
+            secondary
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            확인
+          </Button>
         </Grid>
       </Grid>
     </Wrapper>

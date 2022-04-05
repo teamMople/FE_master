@@ -50,39 +50,39 @@ function App() {
   const dispatch = useDispatch();
 
   // Firebase Cloud Messaging
-  const firebaseMessaging = getMessaging(firebaseApp);
-  getToken(firebaseMessaging, {
-    vapidKey: process.env.REACT_APP_VAPID_KEY,
-  })
-    .then((currentToken) => {
-      console.log(currentToken);
-      if (currentToken) {
-        apis.pushAlarm(currentToken).then((response) => {
-          console.log(response);
-        });
-      } else {
-        console.log('not alarm registered');
-      }
-    })
-    .catch((error) => console.log(error));
+  // const firebaseMessaging = getMessaging(firebaseApp);
+  // getToken(firebaseMessaging, {
+  //   vapidKey: process.env.REACT_APP_VAPID_KEY,
+  // })
+  //   .then((currentToken) => {
+  //     console.log(currentToken);
+  //     if (currentToken) {
+  //       apis.pushAlarm(currentToken).then((response) => {
+  //         console.log(response);
+  //       });
+  //     } else {
+  //       console.log('not alarm registered');
+  //     }
+  //   })
+  //   .catch((error) => console.log(error));
 
-  onMessage(firebaseMessaging, (payload) => {
-    console.log('foregroundMessage');
-    console.log(payload);
+  // onMessage(firebaseMessaging, (payload) => {
+  //   console.log('foregroundMessage');
+  //   console.log(payload);
 
-    const date = new Date();
-    const now = date.getTime();
+  //   const date = new Date();
+  //   const now = date.getTime();
 
-    if (payload) {
-      dispatch(
-        addNotificationList({
-          title: payload.notification.title,
-          body: payload.notification.body,
-          createdAt: now,
-        }),
-      );
-    }
-  });
+  //   if (payload) {
+  //     dispatch(
+  //       addNotificationList({
+  //         title: payload.notification.title,
+  //         body: payload.notification.body,
+  //         createdAt: now,
+  //       }),
+  //     );
+  //   }
+  // });
 
   // Webpack production mode
   if (process.env.NODE_ENV === 'production') {

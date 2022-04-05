@@ -34,6 +34,7 @@ export const loginAsync = createAsyncThunk(
           console.log(response);
           if (response.status === 200) {
             setCookie('token', response.headers.authorization, 1);
+            localStorage.setItem('userId', response.data.userId);
             localStorage.setItem('email', response.data.email);
             localStorage.setItem('nickname', response.data.nickname);
             navigate('/home');
@@ -85,8 +86,10 @@ export const kakaoLoginAsync = createAsyncThunk(
       .then((response) => {
         console.log(response);
         if (response.status === 200) {
-          setCookie('token', response.data.Authorization, 1);
+          // setCookie('token', response.data.Authorization, 1);
           localStorage.setItem('token', response.data.Authorization);
+          setCookie('token', localStorage.getItem('token'), 1);
+          localStorage.removeItem('token');
           localStorage.setItem('userId', response.data.userId);
           localStorage.setItem('email', response.data.email);
           localStorage.setItem('nickname', response.data.nickname);

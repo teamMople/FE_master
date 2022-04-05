@@ -28,10 +28,6 @@ const Splash = () => {
   })
     .then((currentToken) => {
       if (currentToken) {
-        console.log(currentToken);
-        apis.pushAlarm(currentToken).then((response) => {
-          console.log(response);
-        });
         setIsVisible(true);
         setIsOpened(false);
       } else {

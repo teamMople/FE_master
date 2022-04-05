@@ -79,10 +79,12 @@ export const naverLoginAsync = createAsyncThunk(
 export const kakaoLoginAsync = createAsyncThunk(
   'users/kakaoLogin',
   async (code) => {
+    console.log(code);
     const navigate = useNavigate();
-    await axios
-      .get(`https://api.www.boiler-plate.org/api/kakao/login?code=${code}`)
+    await apis
+      .kakaoLogin(code)
       .then((response) => {
+        console.log(response);
         if (response.status === 200) {
           setCookie('token', response.headers.authorization, 1);
           localStorage.setItem('email', response.data.email);
@@ -241,7 +243,6 @@ export const userSlice = createSlice({
     },
     [loginAsync.fulfilled]: (state, { payload }) => {
       state.isLogin = true;
-      return { ...state, payload };
     },
     [loginAsync.rejected]: (state, action) => {
       state.isLogin = false;
@@ -251,7 +252,6 @@ export const userSlice = createSlice({
     },
     [googleLoginAsync.fulfilled]: (state, { payload }) => {
       state.isLogin = true;
-      return { ...state, payload };
     },
     [googleLoginAsync.rejected]: (state, action) => {
       state.isLogin = false;
@@ -261,7 +261,6 @@ export const userSlice = createSlice({
     },
     [naverLoginAsync.fulfilled]: (state, { payload }) => {
       state.isLogin = true;
-      return { ...state, payload };
     },
     [naverLoginAsync.rejected]: (state, action) => {
       state.isLogin = false;
@@ -271,7 +270,6 @@ export const userSlice = createSlice({
     },
     [kakaoLoginAsync.fulfilled]: (state, { payload }) => {
       state.isLogin = true;
-      return { ...state, payload };
     },
     [kakaoLoginAsync.rejected]: (state, action) => {
       state.isLogin = false;
@@ -281,7 +279,6 @@ export const userSlice = createSlice({
     },
     [signupAsync.fulfilled]: (state, { payload }) => {
       state.isLogin = false;
-      return { ...state, payload };
     },
     [signupAsync.rejected]: (state, action) => {
       state.isLogin = false;

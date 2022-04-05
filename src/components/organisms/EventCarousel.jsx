@@ -21,13 +21,20 @@ const EventCarousel = () => {
       >
         <EventImageWrapper>
           <img
-            src={'/asset/event/coffee.png'}
+            src={'/asset/event/feedback_reward.png'}
             alt="event_image"
             onClick={() => window.open('https://forms.gle/H4dX3qQYKDCstNMp6')}
           />
         </EventImageWrapper>
         <EventImageWrapper>
-          <img src={'/asset/event/baemin.png'} alt="event_image" />
+          <img
+            src={'/asset/event/bug_report_reward.png'}
+            alt="event_image"
+            onClick={() => window.open('https://forms.gle/4rnNPK61UeoYBT996')}
+          />
+        </EventImageWrapper>
+        <EventImageWrapper>
+          <img src={'/asset/event/best_reward.png'} alt="event_image" />
         </EventImageWrapper>
       </Carousel>
     </Grid>

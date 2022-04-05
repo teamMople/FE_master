@@ -14,25 +14,15 @@ const OAuthRedirectHandler = (props) => {
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
 
-  let params = new URL(window.location).searchParams;
-  let code = params.get('code');
-  console.log(code);
+  console.log(window.location);
+  console.log(document.location);
 
   useEffect(() => {
-    switch (provider) {
-      case 'google':
-        dispatch(googleLoginAsync(code));
-        break;
-      case 'naver':
-        dispatch(naverLoginAsync(code));
-        break;
-      case 'kakao':
-        dispatch(kakaoLoginAsync(code));
-        break;
-      default:
-        return;
-    }
-  }, [dispatch, code]);
+    let params = new URL(document.location.toString()).searchParams;
+    let code = params.get('code');
+    console.log(code);
+    dispatch(kakaoLoginAsync(code));
+  }, []);
 
   return (
     <Wrapper full backgroundColor={themeContext.colors.white}>

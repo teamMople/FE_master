@@ -93,7 +93,7 @@ export const kakaoLoginAsync = createAsyncThunk(
             'profileImageUrl',
             response.data.profileImageUrl,
           );
-          window.location.replace('/home');
+          // window.location.replace('/home');
         }
       })
       .catch((error) => {

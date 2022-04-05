@@ -26,7 +26,8 @@ import {
   Loading,
   Inactivate,
   ChangePassword,
-} from '../../pages';
+  ReportBoard,
+} from 'pages';
 import '../styles/App.css';
 
 import { darkTheme, lightTheme } from '../styles/theme';
@@ -152,6 +153,7 @@ function App() {
               </Route>
             </Route>
             <Route path="/board/:boardId" element={<BoardDetail />} />
+            <Route path="board/report/:boardId" element={<ReportBoard />} />
             <Route path="/createboard" element={<CreateBoard />} />
             <Route path="/myaccount" element={<MyAccount />}>
               <Route path="boards" element={<BoardList />} />

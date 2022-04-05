@@ -3,7 +3,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button } from 'components/atoms';
 
-const KAKAO_LOGIN_URL = process.env.REACT_APP_KAKAO_LOGIN_URL;
+const KAKAO_LOGIN_URL =
+  'https://kauth.kakao.com/oauth/authorize?client_id=91ee90dad2384a8f06ab7106b2f92daf&redirect_uri=https://www.boiler-plate.org/api/kakao/login&response_type=code';
 
 const handleOAuthLoginClick = (url) => () => {
   window.location.replace(url);

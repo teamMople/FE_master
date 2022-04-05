@@ -38,9 +38,8 @@ import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
 import LiveRoom from '../../pages/chats/views/LiveRoom/LiveRoom';
 import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
 import GlobalStyle from '../styles/globalStyles';
-import { PageLoading, Report } from 'components';
+import { BasicModal, PageLoading, Report } from 'components';
 import { getCookie } from '../utils/Cookie';
-import { BasicModal, PageLoading } from 'components';
 
 import { firebaseApp } from 'shared/utils/firebase';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';

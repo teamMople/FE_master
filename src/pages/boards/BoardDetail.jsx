@@ -189,6 +189,7 @@ const BoardDetail = (props, ref) => {
         </Grid>
       </Grid>
       {showComments && <CommentList comments={comments} />}
+      <Grid width="100%" height={'84px'} />
       <CommentInputWindow boardId={boardId} ref={inputRef} />
     </Wrapper>
   );

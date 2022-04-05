@@ -7,7 +7,11 @@ const KAKAO_LOGIN_URL =
   'https://kauth.kakao.com/oauth/authorize?client_id=91ee90dad2384a8f06ab7106b2f92daf&redirect_uri=https://www.boiler-plate.org/api/kakao/login&response_type=code';
 
 const handleOAuthLoginClick = (url) => () => {
-  window.location.replace(url);
+  if (localStorage.getItem('token')) {
+    window.location.assign('/home');
+  } else {
+    window.location.replace(url);
+  }
 };
 
 const OAuthLoginButtons = ({ ...props }) => {

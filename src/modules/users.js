@@ -81,9 +81,7 @@ export const kakaoLoginAsync = createAsyncThunk(
   async (code) => {
     const navigate = useNavigate();
     await axios
-      .get(
-        `https://ebhojun-env.eba-pra2gntr.ap-northeast-2.elasticbeanstalk.com/api/kakao/login?code=${code}`,
-      )
+      .get(`https://api.www.boiler-plate.org/api/kakao/login?code=${code}`)
       .then((res) => {
         console.log(res);
         navigate('/');

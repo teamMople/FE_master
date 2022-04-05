@@ -24,7 +24,7 @@ function BoardList() {
   useEffect(() => {
     if (location.pathname === '/myaccount/boards') {
       dispatch(getMyBoardListAsync());
-    } else if (location.pathname === '/myaccount/mycomments') {
+    } else if (location.pathname === '/myaccount/comments') {
       dispatch(getMyCommentListAsync());
     } else if (typeof params.categoryName === 'undefined') {
       dispatch(getBoardListAsync());

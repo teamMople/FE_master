@@ -2,26 +2,34 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { Grid, Image, Text } from 'components';
+import { Grid, IconButton, Image, Text } from 'components';
 import { useNavigate } from 'react-router-dom';
 
 const BoardList = (props) => {
-  const { label, boards } = props;
+  const { label, boards, type } = props;
   const navigate = useNavigate();
 
   const slicedBoards = boards.slice(0, 5);
-  const hotList = slicedBoards.sort(
-    (a, b) => b.agreeCount + b.disagreeCount - (a.agreeCount + a.disagreeCount),
-  );
 
   return (
     <Grid padding="0px 24px 0px 24px" margin="0px 0px 32px 0px">
-      <Grid margin="0px 0px 16px 0px">
+      <Grid margin="0px 0px 16px 0px" isFlex>
         <Text bold size="20px">
           {label}
         </Text>
+        <IconButton
+          src={'/asset/icons/Plus.svg'}
+          onClick={() => {
+            if (type === 'recent') {
+              navigate(`/recent`, { state: label });
+            } else {
+              navigate(`/hot`, { state: label });
+            }
+          }}
+          medium
+        />
       </Grid>
-      {hotList.map((board, index) => {
+      {slicedBoards.map((board, index) => {
         return (
           <BoardWrapper key={index}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -75,6 +83,7 @@ const BoardList = (props) => {
 BoardList.propTypes = {
   label: PropTypes.string,
   boards: PropTypes.array,
+  type: PropTypes.oneOf(['hot', 'recent']),
 };
 
 const BoardWrapper = styled.div`

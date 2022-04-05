@@ -38,13 +38,14 @@ import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
 import LiveRoom from '../../pages/chats/views/LiveRoom/LiveRoom';
 import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
 import GlobalStyle from '../styles/globalStyles';
-import { PageLoading } from 'components';
+import { AllBoardContents, PageLoading } from 'components';
 
 import { firebaseApp } from 'shared/utils/firebase';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { useDispatch, useSelector } from 'react-redux';
 import { addNotificationList } from 'modules/notifications';
 import { selectDarkTheme } from '../../modules/serviceTheme';
+import AllBoardList from '../../pages/boards/AllBoardList';
 
 function App() {
   const dispatch = useDispatch();
@@ -124,6 +125,8 @@ function App() {
             <Route path={'/room/create'} element={<CreateRoom />} />
             <Route path={'/room/:roomId'} element={<LiveRoom />} />
             <Route path="/home" element={<Home />} />
+            <Route path="/recent" element={<AllBoardList type={'recent'} />} />
+            <Route path="/hot" element={<AllBoardList type={'hot'} />} />
             <Route path="/search" element={<SearchBoard />}>
               <Route path="result" element={<CombinedBoardList />} />
               <Route path="result/general" element={<CombinedBoardList />} />

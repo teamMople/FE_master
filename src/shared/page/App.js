@@ -38,6 +38,8 @@ import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
 import LiveRoom from '../../pages/chats/views/LiveRoom/LiveRoom';
 import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
 import GlobalStyle from '../styles/globalStyles';
+import { PageLoading, Report } from 'components';
+import { getCookie } from '../utils/Cookie';
 import { BasicModal, PageLoading } from 'components';
 
 import { firebaseApp } from 'shared/utils/firebase';
@@ -52,39 +54,43 @@ function App() {
   const [openModal, setOpenModal] = useState(false);
 
   // Firebase Cloud Messaging
-  // const firebaseMessaging = getMessaging(firebaseApp);
-  // getToken(firebaseMessaging, {
-  //   vapidKey: process.env.REACT_APP_VAPID_KEY,
-  // })
-  //   .then((currentToken) => {
-  //     console.log(currentToken);
-  //     if (currentToken) {
-  //       apis.pushAlarm(currentToken).then((response) => {
-  //         console.log(response);
-  //       });
-  //     } else {
-  //       console.log('not alarm registered');
-  //     }
-  //   })
-  //   .catch((error) => console.log(error));
+  const token = getCookie('token');
 
-  // onMessage(firebaseMessaging, (payload) => {
-  //   console.log('foregroundMessage');
-  //   console.log(payload);
+  const firebaseMessaging = getMessaging(firebaseApp);
 
-  //   const date = new Date();
-  //   const now = date.getTime();
+  if (token) {
+    getToken(firebaseMessaging, {
+      vapidKey: process.env.REACT_APP_VAPID_KEY,
+    })
+      .then((currentToken) => {
+        if (currentToken) {
+          apis.pushAlarm(currentToken).then((response) => {
+            console.log(response);
+          });
+        } else {
+          console.log('not alarm registered');
+        }
+      })
+      .catch((error) => console.log(error));
+  }
 
-  //   if (payload) {
-  //     dispatch(
-  //       addNotificationList({
-  //         title: payload.notification.title,
-  //         body: payload.notification.body,
-  //         createdAt: now,
-  //       }),
-  //     );
-  //   }
-  // });
+  onMessage(firebaseMessaging, (payload) => {
+    console.log('foregroundMessage');
+    console.log(payload);
+
+    const date = new Date();
+    const now = date.getTime();
+
+    if (payload) {
+      dispatch(
+        addNotificationList({
+          title: payload.notification.title,
+          body: payload.notification.body,
+          createdAt: now,
+        }),
+      );
+    }
+  });
 
   // Webpack production mode
   if (process.env.NODE_ENV === 'production') {

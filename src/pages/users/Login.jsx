@@ -49,7 +49,6 @@ function Login() {
           { headers: { 'Content-Type': 'application/json' } },
         )
         .then((response) => {
-          console.log(response);
           if (response.status === 200) {
             setCookie('token', response.headers.authorization, 1);
             localStorage.setItem('email', response.data.email);

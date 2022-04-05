@@ -4,14 +4,14 @@ import { useDispatch } from 'react-redux';
 import { setMemberVoteStatus } from '../../modules/chat';
 import { VoteResultBar } from '../../components';
 import { VoteResultBarWrapper } from './views/LiveRoom/style';
+import SockJS from 'sockjs-client';
+import { over } from 'stompjs';
 
 const VoteView = ({
   roomId,
   memberName,
   memberAgreed,
   memberDisagreed,
-  stompClient,
-  sock,
   agreeCount,
   disagreeCount,
   role,
@@ -22,22 +22,35 @@ const VoteView = ({
   const [agreeCountState, setAgreeCountState] = useState(agreeCount);
   const [disagreeCountState, setDisagreeCountState] = useState(disagreeCount);
 
+  const [sock, setSock] = useState();
+  const [stompClient, setStompClient] = useState();
+
   useEffect(() => {
-    connect();
-    return () => {
-      stompClient.unsubscribe();
-      stompClient.disconnect(
-        {},
-        {
-          roomId: roomId,
-          memberName: memberName,
-          role: role,
-          agreed: agree,
-          disagreed: disagree,
-        },
-      );
-    };
+    setSock(new SockJS(process.env.REACT_APP_SOCKET_VOTE_URL));
   }, []);
+  useEffect(() => {
+    sock && setStompClient(over(sock));
+  }, [sock]);
+
+  useEffect(() => {
+    if (stompClient) {
+      connect();
+      return () => {
+        stompClient.unsubscribe();
+
+        stompClient.disconnect(
+          {},
+          {
+            roomId: roomId,
+            memberName: memberName,
+            role: role,
+            agreed: agree,
+            disagreed: disagree,
+          },
+        );
+      };
+    }
+  }, [stompClient]);
 
   useEffect(() => {
     const data = {
@@ -48,17 +61,22 @@ const VoteView = ({
   }, [agree, disagree]);
 
   const connect = () => {
+    // stompClient.connect({}, onConnected, onError);
     stompClient.connect({}, onConnected, onError);
 
-    sock.addEventListener('open', () => {
-      // console.log('Connected to Browser!!!😀');
-    });
-    sock.addEventListener('message', (message) => {
-      // console.log('Got this:', message, '😀');
-    });
-    sock.addEventListener('close', () => {
-      // console.log('Disconnected to Server😀');
-    });
+    if (sock) {
+      sock.addEventListener('open', () => {
+        console.log('Connected to Browser!!!😀VOTE');
+      });
+
+      sock.addEventListener('message', (message) => {
+        console.log('Got this:', message, '😀');
+      });
+
+      sock.addEventListener('close', () => {
+        console.log('Disconnected to Server😀');
+      });
+    }
   };
 
   const onConnected = () => {

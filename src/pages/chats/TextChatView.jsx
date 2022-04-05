@@ -10,10 +10,15 @@ import {
 } from './style';
 import { Button, Text, Textarea } from '../../components';
 import styled, { ThemeContext } from 'styled-components';
+import SockJS from 'sockjs-client';
+import { over } from 'stompjs';
+import { useDispatch } from 'react-redux';
+import { setMessageStomp } from '../../modules/socket';
 
-const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
+const TextChatView = ({ roomId, memberName, moderator }) => {
   const themeContext = useContext(ThemeContext);
   const [publicChats, setPublicChats] = useState([]);
+  const dispatch = useDispatch();
   const [userData, setUserData] = useState({
     sender: '',
     // connected: false,
@@ -21,26 +26,42 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
     sentAt: 0,
     profileUrl: localStorage.getItem('profileImageUrl'),
   });
+
+  const [sock, setSock] = useState();
+  const [stompClient, setStompClient] = useState();
+
   useEffect(() => {
-    connect();
-    return () => {
-      stompClient.unsubscribe();
-      stompClient.disconnect();
-    };
+    setSock(new SockJS(process.env.REACT_APP_SOCKET_VOTE_URL));
   }, []);
+  useEffect(() => {
+    sock && setStompClient(over(sock));
+  }, [sock]);
+
+  useEffect(() => {
+    if (stompClient) {
+      dispatch(setMessageStomp(stompClient));
+      connect();
+      return () => {
+        stompClient.unsubscribe();
+        stompClient.disconnect();
+      };
+    }
+  }, [stompClient]);
 
   const connect = () => {
     stompClient.connect({ memberName: memberName }, onConnected, onError);
 
-    sock.addEventListener('open', () => {
-      // console.log('Connected to Browser!!!😀');
-    });
-    sock.addEventListener('message', (message) => {
-      // console.log('Got this:', message, '😀');
-    });
-    sock.addEventListener('close', () => {
-      // console.log('Disconnected to Server😀');
-    });
+    if (sock) {
+      sock.addEventListener('open', () => {
+        console.log('Connected to Browser!!!😀MESSAGE');
+      });
+      sock.addEventListener('message', (message) => {
+        console.log('Got this:', message, '😀');
+      });
+      sock.addEventListener('close', () => {
+        console.log('Disconnected to Server😀');
+      });
+    }
   };
 
   const chat = document.getElementById('chat_content');
@@ -144,7 +165,7 @@ const TextChatView = ({ stompClient, sock, roomId, memberName, moderator }) => {
           <ChatWrapper id="chat_content">
             {/*<ChatWrapper className={active && 'active'}>*/}
             {/*<Button>숨기기</Button>*/}
-            {publicChats.length < 1 && (
+            {publicChats.length < 2 && (
               <WaitingMessage>
                 작성된 대화가 없습니다.
                 <br /> 대화를 시작해보세요!

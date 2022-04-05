@@ -16,8 +16,6 @@ import {
 } from '../../../../modules/chat';
 import TextChatView from '../../TextChatView';
 import VoteView from '../../VoteView';
-import SockJS from 'sockjs-client';
-import { over } from 'stompjs';
 import { BasicModal, Button, StatusBox, Text } from 'components';
 import { ChatUser } from '../../component';
 import {
@@ -40,6 +38,7 @@ import {
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { selectModalOpen, setModalOpen } from '../../../../modules/modal';
+import { selectedSocket } from '../../../../modules/socket';
 
 //!Todo 마이크 선택 가능하도록!!
 
@@ -74,11 +73,7 @@ const LiveRoom = () => {
   const [OV, setOV] = useState(new OpenVidu());
   const [session, setSession] = useState(OV.initSession());
 
-  // Socket 초기화 - 여기서 초기화 해주고...
-  let messageSock = new SockJS(process.env.REACT_APP_SOCKET_MESSAGE_URL);
-  let voteSock = new SockJS(process.env.REACT_APP_SOCKET_VOTE_URL);
-  let messageStomp = over(messageSock);
-  let voteStomp = over(voteSock);
+  const socketState = useSelector(selectedSocket).messageStomp;
 
   const sendLeaveToSocket = async () => {
     let sendData = {
@@ -89,7 +84,7 @@ const LiveRoom = () => {
       agreed: memberVoteStatus.memberAgreed,
       disagreed: memberVoteStatus.memberDisagreed,
     };
-    messageStomp.send('/pub/chat/message', {}, JSON.stringify(sendData));
+    socketState.send('/pub/chat/message', {}, JSON.stringify(sendData));
   };
   window.onpopstate = function (event) {
     // "event" object seems to contain value only when the back button is clicked
@@ -809,9 +804,6 @@ const LiveRoom = () => {
                 <TextChatView
                   roomId={joinRoomStatus.roomId}
                   memberName={convertStreamData(publisher)}
-                  stompClient={messageStomp}
-                  sock={messageSock}
-                  // unsubscribe={unsubscribe}
                   moderator={joinRoomStatus.moderatorNickname}
                 />
               )}
@@ -911,8 +903,6 @@ const LiveRoom = () => {
                   role={joinRoomStatus.role}
                   memberAgreed={joinRoomStatus.memberAgreed}
                   memberDisagreed={joinRoomStatus.memberDisagreed}
-                  stompClient={voteStomp}
-                  sock={voteSock}
                   agreeCount={joinRoomStatus.agreeCount}
                   disagreeCount={joinRoomStatus.disagreeCount}
                 />

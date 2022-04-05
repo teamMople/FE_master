@@ -37,7 +37,7 @@ import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
 import LiveRoom from '../../pages/chats/views/LiveRoom/LiveRoom';
 import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
 import GlobalStyle from '../styles/globalStyles';
-import { AllBoardContents, PageLoading } from 'components';
+import { PageLoading } from 'components';
 
 import { firebaseApp } from 'shared/utils/firebase';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
@@ -88,6 +88,21 @@ function App() {
   if (process.env.NODE_ENV === 'production') {
     console.log = function no_console() {};
     console.warn = function no_console() {};
+  }
+
+  // 마이크 사용 요청 to user
+  useEffect(() => {
+    getLocalStream();
+  }, []);
+  function getLocalStream() {
+    navigator.mediaDevices
+      .getUserMedia({ video: false, audio: true })
+      .then((stream) => {
+        window.localStream = stream; // A
+      })
+      .catch((err) => {
+        console.log('u got an error:' + err);
+      });
   }
 
   // 테마 변경

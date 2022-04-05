@@ -13,11 +13,12 @@ const Header = ({
   rightArrow,
   rightArrowOnClick,
   disabled,
+  style,
 }) => {
   const themeContext = useContext(ThemeContext);
 
   return (
-    <HeaderWrapper fixedTop={fixedTop}>
+    <HeaderWrapper fixedTop={fixedTop} style={style}>
       <Grid isFlex height={`${themeContext.style.header.height}`}>
         <LeftArrow active={leftArrow} leftArrowOnClick={leftArrowOnClick} />
         <Text center color={themeContext.colors.blue}>
@@ -59,6 +60,7 @@ Header.propTypes = {
     label: PropTypes.string,
     onClickButton: PropTypes.func,
   }),
+  style: PropTypes.any,
 };
 
 const HeaderWrapper = styled.div`

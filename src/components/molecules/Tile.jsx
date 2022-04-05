@@ -138,7 +138,7 @@ const Tile = (props) => {
             profileImageUrl={board.profileImageUrl}
             nickname={board.nickname}
             createdAt={board.createdAt}
-            margin="0px 0px 18px 0px"
+            margin="0px 0px 8px 0px"
           />
           <Grid
             onClick={() => {
@@ -146,6 +146,13 @@ const Tile = (props) => {
             }}
           >
             <Grid margin="0px 0px 14px 0px">
+              <Text
+                small
+                color={themeContext.colors.blue}
+                style={{ marginBottom: '4px' }}
+              >
+                #{board.category}
+              </Text>
               <Text
                 bold
                 color={themeContext.colors.black}

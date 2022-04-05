@@ -1,7 +1,8 @@
 import styled, { keyframes } from 'styled-components';
 
 export const FixedTop = styled.div`
-  position: fixed;
+  //position: fixed;
+  position: relative;
   top: 0;
   z-index: 15;
   width: 100%;
@@ -9,8 +10,8 @@ export const FixedTop = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 export const CarouselWrapper = styled.div`
-  padding-top: 148px;
-  height: 100%;
+  //padding-top: 148px;
+  //height: 100%;
   //height: calc(100% - 148px);
 
   .slider-wrapper {
@@ -77,7 +78,7 @@ export const InnerWrapper = styled.div`
 export const TopButtonGroup = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin: 20px 24px;
+  padding: 20px 24px 0 24px;
 `;
 export const RoomInfoWrapper = styled.div`
   margin: 20px 24px;

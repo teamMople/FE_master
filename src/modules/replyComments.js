@@ -29,6 +29,13 @@ export const createReplyCommentAsync = createAsyncThunk(
   },
 );
 
+export const deleteReplyCommentAsync = createAsyncThunk(
+  'comments/deleteReplyComment',
+  async (replyCommentInfo, thunkAPI) => {
+    const { commentId, replyContent } = replyCommentInfo;
+  },
+);
+
 export const recommendReplyCommentAsync = createAsyncThunk(
   'comments/recommendReplyCommentCount',
   async (ids, thunkAPI) => {
@@ -68,6 +75,15 @@ const replyCommentListSlice = createSlice({
     },
     addReplyCommentList: (state, action) => {
       state.data.push(action.payload);
+    },
+    deleteReplyComment: (state, action) => {
+      const commentId = state.data.findIndex((d) => {
+        return d.commentId === action.payload;
+      });
+      const restComments = state.data.filter((d, index) => {
+        return index !== commentId;
+      });
+      state.data = restComments;
     },
     addReplyComment: (state, action) => {
       const replyIndex = state.data.findIndex((d) => {

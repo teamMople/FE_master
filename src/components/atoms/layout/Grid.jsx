@@ -38,6 +38,8 @@ const GridBox = styled.div`
   background-color: ${(props) => props.backgroundColor};
   border-radius: ${(props) => (props.rounded ? '20px' : '')};
 
+  cursor: ${(props) => (props.onClick ? 'pointer' : '')};
+
   ${(props) =>
     props.isFlex
       ? `

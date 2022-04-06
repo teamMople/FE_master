@@ -40,7 +40,7 @@ import CreateRoom from '../../pages/chats/views/CreateRoom/CreateRoom';
 import LiveRoom from '../../pages/chats/views/LiveRoom/LiveRoom';
 import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
 import GlobalStyle from '../styles/globalStyles';
-import { BasicModal, PageLoading, Report } from 'components';
+import { BasicModal, PageLoading } from 'components';
 import { getCookie } from '../utils/cookie';
 
 import { firebaseApp } from 'shared/utils/firebase';

@@ -13,7 +13,7 @@ const AllBoardContents = (props) => {
     <>
       <NewGrid
         padding="0px 24px 0px 24px"
-        margin={`${themeContext.style.header.height} 0px 32px 0px`}
+        margin={`${themeContext.style.header.height} 0px 0 0px`}
       >
         {boards &&
           boards.map((board, index) => {

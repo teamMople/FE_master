@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';
-import { Wrapper, Grid, Text, Button, Header, Check } from 'components';
+import { Wrapper, Grid, Text, Button, Header, Survey } from 'components';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const reportItems = [
@@ -18,7 +18,7 @@ const ReportBoard = (props) => {
   const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
 
-  const [isSelected, setIsSelected] = useState([
+  const [checkList, setCheckList] = useState([
     false,
     false,
     false,
@@ -27,6 +27,9 @@ const ReportBoard = (props) => {
     false,
     false,
   ]);
+  const handleCheckClick = (index) => {
+    setCheckList((checks) => checks.map((c, i) => (i === index ? !c : c)));
+  };
 
   return (
     <Wrapper
@@ -50,30 +53,12 @@ const ReportBoard = (props) => {
         <Grid width="100%">
           {reportItems.map((item, index) => {
             return (
-              <Grid key={index} margin="0px 0px 13px 0px" width="100%">
-                <Grid
-                  isFlex
-                  height="20px"
-                  margin="0px 0px 13px 0px"
-                  onClick={() => {
-                    setIsSelected();
-                  }}
-                >
-                  <Grid width="20px" margin="0px 13.75px 0px 0px">
-                    <img src="/asset/icons/not_selected.svg" />
-                  </Grid>
-                  <Grid width="100%" height="20px">
-                    <Text small color={themeContext.colors.darkGray}>
-                      {item}
-                    </Text>
-                  </Grid>
-                </Grid>
-                <Grid
-                  width="100%"
-                  height="1px"
-                  backgroundColor={themeContext.colors.lightGray}
-                />
-              </Grid>
+              <Survey
+                key={index}
+                label={item}
+                onClick={() => handleCheckClick(index)}
+                checked={checkList[index]}
+              />
             );
           })}
         </Grid>

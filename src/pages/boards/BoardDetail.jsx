@@ -32,7 +32,7 @@ import {
 import { getCommentListAsync, selectedCommentList } from 'modules/comments';
 import { deleteBoardAsync } from 'modules/boards';
 
-const BoardDetail = (props, ref) => {
+const BoardDetail = (props) => {
   const navigate = useNavigate();
 
   const params = useParams();
@@ -41,6 +41,7 @@ const BoardDetail = (props, ref) => {
   const dispatch = useDispatch();
   const themeContext = useContext(ThemeContext);
 
+  const listRef = useRef(null);
   const inputRef = useRef(null);
 
   const detail = useSelector(selectedDetail);
@@ -83,6 +84,10 @@ const BoardDetail = (props, ref) => {
     setIsReportModalOpened(!isReportModalOpened);
   };
 
+  const scrollBottom = () => {
+    listRef.current.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
+
   useEffect(() => {
     dispatch(getDetailAsync(params.boardId));
     dispatch(getCommentListAsync(params.boardId));
@@ -97,7 +102,7 @@ const BoardDetail = (props, ref) => {
     <Wrapper
       backgroundColor={themeContext.colors.white}
       padding="0px 0px 0px 0px"
-      ref={ref}
+      ref={listRef}
     >
       <BasicModal
         open={isDeleteModalOpened}

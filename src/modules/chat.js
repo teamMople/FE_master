@@ -16,6 +16,7 @@ const roomInitialState = {
   remoteHandsUpStatus: [{ remoteTarget: undefined, isHandsUp: undefined }],
   remotePermissionStatus: [{ remoteTarget: undefined, permitSpeaking: false }],
   remoteForceMuteStatus: [{ remoteTarget: undefined, forceMute: false }],
+  remoteMicState: [{ remoteTarget: undefined, micOn: false }],
   roomState: {
     role: undefined,
     roomId: undefined,
@@ -167,6 +168,7 @@ export const leaveRoomAsync = createAsyncThunk(
       .then(() => {
         //!Todo 주석 풀 것
         // return alert('방 떠나기 성공!');
+        console.log('성공!!!!');
       })
       .catch(() => {
         console.log('방 떠나기 실패!');
@@ -208,6 +210,9 @@ export const roomSlice = createSlice({
     },
     setRemoteForceMuteStatus: (state, action) => {
       state.remoteForceMuteStatus.push(action.payload);
+    },
+    setRemoteMicState: (state, action) => {
+      state.remoteMicState.push(action.payload);
     },
     setJoinRoomStatus: (state, action) => {
       state.joinRoomStatus = action.payload;
@@ -272,6 +277,7 @@ export const {
   setOpenCreateRoom,
   setCreateRoomNextStep,
   setCreateRoomSetting,
+  setRemoteMicState,
 } = roomSlice.actions;
 export const { setInit } = sessionSlice.actions;
 export const { setMemberVoteStatus } = voteSlice.actions;

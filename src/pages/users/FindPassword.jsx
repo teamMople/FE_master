@@ -47,10 +47,10 @@ function FindPassword(props) {
     if (isValidEmailByRegex) {
       const response = await apis.verifyEmail(email);
       if (response.data.message === 'true') {
-        setEmailCheckMessage('이미 사용 중인 이메일입니다');
+        setEmailCheckMessage('가입한 이메일입니다.');
         setIsRegisteredEmail(true);
       } else if (response.data.message === 'false') {
-        setEmailCheckMessage('사용하실 수 있는 이메일입니다');
+        setEmailCheckMessage('가입하지 않은 이메일입니다.');
       } else {
         setEmailCheckMessage();
       }

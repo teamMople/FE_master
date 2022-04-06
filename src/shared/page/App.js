@@ -27,6 +27,8 @@ import {
   Inactivate,
   ChangePassword,
   ReportBoard,
+  InvalidLogin,
+  Error,
 } from 'pages';
 import '../styles/App.css';
 
@@ -211,6 +213,7 @@ function App() {
             <Route path="/noti" element={<NotificationList />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/loading" element={<Loading />} />
+            <Route path="/error/login" element={<InvalidLogin />} />
             <Route path={'*'} element={<NotFound />} />
           </Routes>
         </Suspense>

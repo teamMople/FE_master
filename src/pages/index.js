@@ -14,6 +14,7 @@ import ChangePassword from './users/ChangePassword';
 import EditUserProfile from './users/EditUserProfile';
 import FindPassword from './users/FindPassword';
 import Inactivate from './users/Inactivate';
+import InvalidLogin from './users/InvalidLogin';
 import Login from './users/Login';
 import MyAccount from './users/MyAccount';
 import OAuthRedirectHandler from './users/OAuthRedirectHandler';
@@ -22,6 +23,7 @@ import Signup from './users/Signup';
 import Welcome from './users/Welcome';
 
 // common
+import Error from './Error';
 import Home from './Home';
 import Loading from './Loading';
 import Nav from './Nav';
@@ -46,6 +48,7 @@ export {
   EditUserProfile,
   FindPassword,
   Inactivate,
+  InvalidLogin,
   Login,
   MyAccount,
   OAuthRedirectHandler,
@@ -53,6 +56,7 @@ export {
   Signup,
   Welcome,
   // common
+  Error,
   Home,
   Loading,
   Splash,

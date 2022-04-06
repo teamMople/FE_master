@@ -14,6 +14,7 @@ const OAuthRedirectHandler = (props) => {
   const navigate = useNavigate();
 
   const loginStatus = useSelector(selectedUserStatus);
+  console.log(loginStatus);
 
   let code = new URL(window.location.href).searchParams.get('code');
 

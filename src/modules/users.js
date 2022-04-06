@@ -92,7 +92,9 @@ export const kakaoLoginAsync = createAsyncThunk(
           };
         }
       })
-      .catch();
+      .catch((error) => {
+        window.location.replace('/error/login');
+      });
   },
 );
 

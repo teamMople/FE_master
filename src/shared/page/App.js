@@ -41,7 +41,7 @@ import LiveRoom from '../../pages/chats/views/LiveRoom/LiveRoom';
 import { Home, Login, RoomList, SearchBoard, Signup } from './LazyPages';
 import GlobalStyle from '../styles/globalStyles';
 import { BasicModal, PageLoading } from 'components';
-import { getCookie } from '../utils/cookie';
+import { getCookie } from '../utils/Cookie';
 
 import { firebaseApp } from 'shared/utils/firebase';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';

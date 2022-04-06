@@ -116,7 +116,6 @@ const BoardDetail = (props, ref) => {
         close={isReportModalOpened}
         onClose={handleReportModalClose}
         onConfirm={(e) => {
-          console.log('click');
           navigate('/board/report/' + boardId);
         }}
         closeMessage={'취소'}

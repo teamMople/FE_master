@@ -104,13 +104,7 @@ const apis = {
     authApi.delete(`/auth/api/comment/${commentId}`, { commentId }),
   recommendComment: (commentId) =>
     authApi.get(`/auth/api/comment/recommend/${commentId}`, { commentId }),
-  createComment: (boardId, content) =>
-    authApi.post('/auth/api/comment', { boardId, content }),
   getCommentListByBoard: () => authApi.get('/auth/api/comment'),
-  deleteComment: (commentId) =>
-    authApi.delete(`/auth/api/comment/${commentId}`),
-  recommendComment: (commentId) =>
-    authApi.get(`/auth/api/comment/recommend/${commentId}`),
   searchBoard: (search) => authApi.get(`/auth/api/board/search/${search}`),
 
   // 알람

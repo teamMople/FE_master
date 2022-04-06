@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getCookie } from '../shared/utils/Cookie';
+import { getCookie } from '../shared/utils/cookie';
 
 // 액세스 토큰 없이 접근 가능한 API
 const api = axios.create({

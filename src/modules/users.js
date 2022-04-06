@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import apis from '../apis/apis';
-import { deleteCookie, setCookie } from '../shared/utils/Cookie';
+import { deleteCookie, setCookie } from '../shared/utils/cookie';
 
 const emailRegExp =
   /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;

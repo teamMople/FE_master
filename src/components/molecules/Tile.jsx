@@ -40,7 +40,6 @@ const Tile = (props) => {
       .catch((error) => console.error(error));
   };
 
-  console.log(board);
   switch (type) {
     case 'live':
       return (
@@ -99,7 +98,7 @@ const Tile = (props) => {
               lineHeight="20px"
             >
               {board.content && board.content.length > 57
-                ? board.content.slice(0, 57) + '...'
+                ? board.content.slice(0, 55) + '...'
                 : board.content}
             </Text>
           </Grid>
@@ -181,7 +180,7 @@ const Tile = (props) => {
                 lineHeight="20px"
               >
                 {board.content && board.content.length > 57
-                  ? board.content.slice(0, 57) + '...'
+                  ? board.content.slice(0, 55) + '...'
                   : board.content}
               </Text>
             </Grid>

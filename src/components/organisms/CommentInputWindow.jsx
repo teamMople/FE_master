@@ -1,6 +1,7 @@
 import React, {
   useContext,
   useState,
+  useCallback,
   useEffect,
   forwardRef,
   useRef,
@@ -23,22 +24,50 @@ const CommentInputWindow = (props, { ref }) => {
     setContent(e.target.value);
   };
 
+  const textareaRef = useRef();
+  const handleAutoResize = useCallback(() => {
+    textareaRef.current.style.height = '30px';
+    const scrollHeight = textareaRef.current.scrollHeight;
+    textareaRef.current.style.height = scrollHeight + 'px';
+    return scrollHeight;
+  }, []);
+
   const commentInfo = { boardId, content };
 
   return (
-    <Window show={isClosed} {...props}>
-      <Grid isFlex width="100%" padding="8px 24px 24px 24px">
-        <Textarea
-          fluid
-          backgroundColor={themeContext.colors.backgroundGray}
-          height={'30px'}
-          border="none"
-          borderRadius="10px"
-          placeholder="댓글을 입력하세요"
-          padding="8px 12px 8px 12px"
-          onChange={changeContent}
-          value={content}
-        />
+    <AutoResizeWindow
+      show={isClosed}
+      height={66 + handleAutoResize + 'px'}
+      {...props}
+    >
+      <Grid
+        isFlex
+        width="100%"
+        padding="8px 24px 24px 24px"
+        style={{ alignItems: 'flex-start' }}
+      >
+        <Grid width="100%">
+          <textarea
+            ref={textareaRef}
+            autoFocus
+            placeholder="댓글을 입력하세요"
+            value={content}
+            onChange={changeContent}
+            onInput={handleAutoResize}
+            style={{
+              width: '100%',
+              maxHeight: '120px',
+              height: '30px',
+              border: 'none',
+              resize: 'none',
+              borderRadius: '10px',
+              backgroundColor: '#F8F8F8',
+              padding: '6px 12px 6px 12px',
+              overflowY: 'auto',
+            }}
+          />
+        </Grid>
+
         <Button
           ref={ref}
           shape={'rounded'}
@@ -51,13 +80,13 @@ const CommentInputWindow = (props, { ref }) => {
           onClick={(e) => {
             e.preventDefault();
             setContent('');
-            dispatch(createCommentAsync(commentInfo));
+            // dispatch(createCommentAsync(commentInfo));
           }}
         >
           완료
         </Button>
       </Grid>
-    </Window>
+    </AutoResizeWindow>
   );
 };
 
@@ -66,15 +95,17 @@ CommentInputWindow.propTypes = {
   autoResize: PropTypes.bool,
 };
 
-const Window = styled.div`
+const AutoResizeWindow = styled.div`
   visibility: ${(props) => (props.show ? 'hidden' : 'visible')};
 
   position: fixed;
-  bottom: 0;
+  bottom: 54px;
   width: 100%;
-  height: 130px; // 66+54
+  height: ${(props) => props.height};
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 20px 20px 0px 0px;
+  box-sizing: border-box;
+  transition: 0.3s ease;
   filter: drop-shadow(0px -2px 4px rgba(0, 0, 0, 0.05));
 `;
 

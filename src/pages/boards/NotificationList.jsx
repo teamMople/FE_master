@@ -14,7 +14,7 @@ function NotificationList(props) {
   return (
     <Wrapper
       backgroundColor={themeContext.colors.backgroundGray}
-      padding="0px 24px 0px 24px"
+      padding="45px 24px 0px 24px"
     >
       <Grid width="100%" margin="0px 0px 16px 0px">
         <Text bold huge>

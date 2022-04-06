@@ -81,7 +81,7 @@ export const TopButtonGroup = styled.div`
   padding: 20px 24px 0 24px;
 `;
 export const RoomInfoWrapper = styled.div`
-  margin: 20px 24px;
+  padding: 20px 24px;
 `;
 export const StatusWrapperChat = styled.div`
   display: flex;

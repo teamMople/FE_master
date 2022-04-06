@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ThemeContext } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { OpenVidu } from 'openvidu-browser';
 import {
   closeRoomAsync,
+  leaveRoomAsync,
   ovGetTokenAsync,
   removeAllRoomSubscribers,
   removeRoomSubscriber,
@@ -40,19 +41,17 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { selectModalOpen, setModalOpen } from '../../../../modules/modal';
 import { selectedSocket } from '../../../../modules/socket';
 
-//!Todo 마이크 선택 가능하도록!!
-
 const LiveRoom = () => {
   const themeContext = useContext(ThemeContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [publisher, setPublisher] = useState(undefined);
   const [publisherProfileImage, setPublisherProfileImage] = useState(undefined);
-  const [myMicStatus, setMyMicStatus] = useState(false);
-  const [isHandsUp, setIsHandsUp] = useState(false);
+  const [myMicOn, setMyMicOn] = useState(false);
+  const [bottomHand, setBottomHand] = useState(false);
   const [myHandsUpState, setMyHandsUpState] = useState(false);
   const [myMicMute, setMyMicMute] = useState(false);
-  const [remoteMicStatus, setRemoteMicStatus] = useState({
+  const [remoteMicState, setRemoteMicState] = useState({
     remoteTarget: undefined,
     isAudioActive: undefined,
   });
@@ -75,16 +74,22 @@ const LiveRoom = () => {
 
   const socketState = useSelector(selectedSocket).messageStomp;
 
+  // let OV = useRef({});
+  // OV = new OpenVidu();
+  // let session = OV.initSession();
+
   const sendLeaveToSocket = async () => {
-    let sendData = {
-      sender: joinRoomStatus.memberName,
-      type: 'LEAVE',
-      roomId: joinRoomStatus.roomId,
-      role: joinRoomStatus.role,
-      agreed: memberVoteStatus.memberAgreed,
-      disagreed: memberVoteStatus.memberDisagreed,
-    };
-    socketState.send('/pub/chat/message', {}, JSON.stringify(sendData));
+    if (socketState) {
+      let sendData = {
+        sender: joinRoomStatus.memberName,
+        type: 'LEAVE',
+        roomId: joinRoomStatus.roomId,
+        role: joinRoomStatus.role,
+        agreed: memberVoteStatus.memberAgreed,
+        disagreed: memberVoteStatus.memberDisagreed,
+      };
+      socketState.send('/pub/chat/message', {}, JSON.stringify(sendData));
+    }
   };
   window.onpopstate = function (event) {
     // "event" object seems to contain value only when the back button is clicked
@@ -97,6 +102,7 @@ const LiveRoom = () => {
         leaveRoom().then(() => navigate('/home', { replace: true }));
       } else {
         sendForceLeave().then(() => leaveRoom());
+        // sendForceLeave();
       }
     } else {
       // Continue user action through link or button
@@ -111,14 +117,16 @@ const LiveRoom = () => {
 
   // 새로고침 혹은 브라우저 강제 종료할 경우 감지 함수
   const onbeforeunload = async (event) => {
-    event.preventDefault();
+    // event.preventDefault();
     // eslint-disable-next-line no-param-reassign
-    event.returnValue = '';
+    // event.returnValue = '';
     if (joinRoomStatus.role !== 'MODERATOR') {
       // 흠.. 하나의 함수만 실행 가능한 것 같음. 두번째 함수부터는 실행이 안됨.
       await leaveRoom();
+      // await leaveRoom().then(() => navigate('/home', { replace: true }));
       // await navigate('/room', { replace: true });
     } else {
+      // await sendForceLeave();
       await sendForceLeave();
       // await leaveRoom();
       // await closeRoom();
@@ -144,10 +152,12 @@ const LiveRoom = () => {
       .then(() => {
         //!Todo 주석 풀 것!
         // alert('방장 방 종료하기 성공!');
-        roomSubscribers.forEach((sub) =>
-          session.forceDisconnect(
-            sub.subscriber.stream.connection.connectionId,
-          ),
+        roomSubscribers.forEach(
+          (sub) =>
+            session &&
+            session.forceDisconnect(
+              sub.subscriber.stream.connection.connectionId,
+            ),
         );
       })
       .catch(() => alert('방장 방 종료하기 실패!'));
@@ -161,18 +171,31 @@ const LiveRoom = () => {
   const [closeState, setCloseState] = useState(false);
   const [notExist, setNotExistModal] = useState(false);
   const sendForceLeave = async () => {
+    if (joinRoomStatus.role === 'MODERATOR') {
+      dispatch(
+        leaveRoomAsync({
+          roomId: joinRoomStatus.roomId,
+          memberName: joinRoomStatus.memberName,
+          role: joinRoomStatus.role,
+          agreed: memberVoteStatus.memberAgreed,
+          disagreed: memberVoteStatus.memberDisagreed,
+        }),
+      );
+    }
     const options = {
       data: JSON.stringify({ noModerator: true }),
       type: 'forceLeave',
     };
-    await session
-      .signal(options)
-      .then(() => {
-        sendLeaveToSocket();
-        console.log('(SEND) 방장이 존재하지 않습니다!');
-      })
-      .catch((error) => console.error(error));
-    setCloseState(true); // 방 종료 상태 관리
+    if (session) {
+      await session
+        .signal(options)
+        .then(() => {
+          sendLeaveToSocket();
+          console.log('(SEND) 방장이 존재하지 않습니다!');
+        })
+        .catch((error) => console.error(error));
+      setCloseState(true); // 방 종료 상태 관리
+    }
   };
   const receiveForceLeave = () => {
     if (session && joinRoomStatus.role !== 'MODERATOR') {
@@ -245,52 +268,56 @@ const LiveRoom = () => {
   };
 
   const connect = (token) => {
-    session
-      .connect(token, {
-        profileImageUrl: localStorage.getItem('profileImageUrl'),
-      })
-      .then(() => {
-        connectVoice().then((r) => r);
-      })
-      .catch((error) => {
-        //!Todo 나중에 무조건 Alert 삭제해야함! 그래야 페이지 이동 바로됨!
-        // alert(`There was an error connecting to the session: ${error.message}`);
-        alert('이미 종료된 방입니다!');
-        console.log(
-          'There was an error connecting to the session:',
-          error.code,
-          error.message,
-        );
-        localStorage.removeItem('OVAccessToken');
-        navigate('/home', { replace: true });
-      });
+    if (session) {
+      session
+        .connect(token, {
+          profileImageUrl: localStorage.getItem('profileImageUrl'),
+        })
+        .then(() => {
+          connectVoice().then((r) => r);
+        })
+        .catch((error) => {
+          //!Todo 나중에 무조건 Alert 삭제해야함! 그래야 페이지 이동 바로됨!
+          // alert(`There was an error connecting to the session: ${error.message}`);
+          alert('이미 종료된 방입니다!');
+          console.log(
+            'There was an error connecting to the session:',
+            error.code,
+            error.message,
+          );
+          localStorage.removeItem('OVAccessToken');
+          navigate('/home', { replace: true });
+        });
+    }
   };
 
   const connectVoice = async () => {
-    const devices = await OV.getDevices();
-    // const videoDevices = devices.filter((device) => {
-    //   return device.kind === 'videoinput';
-    // });
-    const audioDevices = devices.filter((device) => {
-      return device.kind === 'audioinput';
-    });
-    let initPublisher = OV.initPublisher(undefined, {
-      audioSource:
-        joinRoomStatus.role === 'PUBLISHER' ? true : audioDevices[0].deviceId, // The source of audio. If undefined default microphone
-      // videoSource:
-      //   joinRoomStatus.role === 'PUBLISHER' ? false : videoDevices[1].deviceId, // The source of video. If undefined default webcam
-      videoSource: false,
-      publishAudio: joinRoomStatus.role !== 'PUBLISHER', // Whether you want to start publishing with your audio unmuted or not
-      publishVideo: false, // Whether you want to start publishing with your video enabled or not
-      resolution: '640x480', // The resolution of your video
-      frameRate: 30, // The frame rate of your video
-      insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-      mirror: false, // Whether to mirror your local video or not
-    });
+    if (session) {
+      const devices = await OV.getDevices();
+      // const videoDevices = devices.filter((device) => {
+      //   return device.kind === 'videoinput';
+      // });
+      const audioDevices = devices.filter((device) => {
+        return device.kind === 'audioinput';
+      });
+      let initPublisher = OV.initPublisher(undefined, {
+        audioSource:
+          joinRoomStatus.role === 'PUBLISHER' ? true : audioDevices[0].deviceId, // The source of audio. If undefined default microphone
+        // videoSource:
+        //   joinRoomStatus.role === 'PUBLISHER' ? false : videoDevices[1].deviceId, // The source of video. If undefined default webcam
+        videoSource: false,
+        publishAudio: joinRoomStatus.role !== 'PUBLISHER', // Whether you want to start publishing with your audio unmuted or not
+        publishVideo: false, // Whether you want to start publishing with your video enabled or not
+        resolution: '640x480', // The resolution of your video
+        frameRate: 30, // The frame rate of your video
+        insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
+        mirror: false, // Whether to mirror your local video or not
+      });
 
-    await session.publish(initPublisher);
-    setPublisher(initPublisher);
-    setPublisherProfileImage(localStorage.getItem('profileImageUrl'));
+      await session.publish(initPublisher);
+      setPublisher(initPublisher);
+      setPublisherProfileImage(localStorage.getItem('profileImageUrl'));
+    }
   };
 
   const getToken = async () => {
@@ -334,16 +361,18 @@ const LiveRoom = () => {
 
   // 마이크 상태가 변할 때 메세지를 보낸다
   const sendChangeMicStatus = () => {
-    setMyMicStatus(!myMicStatus);
-    publisher.publishAudio(myMicStatus);
-    const signalOptions = {
-      data: JSON.stringify({ isAudioActive: myMicStatus }),
-      type: 'userChanged',
-    };
-    session
-      .signal(signalOptions)
-      .then(() => console.log('마이크 상태가 정상적으로 전송되었습니다!'))
-      .catch((error) => console.error(error));
+    if (session) {
+      setMyMicOn(!myMicOn); // 내 마이크 상태값 set
+      publisher.publishAudio(myMicOn); // 내 마이크 켜고 끄기
+      const signal = {
+        data: JSON.stringify({ isAudioActive: myMicOn }),
+        type: 'userChanged',
+      };
+      session
+        .signal(signal)
+        .then(() => console.log('마이크 상태가 정상적으로 전송되었습니다!'))
+        .catch((error) => console.error(error));
+    }
   };
 
   useEffect(() => {
@@ -356,7 +385,7 @@ const LiveRoom = () => {
       session.on('signal:userChanged', (event) => {
         const isAudioActive = JSON.parse(event.data).isAudioActive;
         const remoteTarget = event.from.connectionId;
-        setRemoteMicStatus({
+        setRemoteMicState({
           remoteTarget: remoteTarget,
           isAudioActive: isAudioActive,
         });
@@ -367,26 +396,28 @@ const LiveRoom = () => {
 
   // 방장이 강제로 구독자 권한 박탈할 때
   const sendForceMute = (sub) => {
-    const requester = sub.stream.connection.connectionId;
-    const options = {
+    const requester = sub.stream.connection.connectionId; // 강제음소거 시킬 대상자
+    const signal = {
       data: JSON.stringify({ forceMute: true, requester: requester }),
       type: 'forceMute',
     };
     if (session) {
       session
-        .signal(options)
+        .signal(signal)
         .then(() => {
           console.log('참여자에 대한 강제 음소거 메시지가 전송되었습니다!');
+          // 방장이 강제 음소거 버튼을 누르는 순간 대상자에 떠있던 강제 음소거 버튼이 사라진다
+          dispatch(
+            setRemoteForceMuteStatus({
+              remoteTarget: requester,
+              forceMute: false,
+            }),
+          );
         })
         .catch((error) => console.error(error));
-      dispatch(
-        setRemoteForceMuteStatus({
-          remoteTarget: requester,
-          forceMute: false,
-        }),
-      );
+      console.log('remotePermissionStatus:::', remotePermissionStatus);
       //
-      // // 상대방 마이크 시각적 확인
+      // 상대방 마이크 시각적 확인
       // setRemoteMicStatus({
       //   remoteTarget: requester,
       //   isAudioActive: false,
@@ -401,24 +432,28 @@ const LiveRoom = () => {
       session.on('signal:forceMute', (event) => {
         const data = JSON.parse(event.data);
         console.log('참여자에 대한 강제 음소거 메시지를 받았습니다!');
+        // 나와 강제음소거 대상과 동일하다면
         if (
           publisher &&
-          data.requester === publisher.session.connection.connectionId
+          publisher.session.connection.connectionId === data.requester
         ) {
-          publisher.publishAudio(false);
+          publisher.publishAudio(false); // 동일하면 내 마이크 꺼짐
         }
+        // 방장에게 보여지는 내 프로필 옆 손들기 아이콘 비활성화
         dispatch(
           setRemoteHandsUpStatus({
             remoteTarget: data.requester,
             isHandsUp: false,
           }),
         );
+        // 방장에게 보여지는 내 프로필 옆 수락하기 버튼 활성화(?)
         dispatch(
           setRemotePermissionStatus({
             remoteTarget: data.requester,
             permitSpeaking: true,
           }),
         );
+        // 강제음소거 대상자(?) 강제음소거 상태 false??
         dispatch(
           setRemoteForceMuteStatus({
             remoteTarget: data.requester,
@@ -426,14 +461,16 @@ const LiveRoom = () => {
           }),
         );
 
-        // 상대방 마이크 시각적 확인
-        setRemoteMicStatus({
+        // 강제음소거 대상자의 프로필 옆 마이크 상태 음소거 상태로 변경
+        setRemoteMicState({
           remoteTarget: data.requester,
           isAudioActive: false,
         });
-        setIsHandsUp(false);
-        setMyMicMute(false);
-        setMyHandsUpState(false);
+        setBottomHand(false); // 내 하단 손들기 버튼 존재 여부
+        setMyMicMute(false); // 내 하단 마이크와 프로필 옆 마이크 상태 음소거로
+        setMyHandsUpState(false); // 내 하단 손들기와 프로필 손들기 안든 상태로
+
+        console.log('remotePerus:::', remotePermissionStatus);
       });
     }
   };
@@ -445,16 +482,18 @@ const LiveRoom = () => {
   // 발언권을 요청할 때
   const sendHandsUp = (publisher) => {
     const requester = publisher.stream.connection.connectionId;
-    const handsUpOptions = {
+    const signal = {
       data: JSON.stringify({ requester: requester, isHandsUp: true }),
       type: 'handsUp',
     };
-    session
-      .signal(handsUpOptions)
-      .then(() => console.log('발언하고 싶다고 전송되었습니다!'))
-      .catch((error) => console.error(error));
-    // setIsHandsUp(true);
-    setMyHandsUpState(true);
+    if (session) {
+      session
+        .signal(signal)
+        .then(() => console.log('발언하고 싶다고 전송되었습니다!'))
+        .catch((error) => console.error(error));
+      // setIsHandsUp(true);
+      setMyHandsUpState(true); // 내 하단 손들기와 프로필 손들기 든 상태로
+    }
   };
 
   // 발언권 요청자를 받을 때
@@ -470,6 +509,8 @@ const LiveRoom = () => {
         //   remoteTarget: data.requester,
         //   isHandsUp: data.isHandsUp,
         // });
+
+        // 방장 화면에 발언 요청자의 손들기 상태 표시
         dispatch(
           setRemoteHandsUpStatus({
             remoteTarget: data.requester,
@@ -477,7 +518,7 @@ const LiveRoom = () => {
           }),
         );
 
-        // 참여자가 재요청을 할 때 손들기 보기 위함(방장)
+        // 방장이 참여자가 재요청을 할 때 손들기 보기 위함
         dispatch(
           setRemotePermissionStatus({
             remoteTarget: remoteTarget,
@@ -538,15 +579,17 @@ const LiveRoom = () => {
   // 발언권 부여 메시지
   const sendPermitSpeaking = (sub) => {
     const requester = sub.stream.connection.connectionId;
-    const options = {
+    const signal = {
       data: JSON.stringify({ permission: true, requester: requester }),
       type: 'speaking',
     };
     if (session) {
       session
-        .signal(options)
+        .signal(signal)
         .then(() => console.log('발언 요청에 대한 허가를 전송하였습니다!'))
         .catch((error) => console.error(error));
+
+      console.log('remotePermissionStatus:::', remotePermissionStatus);
 
       // //상대방 마이크 상태 시각적 확인
       // setRemoteMicStatus({
@@ -585,24 +628,45 @@ const LiveRoom = () => {
         if (publisher && data.requester === isPublisherId(publisher)) {
           console.log('퍼블리셔와 리퀘스터가 똑같아!!');
           publisher.publishAudio(true);
-          setIsHandsUp(true);
-          setMyMicMute(true);
-          setMyHandsUpState(false); // 나의 프로필 손든 상태 관리
+          setBottomHand(true); // 내 하단 손들기 버튼 존재 여부
+          setMyMicMute(true); // 내 하단 마이크와 프로필 옆 마이크 상태 음소거 아닌 상태로
+          setMyHandsUpState(false); // 내 하단 손들기와 프로필 손들기 안든 상태로
         }
+        console.log('remotePermissionStatus:::', remotePermissionStatus);
         // if (publisher && publisher.stream.audioActive) {
+        //   setRemoteMicStatus({
+        //     remoteTarget: data.requester,
+        //     isAudioActive: true,
+        //   });
+        //
+        //   dispatch(
+        //     setRemotePermissionStatus({
+        //       remoteTarget: data.requester,
+        //       permitSpeaking: true,
+        //     }),
+        //   );
+        //   dispatch(
+        //     setRemoteForceMuteStatus({
+        //       remoteTarget: data.requester,
+        //       forceMute: false,
+        //     }),
+        //   );
         // }
-        //상대방 마이크 상태 시각적 확인
-        setRemoteMicStatus({
+
+        // 발언권 요청자 마이크 상태 활성화
+        setRemoteMicState({
           remoteTarget: data.requester,
           isAudioActive: true,
         });
 
+        // 발언권 요청자 발언 허가 상태 활성화
         dispatch(
           setRemotePermissionStatus({
             remoteTarget: data.requester,
             permitSpeaking: true,
           }),
         );
+        // 발언권 요청자 강제음소거 버튼 활성화
         dispatch(
           setRemoteForceMuteStatus({
             remoteTarget: data.requester,
@@ -667,6 +731,10 @@ const LiveRoom = () => {
     });
   };
 
+  const refreshAudioState = (sub) => {
+    return sub.stream.audioActive;
+  };
+
   const BottomFunctionalButtons = () => {
     return (
       <BottomButtonGroup>
@@ -697,7 +765,7 @@ const LiveRoom = () => {
             (isModerator(publisher) ||
               (isPublisher(publisher) && myMicMute)) && (
               <div onClick={sendChangeMicStatus}>
-                {myMicStatus ? (
+                {myMicOn ? (
                   <img src={'/asset/icons/microphone_normal.svg'} alt="icon" />
                 ) : (
                   <img
@@ -707,7 +775,7 @@ const LiveRoom = () => {
                 )}
               </div>
             )}
-          {publisher && isPublisher(publisher) && !isHandsUp && (
+          {publisher && isPublisher(publisher) && !bottomHand && (
             <div onClick={() => sendHandsUp(publisher)}>
               {myHandsUpState ? (
                 <>
@@ -746,7 +814,10 @@ const LiveRoom = () => {
       >
         라이브를 종료했습니다!
       </BasicModal>
-      <div id="live_room_wrapper" style={{ height: '100%' }}>
+      <div
+        id="live_room_wrapper"
+        style={{ height: '100%', backgroundColor: themeContext.colors.white }}
+      >
         <FixedTop>
           <TopButtonGroup>
             {publisher && isPublisher(publisher) && (
@@ -850,15 +921,21 @@ const LiveRoom = () => {
                           memberName={convertStreamData(sub.subscriber)}
                           // initialMicState={sub.subscriber.stream.audioActive}
                           isMute={
+                            refreshAudioState(sub.subscriber)
+
                             // 처음 접속시 참여자들 마이크 상태 확인용
                             //
-                            // sub.subscriber.stream.audioActive ||
-                            (sub.subscriber.stream.connection.connectionId ===
-                              remoteMicStatus.remoteTarget &&
-                              remoteMicStatus.isAudioActive) ||
-                            (sub.subscriber.stream.connection.connectionId ===
-                              remotePermissionStatus.remoteTarget &&
-                              remotePermissionStatus.permitSpeaking)
+                            // sub.subscriber.stream.audioActive
+                            // (sub.subscriber.stream.connection.connectionId ===
+                            //   remoteMicState.remoteTarget &&
+                            //   remoteMicState.isAudioActive) ||
+                            // remoteTargetPermissionStatus(sub.subscriber)
+                            // (sub.subscriber.stream.connection.connectionId ===
+                            //   remotePermissionStatus.remoteTarget &&
+                            //   remotePermissionStatus.permitSpeaking)
+                            // (sub.subscriber.stream.connection.connectionId ===
+                            //   remoteForceMuteStatus.remoteTarget &&
+                            //   !remoteForceMuteStatus.forceMute)
                           }
                           detectSpeaking={
                             subSpeaker.speaker ===

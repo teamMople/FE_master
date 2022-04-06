@@ -44,7 +44,7 @@ export const loginAsync = createAsyncThunk(
         .then((response) => {
           console.log(response);
           if (response.status === 200) {
-            setCookie('token', response.headers.authorization, 1);
+            // setCookie('token', response.headers.authorization, 1);
             localStorage.setItem('userId', response.data.userId);
             localStorage.setItem('email', response.data.email);
             localStorage.setItem('nickname', response.data.nickname);

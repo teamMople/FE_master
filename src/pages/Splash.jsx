@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { getCookie } from '../shared/utils/cookie';
+import { getCookie } from '../shared/utils/Cookie';
 import { Wrapper, FullModal, BasicModal, Logo, Text, Grid } from 'components';
 
 import { initializeApp } from 'firebase/app';

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Grid, Text, Button, Textarea, ProfileBox, Loader } from 'components';
 
 import ReplyCommentList from 'components/organisms/ReplyCommentList';
-import { recommendCommentAsync } from 'modules/comments';
+import { deleteCommentAsync, recommendCommentAsync } from 'modules/comments';
 import {
   getReplyCommentListAsync,
   clearReplyCommentList,
@@ -40,7 +40,9 @@ const CommentBox = (props) => {
     setReplyContent(e.target.value);
   };
 
-  const deleteComment = () => {};
+  const deleteComment = (commentId) => {
+    dispatch(deleteCommentAsync(commentId));
+  };
 
   const showReportModal = () => {};
 

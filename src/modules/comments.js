@@ -33,18 +33,14 @@ export const createCommentAsync = createAsyncThunk(
 
 export const deleteCommentAsync = createAsyncThunk(
   'comments/deleteComment',
-  async ({ commentId }, thunkAPI) => {
+  async (commentId, thunkAPI) => {
     await apis
       .deleteComment(commentId)
       .then((response) => {
-        if (response.data.status === 'ok') {
-          thunkAPI.dispatch();
-        }
+        console.log(response);
+        thunkAPI.dispatch(deleteComment(commentId));
       })
       .catch((error) => {
-        if (error) {
-          window.alert('잘못된 생성 요청입니다.');
-        }
         return thunkAPI.rejectWithValue();
       });
   },
@@ -84,6 +80,15 @@ export const commentListSlice = createSlice({
     addComment: (state, action) => {
       state.data.push(action.payload);
     },
+    deleteComment: (state, action) => {
+      const commentId = state.data.findIndex((d) => {
+        return d.commentId === action.payload;
+      });
+      const deletedComments = state.data.filter((d, index) => {
+        return index !== commentId;
+      });
+      state.data = deletedComments;
+    },
     increaseRecommendCount: (state, action) => {
       const commentIndex = state.data.findIndex((d) => {
         return d.commentId === action.payload;
@@ -114,6 +119,7 @@ export const commentListSlice = createSlice({
 export const {
   clearCommentList,
   addComment,
+  deleteComment,
   increaseRecommendCount,
   decreaseRecommendCount,
 } = commentListSlice.actions;

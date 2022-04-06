@@ -313,9 +313,6 @@ function Signup() {
                   onClick={() => {
                     checkDuplicateEmail(email);
                   }}
-                  style={{
-                    cursor: 'pointer',
-                  }}
                 >
                   <Text small color={themeContext.colors.blue} right>
                     중복확인

@@ -41,6 +41,7 @@ function AllBoardList({ type }) {
   }, [page]);
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, {
+      // rootMargin: '50px',
       threshold: 0.5,
     });
     if (intersectRef.current) {
@@ -62,7 +63,7 @@ function AllBoardList({ type }) {
       }
     } catch {
       console.log('ERROR');
-      // setPage((prev) => prev + 1);
+      setPage((prev) => prev + 1);
       return;
     }
   }, [data]);
@@ -89,8 +90,8 @@ function AllBoardList({ type }) {
           ) : (
             <AllBoardContents type={type} boards={data} />
           )}
+          <div ref={intersectRef} style={{ height: '1px', width: '100%' }} />
         </div>
-        <div ref={intersectRef} />
       </NewWrapper>
     </>
   );

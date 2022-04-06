@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   BUCKET,
@@ -55,6 +55,14 @@ function CreateBoard(props) {
     }
   };
 
+  const textareaRef = useRef();
+  const handleAutoResize = useCallback(() => {
+    textareaRef.current.style.height = '18px';
+    const scrollHeight = textareaRef.current.scrollHeight;
+    textareaRef.current.style.height = scrollHeight + 'px';
+    return scrollHeight;
+  }, []);
+
   // Image Loader
   const [previewImage, setPreviewImage] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
@@ -78,8 +86,6 @@ function CreateBoard(props) {
     };
     reader.readAsDataURL(file);
   };
-
-  console.log(selectedFile);
 
   const handleUpload = async (folderName, file) => {
     const urlIdentifier = `img-${Math.ceil(Math.random() * 10 ** 10)}`;
@@ -163,20 +169,53 @@ function CreateBoard(props) {
           lineHeight="18px"
           value={content}
         />
-        {previewImage && <Image src={previewImage} shape={'rectangle'} />}
-        <Text tiny right color={themeContext.colors.darkGray}>
-          {textLength} / 300
-        </Text>
+        <Grid margin="0px 0px 8px 0px">
+          <Text tiny right color={themeContext.colors.darkGray}>
+            {textLength} / 300
+          </Text>
+        </Grid>
+        {/* <textarea
+          ref={textareaRef}
+          autoFocus
+          placeholder="댓글을 입력하세요"
+          onChange={changeContent}
+          onInput={handleAutoResize}
+          style={{
+            width: '100%',
+            maxHeight: '200px',
+            height: '30px',
+            border: 'none',
+            resize: 'none',
+            overflowX: 'auto',
+            fontSize: '14px',
+            lineHeight: '18px',
+            overflowY: 'hidden',
+          }}
+        /> */}
+        {previewImage && (
+          <ImageWrapper>
+            <Grid
+              right
+              onClick={() => {
+                setPreviewImage();
+                setSelectedFile();
+              }}
+            >
+              <img src={'/asset/icons/Close_no_shadow.svg'} />
+            </Grid>
+            <Image src={previewImage} shape={'rectangle'} />
+          </ImageWrapper>
+        )}
       </Grid>
       <Grid
         padding="16px 24px 0px 24px"
         style={{
           display: 'flex',
           position: 'fixed',
-          bottom: '10px',
+          bottom: '30px',
         }}
       >
-        <Grid onClick={handleImageClick} style={{ cursor: 'pointer' }}>
+        <Grid onClick={handleImageClick}>
           <img src="/asset/icons/Image.svg" alt="image" />
           <input
             type="file"
@@ -195,5 +234,7 @@ const NewWrapper = styled(Wrapper)`
   height: 100%;
   background-color: ${({ theme }) => theme.colors.white};
 `;
+
+const ImageWrapper = styled.div``;
 
 export default CreateBoard;

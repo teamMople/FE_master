@@ -50,7 +50,7 @@ function Login() {
         )
         .then((response) => {
           if (response.status === 200) {
-            setCookie('token', response.headers.authorization, 1);
+            // setCookie('token', response.headers.authorization, 1);
             localStorage.setItem('email', response.data.email);
             localStorage.setItem('nickname', response.data.nickname);
             localStorage.setItem(

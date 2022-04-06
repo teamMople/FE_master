@@ -80,7 +80,7 @@ const CommentInputWindow = (props, { ref }) => {
           onClick={(e) => {
             e.preventDefault();
             setContent('');
-            // dispatch(createCommentAsync(commentInfo));
+            dispatch(createCommentAsync(commentInfo));
           }}
         >
           완료

@@ -3,13 +3,18 @@ import { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Grid, Text, Button, ProfileBox, KebabMenu } from 'components';
 import { useDispatch } from 'react-redux';
-import { recommendReplyCommentAsync } from 'modules/replyComments';
+import {
+  deleteReplyCommentAsync,
+  recommendReplyCommentAsync,
+} from 'modules/replyComments';
+import { useNavigate } from 'react-router-dom';
 
 const ReplyCommentBox = (props) => {
   const { replyComment } = props;
 
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const commentId = replyComment.commentId;
   const replyId = replyComment.replyId;
@@ -23,9 +28,13 @@ const ReplyCommentBox = (props) => {
     }
   };
 
-  const deleteComment = () => {};
+  const deleteComment = () => {
+    dispatch(deleteReplyCommentAsync(ids));
+  };
 
-  const showReportModal = () => {};
+  const showReportModal = () => {
+    navigate('/report/comment/' + replyId);
+  };
 
   const isPrivateKebabMenu = [true, false];
   const kebabMenuLabels = ['댓글 삭제하기', '댓글 신고하기'];

@@ -26,7 +26,7 @@ import {
   Loading,
   Inactivate,
   ChangePassword,
-  ReportBoard,
+  Report,
   InvalidLogin,
   Error,
 } from 'pages';
@@ -200,7 +200,6 @@ function App() {
               </Route>
             </Route>
             <Route path="/board/:boardId" element={<BoardDetail />} />
-            <Route path="board/report/:boardId" element={<ReportBoard />} />
             <Route path="/createboard" element={<CreateBoard />} />
             <Route path="/myaccount" element={<MyAccount />}>
               <Route path="boards" element={<BoardList />} />
@@ -213,6 +212,11 @@ function App() {
             <Route path="/noti" element={<NotificationList />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/loading" element={<Loading />} />
+            <Route path="/report" element={<Report />}>
+              <Route path="board/:boardId" element={<Report />} />
+              <Route path="comment/:commentId" element={<Report />} />
+              <Route path="reply/:replyId" element={<Report />} />
+            </Route>
             <Route path="/error/login" element={<InvalidLogin />} />
             <Route path={'*'} element={<NotFound />} />
           </Routes>

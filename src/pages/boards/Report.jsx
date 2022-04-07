@@ -13,7 +13,7 @@ const reportItems = [
   '기타',
 ];
 
-const ReportBoard = (props) => {
+const Report = (props) => {
   const params = useParams();
   const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
@@ -83,4 +83,4 @@ const ReportBoard = (props) => {
   );
 };
 
-export default ReportBoard;
+export default Report;

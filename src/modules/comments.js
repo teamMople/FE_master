@@ -37,7 +37,6 @@ export const deleteCommentAsync = createAsyncThunk(
     await apis
       .deleteComment(commentId)
       .then((response) => {
-        console.log(response);
         thunkAPI.dispatch(deleteComment(commentId));
       })
       .catch((error) => {

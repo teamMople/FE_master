@@ -77,7 +77,7 @@ function Settings() {
             }}
           >
             <Text>비밀번호 변경</Text>
-            <RightArrow key={1} active />
+            <RightArrow active rightArrowOnClick={() => {}} />
           </MenuItem>
         </Grid>
 
@@ -106,7 +106,7 @@ function Settings() {
             }}
           >
             <Text>로그아웃</Text>
-            <RightArrow active />
+            <RightArrow active rightArrowOnClick={() => {}} />
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -114,7 +114,7 @@ function Settings() {
             }}
           >
             <Text>비활성화하기</Text>
-            <RightArrow active />
+            <RightArrow active rightArrowOnClick={() => {}} />
           </MenuItem>
         </Grid>
         <Grid>

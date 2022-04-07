@@ -147,6 +147,7 @@ function CreateBoard(props) {
       <Grid padding="0px 24px 0px 24px">
         <Input
           bold
+          type="text"
           width="100%"
           placeholder="제목을 입력해주세요"
           style={{
@@ -163,6 +164,7 @@ function CreateBoard(props) {
       <Grid padding="16px 24px 0px 24px">
         <Textarea
           fluid
+          type="text"
           border="none"
           height="200px"
           placeholder="토론하고 싶은 내용을 작성해주세요"

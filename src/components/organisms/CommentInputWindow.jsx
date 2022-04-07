@@ -6,9 +6,10 @@ import React, {
   forwardRef,
   useRef,
 } from 'react';
+import { useDispatch } from 'react-redux';
+
 import PropTypes from 'prop-types';
 import styled, { ThemeContext } from 'styled-components';
-import { useDispatch } from 'react-redux';
 import { createCommentAsync } from '../../modules/comments';
 import { Grid, Button, Textarea } from 'components';
 
@@ -126,20 +127,5 @@ const AutoResizeWindow = styled.div`
   transition: 0.3s ease;
   filter: drop-shadow(0px -2px 4px rgba(0, 0, 0, 0.05));
 `;
-
-const autoResizeTextareaStyle = {
-  width: '100%',
-  maxHeight: '120px',
-  height: '30px',
-  border: 'none',
-  resize: 'none',
-  borderRadius: '10px',
-  backgroundColor: '#F8F8F8',
-  padding: '6px 12px 6px 12px',
-  overflowY: 'auto',
-  ':focus': {
-    outline: 'none',
-  },
-};
 
 export default forwardRef(CommentInputWindow);

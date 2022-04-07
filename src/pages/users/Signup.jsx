@@ -322,7 +322,7 @@ function Signup() {
             </Grid>
             <Input
               fluid
-              type="password"
+              eyeIconRender
               margin="16px 0px 8px 0px"
               onChange={changePassword}
               placeholder="비밀번호"
@@ -330,7 +330,7 @@ function Signup() {
             />
             <Input
               fluid
-              type="password"
+              eyeIconRender
               onChange={changeConfirmPassword}
               placeholder="비밀번호 확인"
               disabled={email === '' || password === ''}

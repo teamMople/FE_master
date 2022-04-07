@@ -15,22 +15,31 @@ function Input({
   eyeIconRender,
   ...props
 }) {
-  const [eyeIconClicked, setEyeIconClicked] = useState(false);
+  const [isHidden, setIsHidden] = useState(true);
 
   return (
     <InputWrapper margin={margin} backgroundColor={backgroundColor}>
       {label && <Text bold>{label}</Text>}
+      <EyeIcon
+        eyeIconRender={eyeIconRender}
+        onClick={() => {
+          setIsHidden(!isHidden);
+        }}
+      >
+        {isHidden && <img src="/asset/icons/password_hidden.svg" />}
+        {!isHidden && <img src="/asset/icons/password_seen.svg" />}
+      </EyeIcon>
       <I
         width={width}
         height={height}
         fluid={fluid}
         backgroundColor={backgroundColor}
         disabled={disabled}
+        type={isHidden ? 'password' : 'text'}
         {...props}
       >
         {props.children}
       </I>
-      <EyeIcon eyeIconRender={eyeIconRender} />
     </InputWrapper>
   );
 }
@@ -55,6 +64,7 @@ Input.defaultProps = {
 };
 
 const InputWrapper = styled.div`
+  position: relative;
   margin: ${({ margin }) => (margin ? margin : '8px 0')};
 `;
 const I = styled.input`
@@ -87,6 +97,15 @@ const I = styled.input`
   }
 `;
 
-const EyeIcon = styled.div``;
+const EyeIcon = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  display: ${(props) => (props.eyeIconRender ? 'flex' : 'none')};
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+`;
 
 export default Input;

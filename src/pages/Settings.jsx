@@ -55,7 +55,13 @@ function Settings() {
         정말 로그아웃을 하시겠습니까?
       </BasicModal>
       <NewWrapper padding="0 24px">
-        <Header label="설정" leftArrow />
+        <Header
+          label="설정"
+          leftArrow
+          leftArrowOnClick={() => {
+            navigate('/myaccount');
+          }}
+        />
         <Grid margin="12px 0px 40px 0px">
           <MenuItem
             onClick={() => {

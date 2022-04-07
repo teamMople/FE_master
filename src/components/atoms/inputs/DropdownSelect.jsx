@@ -34,13 +34,13 @@ const dropdownSelectStyles = {
     color: '#4F4F4F',
     transform: state.isFocused ? 'rotateZ(180deg)' : 'rotateZ(0deg)',
   }),
-  group: (provided, state) => ({
+  group: (provided, state, { theme }) => ({
     ...provided,
     paddingLeft: 13,
     paddingRight: 13,
-    backgroundColor: state.isSelected ? '#4F4F4F' : '#FFF',
+    backgroundColor: theme.colors.white,
   }),
-  option: (provided) => ({
+  option: (provided, { theme, isFocused, isSelected }) => ({
     ...provided,
     border: 'none',
     boxShadow: 'none',
@@ -49,6 +49,11 @@ const dropdownSelectStyles = {
     fontWeight: 500,
     paddingLeft: 23,
     paddingRight: 23,
+    backgroundColor: isSelected ? '#F1F1F1' : isFocused ? '#F1F1F1' : '#FFF',
+    color: '#282828',
+    ':active': {
+      backgroundColor: isSelected ? '#F1F1F1' : '#FFF',
+    },
   }),
   indicatorSeparator: (provided) => ({
     ...provided,

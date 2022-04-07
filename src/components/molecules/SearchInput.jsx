@@ -17,6 +17,7 @@ const SearchInput = ({ backgroundColor, iconButtonClick, onChange }) => {
       <SearchInputWrapper>
         <Input
           fluid
+          type="text"
           height="36px"
           placeholder="검색어를 입력해주세요"
           onChange={onChange}

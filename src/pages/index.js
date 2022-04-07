@@ -6,7 +6,7 @@ import CombinedBoardList from './boards/CombinedBoardList';
 import CreateBoard from './boards/CreateBoard';
 import LiveBoardList from './boards/LiveBoardList';
 import NotificationList from './boards/NotificationList';
-import ReportBoard from './boards/ReportBoard';
+import Report from './boards/Report';
 import SearchBoard from './boards/SearchBoard';
 
 // users
@@ -41,7 +41,7 @@ export {
   CreateBoard,
   LiveBoardList,
   NotificationList,
-  ReportBoard,
+  Report,
   SearchBoard,
   // users
   ChangePassword,

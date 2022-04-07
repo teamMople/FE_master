@@ -98,7 +98,7 @@ const apis = {
   recommendBoard: (boardId) =>
     authApi.get(`/auth/api/board/recommend/${boardId}`),
   createComment: (boardId, content) =>
-    authApi.post(`/auth/api/comment/${boardId}`, { boardId, content }),
+    authApi.post('/auth/api/comment', { boardId, content }),
   getCommentsByBoard: (boardId) => authApi.get(`/auth/api/comment/${boardId}`),
   deleteComment: (commentId) =>
     authApi.delete(`/auth/api/comment/${commentId}`, { commentId }),
@@ -120,6 +120,8 @@ const apis = {
     authApi.get(`/auth/api/comment/${commentId}/reply`),
   recommendReplyComment: (commentId, replyId) =>
     authApi.get(`/auth/api/comment/${commentId}/reply/recommend/${replyId}`),
+  deleteReplyComment: (commentId, replyId) =>
+    authApi.delete(`/auth/api/comment/${commentId}/reply/${replyId}`),
 
   // 실시간 토론방
   getLiveRoomList: () => authApi.get('/api/chat/rooms/onair'),

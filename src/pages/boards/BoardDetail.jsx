@@ -55,9 +55,11 @@ const BoardDetail = (props) => {
   const voteInfo = { userVoteStatus, boardId };
 
   const deleteBoard = () => {
+    setDeleteScope('글');
     setIsDeleteModalOpened(true);
   };
-  const showReportModal = () => {
+  const reportBoard = () => {
+    setReportScope('글');
     setIsReportModalOpened(true);
   };
 
@@ -71,9 +73,11 @@ const BoardDetail = (props) => {
   };
   const isPrivateKebabMenu = [true, false];
   const kebabMenuLabels = ['글 삭제하기', '글 신고하기'];
-  const kebabMenuOnClicks = [deleteBoard, showReportModal];
+  const kebabMenuOnClicks = [deleteBoard, reportBoard];
 
+  const [deleteScope, setDeleteScope] = useState();
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
+  const [reportScope, setReportScope] = useState();
   const [isReportModalOpened, setIsReportModalOpened] = useState(false);
 
   const handleDeleteModalClose = () => {
@@ -114,19 +118,19 @@ const BoardDetail = (props) => {
         closeMessage={'취소'}
         confirmMessage={'삭제'}
       >
-        글을 삭제할까요?
+        {deleteScope}을 삭제할까요?
       </BasicModal>
       <BasicModal
         open={isReportModalOpened}
         close={isReportModalOpened}
         onClose={handleReportModalClose}
         onConfirm={(e) => {
-          navigate('/board/report/' + boardId);
+          navigate('/report/board' + boardId);
         }}
         closeMessage={'취소'}
         confirmMessage={'신고'}
       >
-        글을 신고할까요?
+        {reportScope}을 신고할까요?
       </BasicModal>
       <Grid padding="0px 24px 0px 24px">
         <Grid isFlex>

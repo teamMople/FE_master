@@ -57,13 +57,21 @@ function Settings() {
       <NewWrapper padding="0 24px">
         <Header label="설정" leftArrow />
         <Grid margin="12px 0px 40px 0px">
-          <MenuItem onClick={() => navigate('/editmyprofile')}>
+          <MenuItem
+            onClick={() => {
+              navigate('/editmyprofile');
+            }}
+          >
             <Text>프로필 편집</Text>
             <RightArrow active />
           </MenuItem>
-          <MenuItem onClick={() => navigate('/changepassword')}>
+          <MenuItem
+            onClick={() => {
+              navigate('/changepassword');
+            }}
+          >
             <Text>비밀번호 변경</Text>
-            <RightArrow active />
+            <RightArrow key={1} active />
           </MenuItem>
         </Grid>
 

@@ -12,13 +12,12 @@ import { useDispatch } from 'react-redux';
 import { createCommentAsync } from '../../modules/comments';
 import { Grid, Button, Textarea } from 'components';
 
-const CommentInputWindow = (props, { ref }) => {
+const CommentInputWindow = (props, ref) => {
   const { boardId } = props;
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
   const [isClosed, setIsClosed] = useState(false);
   const [content, setContent] = useState('');
-  const [scrollHeight, setScrollHeight] = useState(0);
 
   const changeContent = (e) => {
     setContent(e.target.value);
@@ -32,7 +31,24 @@ const CommentInputWindow = (props, { ref }) => {
     return scrollHeight;
   }, []);
 
+  const calculateScollHeightIncrement = useCallback(() => {
+    return ref.scrollHeight;
+  });
+
+  const scrollBottom = () => {
+    ref.current.scrollTo({
+      top: 99999,
+      behavior: 'smooth',
+    });
+  };
+
+  // const scrollBy = () => {
+  //   ref.scrollBy(0, 100);
+  // };
+
   const commentInfo = { boardId, content };
+
+  useEffect(() => {}, []);
 
   return (
     <AutoResizeWindow
@@ -54,22 +70,11 @@ const CommentInputWindow = (props, { ref }) => {
             value={content}
             onChange={changeContent}
             onInput={handleAutoResize}
-            style={{
-              width: '100%',
-              maxHeight: '120px',
-              height: '30px',
-              border: 'none',
-              resize: 'none',
-              borderRadius: '10px',
-              backgroundColor: '#F8F8F8',
-              padding: '6px 12px 6px 12px',
-              overflowY: 'auto',
-            }}
+            style={autoResizeTextareaStyle}
           />
         </Grid>
 
         <Button
-          ref={ref}
           shape={'rounded'}
           size={'tiny'}
           fontSize={'14px'}
@@ -81,6 +86,7 @@ const CommentInputWindow = (props, { ref }) => {
             e.preventDefault();
             setContent('');
             dispatch(createCommentAsync(commentInfo));
+            scrollBottom();
           }}
         >
           완료
@@ -97,7 +103,6 @@ CommentInputWindow.propTypes = {
 
 const AutoResizeWindow = styled.div`
   visibility: ${(props) => (props.show ? 'hidden' : 'visible')};
-
   position: fixed;
   bottom: 54px;
   width: 100%;
@@ -108,5 +113,20 @@ const AutoResizeWindow = styled.div`
   transition: 0.3s ease;
   filter: drop-shadow(0px -2px 4px rgba(0, 0, 0, 0.05));
 `;
+
+const autoResizeTextareaStyle = {
+  width: '100%',
+  maxHeight: '120px',
+  height: '30px',
+  border: 'none',
+  resize: 'none',
+  borderRadius: '10px',
+  backgroundColor: '#F8F8F8',
+  padding: '6px 12px 6px 12px',
+  overflowY: 'auto',
+  ':focus': {
+    outline: 'none',
+  },
+};
 
 export default forwardRef(CommentInputWindow);

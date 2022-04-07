@@ -11,9 +11,11 @@ import styled, { ThemeContext } from 'styled-components';
 import { Wrapper, Grid, Text, Image, Button, Input, Header } from 'components';
 import { useDispatch } from 'react-redux';
 import { editMyInfo } from 'modules/users';
+import { useNavigate } from 'react-router-dom';
 
 function EditUserProfile() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
 
   const prevNickname = localStorage.getItem('nickname');
@@ -103,7 +105,13 @@ function EditUserProfile() {
 
   return (
     <NewWrapper padding="0 24px">
-      <Header label="프로필 편집" leftArrow />
+      <Header
+        label="프로필 편집"
+        leftArrow
+        leftArrowOnClick={() => {
+          navigate(-1);
+        }}
+      />
 
       <Grid padding="32px 24px 0px 24px">
         <Grid center width="100%" margin="0px 0px 32px 0px">

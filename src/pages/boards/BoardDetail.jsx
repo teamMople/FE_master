@@ -1,4 +1,10 @@
-import React, { useEffect, useContext, useRef, useState } from 'react';
+import React, {
+  useEffect,
+  useContext,
+  useState,
+  useRef,
+  forwardRef,
+} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -42,7 +48,6 @@ const BoardDetail = (props) => {
   const themeContext = useContext(ThemeContext);
 
   const listRef = useRef(null);
-  const inputRef = useRef(null);
 
   const detail = useSelector(selectedDetail);
   const comments = useSelector(selectedCommentList);
@@ -86,10 +91,6 @@ const BoardDetail = (props) => {
 
   const handleReportModalClose = () => {
     setIsReportModalOpened(!isReportModalOpened);
-  };
-
-  const scrollBottom = () => {
-    listRef.current.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -198,7 +199,7 @@ const BoardDetail = (props) => {
       </Grid>
       {showComments && <CommentList comments={comments} />}
       <Grid width="100%" height={'84px'} />
-      <CommentInputWindow boardId={boardId} ref={inputRef} />
+      <CommentInputWindow boardId={boardId} ref={listRef} />
     </Wrapper>
   );
 };

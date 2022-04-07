@@ -13,11 +13,13 @@ import {
   selectedReplyCommentList,
 } from 'modules/replyComments';
 import { KebabMenu } from 'components';
+import { useNavigate } from 'react-router-dom';
 
 const CommentBox = (props) => {
   const { comment } = props;
   const themeContext = useContext(ThemeContext);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const commentId = comment.commentId;
 
   const { status: replyCommentListStatus, data: replyCommentList } =
@@ -40,11 +42,13 @@ const CommentBox = (props) => {
     setReplyContent(e.target.value);
   };
 
-  const deleteComment = (commentId) => {
+  const deleteComment = () => {
     dispatch(deleteCommentAsync(commentId));
   };
 
-  const showReportModal = () => {};
+  const showReportModal = () => {
+    navigate('/report/comment/' + commentId);
+  };
 
   const isMyComment = () => {
     const nickname = localStorage.getItem('nickname');

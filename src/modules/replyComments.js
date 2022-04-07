@@ -32,7 +32,16 @@ export const createReplyCommentAsync = createAsyncThunk(
 export const deleteReplyCommentAsync = createAsyncThunk(
   'comments/deleteReplyComment',
   async (replyCommentInfo, thunkAPI) => {
-    const { commentId, replyContent } = replyCommentInfo;
+    const { commentId, replyId } = replyCommentInfo;
+    await apis
+      .deleteReplyComment(commentId, replyId)
+      .then((response) => {
+        console.log(response);
+        thunkAPI.dispatch(deleteReplyComment({ commentId, replyId }));
+      })
+      .catch((error) => {
+        return thunkAPI.rejectWithValue();
+      });
   },
 );
 
@@ -76,20 +85,22 @@ const replyCommentListSlice = createSlice({
     addReplyCommentList: (state, action) => {
       state.data.push(action.payload);
     },
-    deleteReplyComment: (state, action) => {
-      const commentId = state.data.findIndex((d) => {
-        return d.commentId === action.payload;
-      });
-      const restComments = state.data.filter((d, index) => {
-        return index !== commentId;
-      });
-      state.data = restComments;
-    },
     addReplyComment: (state, action) => {
       const replyIndex = state.data.findIndex((d) => {
         return d.commentId === action.payload.commentId;
       });
       state.data[replyIndex].list.push(action.payload);
+    },
+    deleteReplyComment: (state, action) => {
+      const commentIndex = state.data.findIndex((d) => {
+        return d.commentId === action.payload.commentId;
+      });
+      const restReplyComments = state.data[commentIndex].list.filter(
+        (d, index) => {
+          return d.replyId !== action.payload.replyId;
+        },
+      );
+      state.data[commentIndex].list = restReplyComments;
     },
     increaseReplyRecommendCount: (state, action) => {
       const commentIndex = state.data.findIndex((d) => {
@@ -128,6 +139,7 @@ export const {
   clearReplyCommentList,
   addReplyCommentList,
   addReplyComment,
+  deleteReplyComment,
   increaseReplyRecommendCount,
   decreaseReplyRecommendCount,
 } = replyCommentListSlice.actions;

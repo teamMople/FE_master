@@ -58,22 +58,23 @@ const ChangePassword = () => {
         <Input
           fluid
           placeholder="비밀번호"
-          type="password"
           onChange={changePassword}
           autoFocus
+          eyeIconRender
         />
         <Input
           fluid
           placeholder="비밀번호 확인"
-          type="password"
           onChange={changeConfirmPassword}
+          eyeIconRender
         />
         <Grid padding="8px 16px 0px 8px">
           <Text
             size="10px"
             color={
               checkPassword(password, confirmPassword) ===
-              '비밀번호와 확인 비밀번호가 일치합니다'
+                '비밀번호와 확인 비밀번호가 일치합니다' ||
+              '올바른 비밀번호입니다.확인 비밀번호를 입력해주세요'
                 ? themeContext.colors.alertGreen
                 : themeContext.colors.red
             }
@@ -90,7 +91,15 @@ const ChangePassword = () => {
           transform: 'translateX(-50%)',
         }}
       >
-        <Button secondary>변경하기</Button>
+        <Button
+          secondary
+          disabled={
+            checkPassword(password, confirmPassword) !==
+            '비밀번호와 확인 비밀번호가 일치합니다'
+          }
+        >
+          변경하기
+        </Button>
       </Grid>
     </Wrapper>
   );

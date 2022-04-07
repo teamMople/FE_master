@@ -109,11 +109,11 @@ function Login() {
           <Grid>
             <Input
               marign-bottom="5px"
-              type="password"
               placeholder="비밀번호"
               value={password}
               onChange={changePassword}
               onKeyDown={handleKeyDown}
+              eyeIconRender
             />
           </Grid>
 

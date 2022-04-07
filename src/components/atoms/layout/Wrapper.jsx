@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 
-function Wrapper({ full, ...props }) {
+const Wrapper = forwardRef(({ full, ...props }, ref) => {
   return (
-    <W full={full} {...props}>
+    <W full={full} {...props} ref={ref}>
       {props.children}
     </W>
   );
-}
+});
+
+Wrapper.displayName = 'Wrapper';
 
 Wrapper.propTypes = {
   children: PropTypes.any,

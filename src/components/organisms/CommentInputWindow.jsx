@@ -70,7 +70,20 @@ const CommentInputWindow = (props, ref) => {
             value={content}
             onChange={changeContent}
             onInput={handleAutoResize}
-            style={autoResizeTextareaStyle}
+            style={{
+              width: '100%',
+              maxHeight: '120px',
+              height: '30px',
+              border: 'none',
+              resize: 'none',
+              borderRadius: '10px',
+              backgroundColor: themeContext.colors.backgroundGray,
+              padding: '6px 12px 6px 12px',
+              overflowY: 'auto',
+              ':focus': {
+                outline: 'none',
+              },
+            }}
           />
         </Grid>
 

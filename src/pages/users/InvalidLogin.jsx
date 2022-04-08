@@ -15,12 +15,12 @@ const InvalidLogin = (props) => {
         </Grid>
         <Grid margin="0px 0px 16px 0px" center>
           <Text large color={themeContext.colors.blue}>
-            로그인에 실패하였습니다
+            로그인할 수 없는 계정입니다.
           </Text>
         </Grid>
         <Grid margin="0px 0px 32px 0px" center>
           <Text large color={themeContext.colors.blue}>
-            다른 로그인 방법은 어떠신가요?
+            다른 계정으로 일반 로그인 어떠신가요?
           </Text>
         </Grid>
         <Button
